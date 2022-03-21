@@ -1,0 +1,44 @@
+#side-menu {
+    position: fixed;
+    top: 0;
+    left: -3px;
+    width: 0;
+    font-family: Verdana,sans-serif;
+    background: rgb(255, 255, 255);
+   padding-top: 10px;
+   padding-bottom: 10px;
+   height: 100%;
+   /* box-shadow: none; */
+   box-shadow: 0px 2px 20px 0px #353535;
+   z-index : 16;
+   overflow: hidden;
+   transition: width .2s;
+}
+
+
+ul {
+ list-style: none;
+ padding: 0;
+}
+
+
+
+li a {
+    color: rgb(0, 0, 0);
+    font-size: 1em;
+    line-height: 2;
+    white-space: nowrap;
+}
+
+li a:hover, a#closed:hover {
+    color: rgb(255, 0, 0);
+}
+
+.categoryNavigation li{
+    width: 20%;
+   
+}
+
+li{
+    font-family: 'Oswald', sans-serif;
+}

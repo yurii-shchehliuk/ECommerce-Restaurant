@@ -1,0 +1,15 @@
+przeanalizowac zdan w planowanym zakresie
+
+diagrama ganta
+metoda: ??
+sciezka krytyczna z diagramy
+obliczyc budget
+---------
+na bb jest tresc
+
+do 10 oddac
+warunki w marcu
+-----
+zle sciezka krytyczna
+bez e i bez h
+if(gdzie bufor 0 = najwczesnieszy rozp - najp zak) = do sciezki
