@@ -1,0 +1,47 @@
+<div class="container mt-5">
+  <div class="row">
+    <!-- aside menu -->
+    <section class="col-3">
+      <!-- sorting -->
+      <h5 class="ml-3" style="color: orange;">Sort</h5>
+      <select class="custom-select mb-3" (change)="onSortSelected($event.target.value)">
+        <option *ngFor="let item of sortOptions" [value]="item.value">
+          {{item.name}}
+        </option>
+      </select>
+      <!-- categories -->
+      <h5 class="ml-3" style="color: orange;">Categories</h5>
+      <ul class="list-group my-3">
+        <li class="list-group-item" *ngFor="let item of categories" [class.active]="item.id === this.shopParams.categoryId"
+          [value]="item.id" (click)="onCategorySelected(item.id)">
+          {{item.name}}
+        </li>
+      </ul>
+    </section>
+    <!-- main content -->
+    <section class="col-9">
+      <!-- searching -->
+      <div class="d-flex justify-content-between align-items-center pb-2">
+        <header><span>Showing <strong>10</strong> of <strong>16</strong> Results</span></header>
+        <div class="form-inline mt-2">
+          <input (keyup.enter)="onSearch()" type="text" #search class="form-control mr-2" placeholder="Search" style="width: 300px">
+          <button (click)="onSearch()" class="btn btn-outline-success my-2">Search</button>
+          <button (click)="onReset()" class="btn ml-2 my-2">Reset</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-4 mb-4" *ngFor="let item of products">
+          <app-product-item [product]="item"></app-product-item>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <app-pager
+        [pageSize]="shopParams.pageSize"
+        (pageChanged)="onPageChanged($event)"
+        ></app-pager>
+      </div>
+
+    </section>
+  </div>
+</div>

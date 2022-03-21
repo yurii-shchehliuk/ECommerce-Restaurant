@@ -1,0 +1,7 @@
+replace from "kfc" to "Johnny's Burger"
+create logo
+create web socker (signal r)
+create patterns
+database description
+--
+arhitektura

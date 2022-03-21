@@ -1,0 +1,34 @@
+.cart-no {
+  position: absolute; //parent should be relative!
+  min-height: 25px;
+  min-width: 25px;
+  border-radius: 50%;
+  font-size: 1em;
+  background: #eb6864;
+  color: white;
+  text-align: center;
+  top: -12px;
+  right: 32px;
+  &:hover {
+    background-color: rgb(197, 76, 106);
+    width: auto;
+    transition: 0.3s;
+  }
+}
+
+a {
+  text-decoration: none;
+  color: #343a40;
+
+  &.active {
+    color: orange;
+  }
+}
+
+.logo {
+  cursor: pointer;
+
+  &.focus {
+    outline: none;
+  }
+}
