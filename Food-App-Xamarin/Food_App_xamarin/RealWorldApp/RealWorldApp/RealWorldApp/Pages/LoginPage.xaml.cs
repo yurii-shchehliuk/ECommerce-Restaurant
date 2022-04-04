@@ -25,8 +25,10 @@ namespace RealWorldApp.Pages
 
         private async void BtnLogin_Clicked(object sender, EventArgs e)
         {
+#if DEBUG
             EntEmail.Text = "admin@email.com";
             EntPassword.Text = "admin!@3";
+#endif
             var response = await ApiService.Login(EntEmail.Text, EntPassword.Text);
             Preferences.Set("email", EntEmail.Text);
             Preferences.Set("password", EntPassword.Text);

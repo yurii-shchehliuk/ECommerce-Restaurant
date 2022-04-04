@@ -9,10 +9,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TextInputComponent } from './components/text-input/text-input.component';
+import { InputTextComponent } from './components/input-text/input-text.component';
 
 
 @NgModule({
-  declarations: [PagingHeaderComponent, PagerComponent, OrderTotalsComponent, TextInputComponent],
+  declarations: [PagingHeaderComponent, PagerComponent, OrderTotalsComponent, TextInputComponent, InputTextComponent],
   imports: [
     CommonModule,
     PaginationModule.forRoot(),
