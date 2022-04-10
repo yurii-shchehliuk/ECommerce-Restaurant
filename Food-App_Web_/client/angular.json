@@ -98,7 +98,7 @@
               "./node_modules/bootstrap/dist/css/bootstrap.min.css",
               "./node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
               "src/styles.scss",
-              "./node_modules/bootswatch/dist/journal/bootstrap.min.css"
+              "./node_modules/bootswatch/dist/cyborg/bootstrap.min.css"
             ],
             "scripts": []
           }

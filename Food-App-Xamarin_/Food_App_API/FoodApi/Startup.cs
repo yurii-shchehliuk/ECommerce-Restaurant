@@ -69,12 +69,12 @@ namespace FoodApi
             services.AddDbContext<FoodDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddSwaggerGen();
 
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<ICategoriesRepository, CategoriesRepository>();
-            services.AddScoped<IAccountsRepository, AccountsRepository>();
-            services.AddScoped<IOrdersRepository, OrdersRepository>();
-            services.AddScoped<IProductsRepository, ProductsRepository>();
-            services.AddScoped<IShoppingCartItemsRepository, ShoppingCartItemsRepository>();
+            services.AddHttpClient<IUnitOfWork, UnitOfWork>();
+            services.AddHttpClient<ICategoriesRepository, CategoriesRepository>();
+            services.AddHttpClient<IAccountsRepository, AccountsRepository>();
+            services.AddHttpClient<IOrdersRepository, OrdersRepository>();
+            services.AddHttpClient<IProductsRepository, ProductsRepository>();
+            services.AddHttpClient<IShoppingCartItemsRepository, ShoppingCartItemsRepository>();
         }
 
         // This method gets called by the runtime. Use this method to confi gure the HTTP request pipeline.
@@ -82,8 +82,8 @@ namespace FoodApi
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
             }
+                app.UseDeveloperExceptionPage();
             app.UseSwagger(c =>
             {
                 c.SerializeAsV2 = true;
