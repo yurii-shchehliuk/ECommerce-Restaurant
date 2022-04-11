@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
@@ -10,13 +11,12 @@ namespace FoodApi
             CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args)
+        public static IWebHostBuilder CreateHostBuilder(string[] args)
         {
-            var host = Host.CreateDefaultBuilder(args)
-                            .ConfigureWebHostDefaults(webBuilder =>
-                            {
-                                webBuilder.UseStartup<Startup>();
-                            });
+            var host = WebHost.CreateDefaultBuilder(args)
+                .UseSetting(WebHostDefaults.DetailedErrorsKey, "true")
+                .UseStartup<Startup>();
+
             return host;
         }
     }

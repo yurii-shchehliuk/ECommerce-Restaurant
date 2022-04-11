@@ -83,7 +83,7 @@ namespace FoodApi
             if (env.IsDevelopment())
             {
             }
-                app.UseDeveloperExceptionPage();
+            app.UseDeveloperExceptionPage();
             app.UseSwagger(c =>
             {
                 c.SerializeAsV2 = true;
