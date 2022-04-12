@@ -6,6 +6,7 @@ import { ServerErrorComponent } from './core/server-error/server-error.component
 import { NotFoundComponent } from './core/not-found/not-found.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { ReservationComponent } from './reservation/reservation.component';
+import { CompletedOrdersComponent } from './completed-orders/completed-orders.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, },
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path: 'server-error', component: ServerErrorComponent,  },
   { path: 'not-found', component: NotFoundComponent,  },
   { path: 'reservation', component: ReservationComponent,  },
+  { path: 'completed-orders', component: CompletedOrdersComponent,  },
   { path: 'shop', loadChildren: () => import('./shop/shop.module').then(mod => mod.ShopModule), },
   { path: 'basket', loadChildren: () => import('./basket/basket.module').then(mod => mod.BasketModule), },
   {

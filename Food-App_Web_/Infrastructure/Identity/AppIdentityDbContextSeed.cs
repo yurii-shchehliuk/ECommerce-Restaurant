@@ -16,6 +16,7 @@ namespace Infrastructure.Identity
                     DisplayName = "Bob",
                     Email = "bob@test.com",
                     UserName = "bob@test.com",
+                    LockoutEnabled = true,
                     Address = new Address
                     {
                         FirstName = "Bob",
