@@ -59,9 +59,9 @@ namespace Infrastructure.Data
                     foreach (var item in products)
                     {
                         context.Products.Add(item);
+                    await context.SaveChangesAsync();
                     }
 
-                    await context.SaveChangesAsync();
                 }
 
                 if (!context.DeliveryMethods.Any())

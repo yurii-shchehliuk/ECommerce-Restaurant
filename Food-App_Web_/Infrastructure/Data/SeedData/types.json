@@ -1,18 +1,22 @@
 [
   {
     "Id": 1,
-    "Name": "Boards"
-  },
-  {
-    "Id": 2,
-    "Name": "Hats"
-  },
-  {
-    "Id": 3,
-    "Name": "Boots"
+    "Name": "Meals"
   },
   {
     "Id": 4,
-    "Name": "Gloves"
+    "Name": "Deals"
+  },
+  {
+    "Id": 5,
+    "Name": "Snacks"
+  },
+  {
+    "Id": 6,
+    "Name": "Treats"
+  },
+  {
+    "Id": 7,
+    "Name": "Drinks"
   }
 ]
