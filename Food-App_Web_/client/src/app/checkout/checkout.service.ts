@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environment';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import {IDeliveryMethod} from '../shared/models/deliveryMethod';
