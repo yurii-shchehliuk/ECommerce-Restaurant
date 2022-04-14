@@ -1,0 +1,61 @@
+<h3
+  mat-dialog-title
+  cdkDrag
+  cdkDragBoundary=".cdk-overlay-container"
+  cdkDragRootElement=".cdk-overlay-pane"
+  cdkDragHandle
+  class="border-bottom"
+>
+  Domain Server
+</h3>
+<div mat-dialog-content class="border-bottom pb-2 mb-2">
+  <form id="frmLDAPSvr" >
+    <input type="hidden" class="form-control" id="txtTableId" />
+    <div class="col-xs-12 col-12 col-md-4 form-group mb-3">
+      <input type="text"
+             placeholder="Datepicker"
+             class="form-control"
+             bsDatepicker>
+    </div>
+
+    <div class="custom-checkbox">
+      <input type="checkbox" formControlName="chkSecure" id="chkSecure" />
+      <label for="chkSecure">Use Secure Server</label>
+    </div>
+    <app-text-input formControlName="txtURL" [label]="'URL'" [type]="'text'">
+    </app-text-input>
+
+    <app-text-input
+      formControlName="txtDomain"
+      [label]="'Domain'"
+      [type]="'text'"
+    >
+    </app-text-input>
+
+    <app-text-input
+      formControlName="txtUsername"
+      [label]="'User name'"
+      [type]="'text'"
+    ></app-text-input>
+
+    <app-text-input
+      formControlName="txtPassword"
+      [label]="'Password'"
+      [type]="'password'"
+    ></app-text-input>
+
+    <div class="bottom-button-div">
+      <button class="btn btn-light" id="BtnTestLDAPServer">Test</button>
+      <label class="hidden pull-right" style="color: green">Successful</label
+      ><br />
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions class="float-right">
+  <button class="btn btn-light mr-2" mat-button (click)="onCancel()">
+    Cancel
+  </button>
+  <button class="btn btn-light" mat-button cdkFocusInitial (click)="onSubmit()">
+    Submit
+  </button>
+</div>
