@@ -13,18 +13,22 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { CompletedOrdersComponent } from './completed-orders/completed-orders.component';
 import { DataTablesModule } from 'angular-datatables';
 import { ReservationModule } from './reservation/reservation.module';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-
+import { ChatComponent } from './chat/chat.component';
+import { FormsModule } from '@angular/forms';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 @NgModule({
-  declarations: [AppComponent, CompletedOrdersComponent],
+  declarations: [AppComponent, CompletedOrdersComponent, ChatComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    BsDatepickerModule.forRoot(),
     HttpClientModule,
+    FormsModule,
     CoreModule,
     // MatDatepickerModule,
     // MatNativeDateModule,
@@ -33,7 +37,6 @@ import { MatNativeDateModule } from '@angular/material/core';
     ReservationModule,
     NgxSpinnerModule,
     DataTablesModule,
-
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },

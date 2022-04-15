@@ -9,6 +9,10 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class ReservationDialogComponent implements OnInit {
   frmLDAPSvr: FormGroup;
+  bsInlineValue = new Date();
+  bsInlineRangeValue: Date[];
+  maxDate = new Date();
+  
   constructor(public dialogRef: MatDialogRef<ReservationDialogComponent>,
     private fb: FormBuilder
     ) {}

@@ -8,6 +8,7 @@ import { ReservationDialogComponent } from './reservation-dialog/reservation-dia
 // import { MatFormFieldModule } from '@angular/material/form-field';
 // import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 
 @NgModule({
@@ -16,6 +17,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     CommonModule,
     ReservationRoutingModule,
     MatDialogModule,
+    BsDatepickerModule.forRoot(),
     // MatDatepickerModule,
     // MatFormFieldModule,
     // MatNativeDateModule,

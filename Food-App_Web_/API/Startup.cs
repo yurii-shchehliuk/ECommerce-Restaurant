@@ -5,6 +5,7 @@ using API.Middleware;
 using AutoMapper;
 using Infrastructure.Data;
 using Infrastructure.Identity;
+using Infrastructure.SignalR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +29,7 @@ namespace API
             services.AddDbContext<StoreContext>(x =>
                 x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
 
-            services.AddDbContext<AppIdentityDbContext>(x => 
+            services.AddDbContext<AppIdentityDbContext>(x =>
             {
                 x.UseSqlite(_config.GetConnectionString("IdentityConnection"));
             });
@@ -41,7 +42,7 @@ namespace API
             services.AddDbContext<StoreContext>(x =>
                 x.UseMySql(_config.GetConnectionString("DefaultConnection")));
 
-            services.AddDbContext<AppIdentityDbContext>(x => 
+            services.AddDbContext<AppIdentityDbContext>(x =>
             {
                 x.UseMySql(_config.GetConnectionString("IdentityConnection"));
             });
@@ -51,24 +52,32 @@ namespace API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            
+
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
 
-            services.AddSingleton<IConnectionMultiplexer>(c => {
+            services.AddSingleton<IConnectionMultiplexer>(c =>
+            {
                 var configuration = ConfigurationOptions.Parse(_config
                     .GetConnectionString("Redis"), true);
                 return ConnectionMultiplexer.Connect(configuration);
             });
 
+            services.AddSignalR(hubOptions =>
+            {
+
+                hubOptions.EnableDetailedErrors = true;
+                hubOptions.KeepAliveInterval = System.TimeSpan.FromMinutes(1);
+            });
+
             services.AddApplicationServices();
             services.AddIdentityServices(_config);
             services.AddSwaggerDocumentation();
-            services.AddCors(opt => 
+            services.AddCors(opt =>
             {
-                opt.AddPolicy("CorsPolicy", policy => 
+                opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200").AllowCredentials();
                 });
             });
         }
@@ -87,7 +96,8 @@ namespace API
             {
                 FileProvider = new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "Content")
-                ), RequestPath = "/content"
+                ),
+                RequestPath = "/content"
             });
 
             app.UseCors("CorsPolicy");
@@ -100,6 +110,7 @@ namespace API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chatsocket");
                 endpoints.MapFallbackToController("Index", "Fallback");
             });
         }

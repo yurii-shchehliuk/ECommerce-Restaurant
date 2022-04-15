@@ -113,7 +113,9 @@
               "src/styles.scss",
               "./node_modules/bootswatch/dist/cyborg/bootstrap.min.css"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/chart.js/dist/Chart.js"
+            ]
           }
         },
         "lint": {

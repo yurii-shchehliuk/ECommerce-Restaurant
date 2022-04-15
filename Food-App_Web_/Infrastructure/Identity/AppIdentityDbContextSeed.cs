@@ -29,6 +29,25 @@ namespace Infrastructure.Identity
                 };
 
                 await userManager.CreateAsync(user, "Pa$$w0rd");
+
+                user = new AppUser
+                {
+                    DisplayName = "Andrew",
+                    Email = "Andrew@test.com",
+                    UserName = "Andrew@test.com",
+                    LockoutEnabled = true,
+                    Address = new Address
+                    {
+                        FirstName = "Andrew",
+                        LastName = "Andrew",
+                        Street = "10 The Street",
+                        City = "New York",
+                        State = "NY",
+                        Zipcode = "90210"
+                    }
+                };
+
+                await userManager.CreateAsync(user, "Pa$$w0rd");
             }
         }
     }

@@ -13,7 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Authorize]
+    //[Authorize]
+    [AllowAnonymous]
     public class OrdersController : BaseApiController
     {
         private readonly IOrderService _orderService;
@@ -64,6 +65,13 @@ namespace API.Controllers
         public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
         {
             return Ok(await _orderService.GetDeliveryMethodsAsync());
+        }
+
+        [HttpGet("allOrders")]
+        public async Task<ActionResult<IReadOnlyList<OrderDto>>> GetAllOrders()
+        {
+            var orders = await _orderService.GetOrders();
+            return Ok(_mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders));
         }
     }
 }

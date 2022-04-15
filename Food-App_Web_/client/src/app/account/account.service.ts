@@ -8,14 +8,14 @@ import { Router } from '@angular/router';
 import { IAddress } from '../shared/models/address';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AccountService {
   baseUrl = environment.apiUrl;
   private currentUserSource = new ReplaySubject<IUser>(1);
   currentUser$ = this.currentUserSource.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router) {}
 
   loadCurrentUser(token: string) {
     if (token === null) {
@@ -26,7 +26,7 @@ export class AccountService {
     let headers = new HttpHeaders();
     headers = headers.set('Authorization', `Bearer ${token}`);
 
-    return this.http.get(this.baseUrl + 'account', {headers}).pipe(
+    return this.http.get(this.baseUrl + 'account', { headers }).pipe(
       map((user: IUser) => {
         if (user) {
           localStorage.setItem('token', user.token);
@@ -41,6 +41,7 @@ export class AccountService {
       map((user: IUser) => {
         if (user) {
           localStorage.setItem('token', user.token);
+          localStorage.setItem('user_name', user.email);
           this.currentUserSource.next(user);
         }
       })
@@ -59,7 +60,7 @@ export class AccountService {
   }
 
   logout() {
-    localStorage.removeItem('token');
+    localStorage.clear();
     this.currentUserSource.next(null);
     this.router.navigateByUrl('/');
   }

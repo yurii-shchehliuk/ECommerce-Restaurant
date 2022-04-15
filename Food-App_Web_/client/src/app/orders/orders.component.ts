@@ -23,5 +23,8 @@ export class OrdersComponent implements OnInit {
       console.log(error);
     });
   }
+  onChat(){
+    
+  }
 
 }

@@ -1,0 +1,55 @@
+<div class="container">
+  <h3 class="text-center chat_header">Chat in case of order no 4</h3>
+  <div class="messaging">
+    <div class="inbox_msg">
+      <div class="mesgs">
+        <div class="msg_history">
+
+          <div *ngFor="let msg of messageList">
+            <div class="incoming_msg" *ngIf="msg.userName !== message.userName">
+              <div class="incoming_msg_img"></div>
+              <div class="received_msg">
+                <div class="received_withd_msg">
+                  <span class="time_date">
+                    {{ msg.userName }}
+                  </span>
+                  <p>
+                    {{ msg.message }}
+                  </p>
+                  <span class="time_date">
+                    {{ msg.date | date: "medium" }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div>
+            </div>
+            <div class="outgoing_msg" *ngIf="msg.userName === message.userName">
+              <div class="sent_msg">
+                <p>
+                  {{ msg.message }}
+                </p>
+                <span class="time_date"> {{ msg.date | date: "medium" }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="type_msg">
+          <div class="input_msg_write">
+            <input
+              type="text"
+              class="write_msg"
+              [(ngModel)]="message.message"
+              (keydown.enter)="sendMessage()"
+              placeholder="Type a message"
+            />
+            <button class="msg_send_btn" type="button" (click)="sendMessage()">
+              <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+            </button>
+            <!-- <input type="text" placeholder="Your name" class="name-box"  [(ngModel)]="message.userName" /> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
