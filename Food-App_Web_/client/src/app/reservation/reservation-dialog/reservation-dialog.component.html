@@ -5,19 +5,20 @@
   cdkDragRootElement=".cdk-overlay-pane"
   cdkDragHandle
   class="border-bottom"
->
-  Domain Server
-</h3>
+></h3>
 <div mat-dialog-content class="border-bottom pb-2 mb-2">
-  <form id="frmLDAPSvr">
+  <div id="frmLDAPSvr row d-flex">
     <input type="hidden" class="form-control" id="txtTableId" />
-    <bs-datepicker-inline [bsValue]="bsInlineValue"></bs-datepicker-inline>
-    <div class="bottom-button-div">
-      <button class="btn btn-light" id="BtnTestLDAPServer">Test</button>
-      <label class="hidden pull-right" style="color: green">Successful</label
-      ><br />
+    <div class="d-inline">
+      <bs-datepicker-inline
+        [bsValue]="bsInlineValue"
+        class="d-inline"
+      ></bs-datepicker-inline>
     </div>
-  </form>
+    <div class="d-inline mx-5">
+      <timepicker [(ngModel)]="mytime" class="d-inline"></timepicker>
+    </div>
+  </div>
 </div>
 <div mat-dialog-actions class="float-right">
   <button class="btn btn-light mr-2" mat-button (click)="onCancel()">

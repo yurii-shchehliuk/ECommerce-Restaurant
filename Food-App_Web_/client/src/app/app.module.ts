@@ -19,6 +19,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { ChatComponent } from './chat/chat.component';
 import { FormsModule } from '@angular/forms';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 
 @NgModule({
   declarations: [AppComponent, CompletedOrdersComponent, ChatComponent],
@@ -27,6 +28,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
     AppRoutingModule,
     BrowserAnimationsModule,
     BsDatepickerModule.forRoot(),
+    TimepickerModule.forRoot(),
     HttpClientModule,
     FormsModule,
     CoreModule,

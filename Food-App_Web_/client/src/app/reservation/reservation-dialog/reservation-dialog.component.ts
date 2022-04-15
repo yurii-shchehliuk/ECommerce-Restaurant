@@ -10,9 +10,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class ReservationDialogComponent implements OnInit {
   frmLDAPSvr: FormGroup;
   bsInlineValue = new Date();
-  bsInlineRangeValue: Date[];
-  maxDate = new Date();
-  
+  mytime: Date = new Date();
+
   constructor(public dialogRef: MatDialogRef<ReservationDialogComponent>,
     private fb: FormBuilder
     ) {}
@@ -25,17 +24,11 @@ export class ReservationDialogComponent implements OnInit {
   private createLDAPServerForm() {
     this.frmLDAPSvr = this.fb.group({
       txtTableId:[1],
-      txtLDAPSvr: [null, [Validators.required]],
-      chkSecure: [false, Validators.required],
-      txtURL: [null, Validators.required],
-      txtDomain: [null, Validators.required],
-      txtUsername: [null, Validators.required],
-      txtPassword: [null, Validators.required],
-      testLDAPLabel: [null, Validators.required],
     });
   }
   onSubmit() {
     console.log(this.frmLDAPSvr);
+    this.onCancel();
   }
 
   onCancel(): void {
