@@ -10,19 +10,22 @@ import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
-import { CompletedOrdersComponent } from './completed-orders/completed-orders.component';
+import { CompletedOrdersComponent } from './admin/completed-orders/completed-orders.component';
 import { DataTablesModule } from 'angular-datatables';
 import { ReservationModule } from './reservation/reservation.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { ChatComponent } from './chat/chat.component';
+import { ChatComponent } from './features/chat/chat.component';
 import { FormsModule } from '@angular/forms';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { TimepickerModule } from 'ngx-bootstrap/timepicker';
+import { AdminModule } from './admin/admin.module';
+import { GiftsNPointsComponent } from './features/gifts-n-points/gifts-n-points.component';
+import { FeaturesModule } from './features/features.module';
 
 @NgModule({
-  declarations: [AppComponent, CompletedOrdersComponent, ChatComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -36,6 +39,8 @@ import { TimepickerModule } from 'ngx-bootstrap/timepicker';
     // MatNativeDateModule,
     // MatDialogModule,
     HomeModule,
+    AdminModule,
+    FeaturesModule,
     ReservationModule,
     NgxSpinnerModule,
     DataTablesModule,

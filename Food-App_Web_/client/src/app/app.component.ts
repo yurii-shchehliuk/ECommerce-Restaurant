@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BasketService } from './basket/basket.service';
 import { AccountService } from './account/account.service';
-import { MessageVM } from './chat/MessageVM';
+import { MessageVM } from './features/chat/MessageVM';
 import { SignalRService } from './core/services/signal-r.service';
 
 @Component({

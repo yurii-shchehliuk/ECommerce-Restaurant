@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable } from '@angular/core';
 import * as signalR from '@aspnet/signalr';
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
-import { MessageVM } from 'src/app/chat/MessageVM';
+import { MessageVM } from 'src/app/features/chat/MessageVM';
 import { environment } from 'src/environment';
 
 @Injectable({

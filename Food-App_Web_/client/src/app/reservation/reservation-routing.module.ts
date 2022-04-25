@@ -7,7 +7,7 @@ const routes = [{ path: '', component: ReservationComponent }];
 
 @NgModule({
   declarations: [],
-  imports: [CommonModule, RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
 export class ReservationRoutingModule {}

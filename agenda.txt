@@ -1,2 +1,10 @@
 - punkty po zamowieniu
 - CRUD menu
+
+#data
+bob@test.com
+Pa$$w0rd
+
+Andrew@test.com
+Pa$$w0rd
+

@@ -8,21 +8,27 @@ import { AccountService } from 'src/app/account/account.service';
 @Component({
   selector: 'app-nav-bar',
   templateUrl: './nav-bar.component.html',
-  styleUrls: ['./nav-bar.component.scss']
+  styleUrls: ['./nav-bar.component.scss'],
 })
 export class NavBarComponent implements OnInit {
   basket$: Observable<IBasket>;
   currentUser$: Observable<IUser>;
 
-  constructor(private basketService: BasketService, private accountService: AccountService) { }
+  constructor(
+    private basketService: BasketService,
+    private accountService: AccountService
+  ) {}
 
   ngOnInit() {
     this.basket$ = this.basketService.basket$;
     this.currentUser$ = this.accountService.currentUser$;
   }
-
+  ddl() {
+    // this.currentUser$.subscribe((res) => {
+    //   console.log(res, 'ddl obs');
+    // });
+  }
   logout() {
     this.accountService.logout();
   }
-
 }

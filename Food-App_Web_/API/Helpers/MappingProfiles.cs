@@ -26,6 +26,11 @@ namespace API.Helpers
                 .ForMember(d => d.ProductName, o => o.MapFrom(s =>  s.ItemOrdered.ProductName))
                 .ForMember(d => d.PictureUrl, o => o.MapFrom(s =>  s.ItemOrdered.PictureUrl))
                 .ForMember(d => d.PictureUrl, o => o.MapFrom<OrderItemUrlResolver>());
+            CreateMap<AppUser,UserDto>()
+               .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.DisplayName))
+               .ForMember(d => d.Email, o => o.MapFrom(s => s.Email))
+               .ForMember(d => d.IsAdmin, o => o.MapFrom(s => s.IsAdmin))
+               .ForMember(d => d.Id, o => o.MapFrom(s=>s.Id));
         }
     }
 }

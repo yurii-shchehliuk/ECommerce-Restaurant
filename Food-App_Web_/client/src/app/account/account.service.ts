@@ -42,6 +42,7 @@ export class AccountService {
         if (user) {
           localStorage.setItem('token', user.token);
           localStorage.setItem('user_name', user.email);
+          localStorage.setItem('isAdmin', user.isAdmin.toString());
           this.currentUserSource.next(user);
         }
       })

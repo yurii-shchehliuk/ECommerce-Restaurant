@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -37,7 +38,8 @@ namespace API.Controllers
             {
                 Email = user.Email,
                 Token = _tokenService.CreateToken(user),
-                DisplayName = user.DisplayName
+                DisplayName = user.DisplayName,
+                IsAdmin = user.IsAdmin
             };
         }
 
@@ -86,7 +88,8 @@ namespace API.Controllers
             {
                 Email = user.Email,
                 Token = _tokenService.CreateToken(user),
-                DisplayName = user.DisplayName
+                DisplayName = user.DisplayName,
+                IsAdmin = user.IsAdmin
             };
         }
 
@@ -95,14 +98,15 @@ namespace API.Controllers
         {
             if (CheckEmailExistsAsync(registerDto.Email).Result.Value)
             {
-                return new BadRequestObjectResult(new ApiValidationErrorResponse{Errors = new []{"Email address is in use"}});
+                return new BadRequestObjectResult(new ApiValidationErrorResponse { Errors = new[] { "Email address is in use" } });
             }
 
             var user = new AppUser
             {
                 DisplayName = registerDto.DisplayName,
                 Email = registerDto.Email,
-                UserName = registerDto.Email
+                UserName = registerDto.Email,
+                IsAdmin = false
             };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
@@ -115,6 +119,15 @@ namespace API.Controllers
                 Token = _tokenService.CreateToken(user),
                 Email = user.Email
             };
+        }
+
+        //[Authorize]
+        [HttpGet("allUsers")]
+        public async Task<ActionResult<List<UserDto>>> GetUsers()
+        {
+            var user = _userManager.Users.ToList();
+            var s = _mapper.Map<List<AppUser>, List<UserDto>>(user);
+            return s;
         }
     }
 }

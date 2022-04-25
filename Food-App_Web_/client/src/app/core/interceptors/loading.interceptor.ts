@@ -18,7 +18,7 @@ export class LoadingInterceptor implements HttpInterceptor {
         if (req.url.includes('emailexists')) {
             return next.handle(req);
         }
-        this.busyService.busy();
+        this.busyService.busy(req.url);
         return next.handle(req).pipe(
             finalize(() => {
                 this.busyService.idle();
