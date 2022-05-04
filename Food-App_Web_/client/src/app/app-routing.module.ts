@@ -5,8 +5,6 @@ import { TestErrorComponent } from './core/test-error/test-error.component';
 import { ServerErrorComponent } from './core/server-error/server-error.component';
 import { NotFoundComponent } from './core/not-found/not-found.component';
 import { AuthGuard } from './core/guards/auth.guard';
-import { CompletedOrdersComponent } from './admin/completed-orders/completed-orders.component';
-import { ChatComponent } from './features/chat/chat.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, },

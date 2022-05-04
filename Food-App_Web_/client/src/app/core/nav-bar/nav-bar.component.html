@@ -22,14 +22,14 @@
           <strong>Welcome {{(currentUser$ | async).displayName}}</strong>
         </a>
         <div class="dropdown-menu dropdown-menu-right" style="cursor: pointer;" *dropdownMenu>
-          <a routerLink="admin/users" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-shopping-cart mr-3"></i> Users
-          </a>
           <a routerLink="admin/completed-orders" class="dropdown-item d-flex align-items-center py-2">
             <i class="fa fa-file-o mr-3"></i> Completed orders
           </a>
           <a routerLink="admin/menu-management" class="dropdown-item d-flex align-items-center py-2">
             <i class="fa fa-superpowers mr-3"></i> Manage Menu
+          </a>
+          <a routerLink="admin/users" class="dropdown-item d-flex align-items-center py-2">
+            <i class="fa fa-superpowers mr-3"></i> Manage Users
           </a>
           <div class="dropdown-divider"></div>
           <a (click)="logout()" class="dropdown-item d-flex align-items-center py-2">

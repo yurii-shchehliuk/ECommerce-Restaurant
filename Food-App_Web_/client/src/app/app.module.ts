@@ -10,7 +10,6 @@ import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
-import { CompletedOrdersComponent } from './admin/completed-orders/completed-orders.component';
 import { DataTablesModule } from 'angular-datatables';
 import { ReservationModule } from './reservation/reservation.module';
 import { MatDialogModule } from '@angular/material/dialog';
