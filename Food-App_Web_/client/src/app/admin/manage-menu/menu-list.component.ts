@@ -14,7 +14,7 @@ export class ManageMenuComponent implements OnInit {
   ngOnInit(): void {
     this.menuService.getAll().subscribe(
       (menus) => {
-        this.menus = menus.data;
+        // this.menus = menus.data;
       },
       (err) => {
         console.log('menuItems error', err);
