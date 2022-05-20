@@ -1,0 +1,17 @@
+.data {
+  & div {
+    & > :hover {
+      background-color: rgb(240, 240, 205);
+      border-radius: 10px;
+    }
+    & > img {
+      width: 170px;
+      height: 170px;
+      padding: 10px;
+      margin: 0 23%; //centrafize content
+    }
+    & > button {
+      margin: 10px 30%;
+    }
+  }
+}
