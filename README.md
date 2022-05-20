@@ -1,2 +1,13 @@
-ECommerece application based on .Net Core 3.1 and angular 12.
-App created as two separate projects, servers located on localhost:5000| client located on localhost:4200
+Restaurant application based on .Net Core 3.1 (EntityFrameworkCore, Swagger, JWT Bearer, Stripe) and Angular 9 (RdJS, Nxg-bootstrap, xng-breadcrumb, bootswatch).
+App created as two separate projects, servers located on https://localhost:5001 | client located on https://localhost:4200
+
+Regular user's functionality:
+* JWT authentication
+* Meals ordering
+* SignalR online chat
+* Stripe payment
+
+Admin's functionality:
+* SignalR online chat
+* User CRUD
+* Meals CRUD
