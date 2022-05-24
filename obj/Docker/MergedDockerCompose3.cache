@@ -1,0 +1,75 @@
+services:
+  baseapi:
+    build:
+      context: C:\Users\yshchehliuk\source\RestaurantWebApp
+      dockerfile: BaseAPI\Dockerfile
+      labels:
+        com.microsoft.created-by: visual-studio
+        com.microsoft.visual-studio.project-name: BaseAPI
+      target: base
+    container_name: BaseAPI
+    entrypoint: C:\\remote_debugger\\x64\\msvsmon.exe /noauth /anyuser /silent /nostatus
+      /noclrwarn /nosecuritywarn /nofirewallwarn /nowowwarn /timeout:2147483646 /LogDebuggeeOutputToStdOut
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS: "true"
+      ASPNETCORE_URLS: https://+:443;http://+:80
+      DOTNET_USE_POLLING_FILE_WATCHER: '1'
+      NUGET_FALLBACK_PACKAGES: c:\.nuget\fallbackpackages;c:\.nuget\fallbackpackages2
+      NUGET_PACKAGES: C:\.nuget\packages
+    image: baseapi:dev
+    labels:
+      com.microsoft.visualstudio.debuggee.arguments: ' --additionalProbingPath c:\.nuget\packages
+        --additionalProbingPath c:\.nuget\fallbackpackages --additionalProbingPath
+        c:\.nuget\fallbackpackages2  "C:\app\bin\Debug\netcoreapp3.1\BaseAPI.dll"'
+      com.microsoft.visualstudio.debuggee.killprogram: C:\remote_debugger\x64\utils\KillProcess.exe
+        dotnet.exe
+      com.microsoft.visualstudio.debuggee.program: '"C:\Program Files\dotnet\dotnet.exe"'
+      com.microsoft.visualstudio.debuggee.workingdirectory: C:\app
+    ports:
+    - target: 80
+    - target: 443
+    volumes:
+    - C:\Users\yshchehliuk\AppData\Roaming\ASP.NET\Https:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https:ro
+    - C:\Users\yshchehliuk\AppData\Roaming\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
+    - C:\Users\yshchehliuk\source\RestaurantWebApp\BaseAPI:C:\app:rw
+    - C:\Users\yshchehliuk\onecoremsvsmon\16.11.1197.0:C:\remote_debugger:ro
+    - C:\Users\yshchehliuk\source\RestaurantWebApp:C:\src:rw
+    - C:\Program Files (x86)\Microsoft\Xamarin\NuGet:c:\.nuget\fallbackpackages:ro
+    - C:\Program Files\dotnet\sdk\NuGetFallbackFolder:c:\.nuget\fallbackpackages2:ro
+    - C:\Users\yshchehliuk\.nuget\packages:c:\.nuget\packages:ro
+  basketapi:
+    build:
+      context: C:\Users\yshchehliuk\source\RestaurantWebApp
+      dockerfile: BasketAPI\Dockerfile
+      labels:
+        com.microsoft.created-by: visual-studio
+        com.microsoft.visual-studio.project-name: BasketAPI
+      target: base
+    container_name: BasketAPI
+    entrypoint: C:\\remote_debugger\\x64\\msvsmon.exe /noauth /anyuser /silent /nostatus
+      /noclrwarn /nosecuritywarn /nofirewallwarn /nowowwarn /timeout:2147483646 /LogDebuggeeOutputToStdOut
+    environment:
+      ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS: "true"
+      DOTNET_USE_POLLING_FILE_WATCHER: '1'
+      NUGET_FALLBACK_PACKAGES: c:\.nuget\fallbackpackages;c:\.nuget\fallbackpackages2
+      NUGET_PACKAGES: C:\.nuget\packages
+    image: basketapi:dev
+    labels:
+      com.microsoft.visualstudio.debuggee.arguments: ' --additionalProbingPath c:\.nuget\packages
+        --additionalProbingPath c:\.nuget\fallbackpackages --additionalProbingPath
+        c:\.nuget\fallbackpackages2  "C:\app\bin\Debug\netcoreapp3.1\BasketAPI.dll"'
+      com.microsoft.visualstudio.debuggee.killprogram: C:\remote_debugger\x64\utils\KillProcess.exe
+        dotnet.exe
+      com.microsoft.visualstudio.debuggee.program: '"C:\Program Files\dotnet\dotnet.exe"'
+      com.microsoft.visualstudio.debuggee.workingdirectory: C:\app
+    volumes:
+    - C:\Users\yshchehliuk\AppData\Roaming\ASP.NET\Https:C:\Users\ContainerUser\AppData\Roaming\ASP.NET\Https:ro
+    - C:\Users\yshchehliuk\AppData\Roaming\Microsoft\UserSecrets:C:\Users\ContainerUser\AppData\Roaming\Microsoft\UserSecrets:ro
+    - C:\Users\yshchehliuk\source\RestaurantWebApp\BasketAPI:C:\app:rw
+    - C:\Users\yshchehliuk\onecoremsvsmon\16.11.1197.0:C:\remote_debugger:ro
+    - C:\Users\yshchehliuk\source\RestaurantWebApp:C:\src:rw
+    - C:\Program Files (x86)\Microsoft\Xamarin\NuGet:c:\.nuget\fallbackpackages:ro
+    - C:\Program Files\dotnet\sdk\NuGetFallbackFolder:c:\.nuget\fallbackpackages2:ro
+    - C:\Users\yshchehliuk\.nuget\packages:c:\.nuget\packages:ro
+version: '3.4'

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\yshchehliuk\\source\\pracaDyplomowaX\\Infrastructure\\Infrastructure.csproj": {}
+    "C:\\Users\\yshchehliuk\\source\\RestaurantWebApp\\Infrastructure\\Infrastructure.csproj": {}
   },
   "projects": {
-    "C:\\Users\\yshchehliuk\\source\\pracaDyplomowaX\\Core\\Core.csproj": {
+    "C:\\Users\\yshchehliuk\\source\\RestaurantWebApp\\Core\\Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yshchehliuk\\source\\pracaDyplomowaX\\Core\\Core.csproj",
+        "projectUniqueName": "C:\\Users\\yshchehliuk\\source\\RestaurantWebApp\\Core\\Core.csproj",
         "projectName": "Core",
-        "projectPath": "C:\\Users\\yshchehliuk\\source\\pracaDyplomowaX\\Core\\Core.csproj",
+        "projectPath": "C:\\Users\\yshchehliuk\\source\\RestaurantWebApp\\Core\\Core.csproj",
         "packagesPath": "C:\\Users\\yshchehliuk\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yshchehliuk\\source\\pracaDyplomowaX\\Core\\obj\\",
+        "outputPath": "C:\\Users\\yshchehliuk\\source\\RestaurantWebApp\\Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\",
@@ -46,9 +46,21 @@
         "netstandard2.1": {
           "targetAlias": "netstandard2.1",
           "dependencies": {
+            "Microsoft.AspNetCore.Http.Abstractions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.Extensions.Hosting.Abstractions": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
             "Microsoft.Extensions.Identity.Stores": {
               "target": "Package",
               "version": "[3.1.1, )"
+            },
+            "System.Text.Json": {
+              "target": "Package",
+              "version": "[6.0.4, )"
             }
           },
           "imports": [
@@ -70,14 +82,14 @@
         }
       }
     },
-    "C:\\Users\\yshchehliuk\\source\\pracaDyplomowaX\\Infrastructure\\Infrastructure.csproj": {
+    "C:\\Users\\yshchehliuk\\source\\RestaurantWebApp\\Infrastructure\\Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yshchehliuk\\source\\pracaDyplomowaX\\Infrastructure\\Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\yshchehliuk\\source\\RestaurantWebApp\\Infrastructure\\Infrastructure.csproj",
         "projectName": "Infrastructure",
-        "projectPath": "C:\\Users\\yshchehliuk\\source\\pracaDyplomowaX\\Infrastructure\\Infrastructure.csproj",
+        "projectPath": "C:\\Users\\yshchehliuk\\source\\RestaurantWebApp\\Infrastructure\\Infrastructure.csproj",
         "packagesPath": "C:\\Users\\yshchehliuk\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yshchehliuk\\source\\pracaDyplomowaX\\Infrastructure\\obj\\",
+        "outputPath": "C:\\Users\\yshchehliuk\\source\\RestaurantWebApp\\Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\",
@@ -100,8 +112,8 @@
           "netstandard2.1": {
             "targetAlias": "netstandard2.1",
             "projectReferences": {
-              "C:\\Users\\yshchehliuk\\source\\pracaDyplomowaX\\Core\\Core.csproj": {
-                "projectPath": "C:\\Users\\yshchehliuk\\source\\pracaDyplomowaX\\Core\\Core.csproj"
+              "C:\\Users\\yshchehliuk\\source\\RestaurantWebApp\\Core\\Core.csproj": {
+                "projectPath": "C:\\Users\\yshchehliuk\\source\\RestaurantWebApp\\Core\\Core.csproj"
               }
             }
           }

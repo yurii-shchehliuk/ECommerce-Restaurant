@@ -18,3 +18,12 @@ C:\Users\yshchehliuk\source\pracaDyplomowaX\Food-App_Web_\Core\obj\Debug\netstan
 C:\Users\yshchehliuk\source\pracaDyplomowaX\Food-App_Web_\Core\obj\Debug\netstandard2.1\Core.dll
 C:\Users\yshchehliuk\source\pracaDyplomowaX\Food-App_Web_\Core\obj\Debug\netstandard2.1\Core.pdb
 C:\Users\yshchehliuk\source\pracaDyplomowaX\Food-App_Web_\Core\obj\Debug\netstandard2.1\Core.csproj.AssemblyReference.cache
+C:\Users\yshchehliuk\source\RestaurantWebApp\Core\bin\Debug\netstandard2.1\Core.deps.json
+C:\Users\yshchehliuk\source\RestaurantWebApp\Core\bin\Debug\netstandard2.1\Core.dll
+C:\Users\yshchehliuk\source\RestaurantWebApp\Core\bin\Debug\netstandard2.1\Core.pdb
+C:\Users\yshchehliuk\source\RestaurantWebApp\Core\obj\Debug\netstandard2.1\Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yshchehliuk\source\RestaurantWebApp\Core\obj\Debug\netstandard2.1\Core.AssemblyInfoInputs.cache
+C:\Users\yshchehliuk\source\RestaurantWebApp\Core\obj\Debug\netstandard2.1\Core.AssemblyInfo.cs
+C:\Users\yshchehliuk\source\RestaurantWebApp\Core\obj\Debug\netstandard2.1\Core.csproj.CoreCompileInputs.cache
+C:\Users\yshchehliuk\source\RestaurantWebApp\Core\obj\Debug\netstandard2.1\Core.dll
+C:\Users\yshchehliuk\source\RestaurantWebApp\Core\obj\Debug\netstandard2.1\Core.pdb

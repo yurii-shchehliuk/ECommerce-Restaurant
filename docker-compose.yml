@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  baseapi:
+    image: ${DOCKER_REGISTRY-}baseapi
+    build:
+      context: .
+      dockerfile: BaseAPI\Dockerfile
+  basketapi:
+    image: ${DOCKER_REGISTRY-}basketapi
+    build:
+        context: .
+        dockerfile: BasketAPI\Dockerfile
