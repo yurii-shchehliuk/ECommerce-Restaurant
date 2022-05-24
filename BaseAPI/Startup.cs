@@ -27,11 +27,11 @@ namespace BaseAPI
         public void ConfigureDevelopmentServices(IServiceCollection services)
         {
             services.AddDbContext<StoreContext>(x =>
-                x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
+                x.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
 
             services.AddDbContext<AppIdentityDbContext>(x =>
             {
-                x.UseSqlite(_config.GetConnectionString("IdentityConnection"));
+                x.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
             });
 
             ConfigureServices(services);
@@ -40,11 +40,11 @@ namespace BaseAPI
         public void ConfigureProductionServices(IServiceCollection services)
         {
             services.AddDbContext<StoreContext>(x =>
-                x.UseMySql(_config.GetConnectionString("DefaultConnection")));
+                x.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
 
             services.AddDbContext<AppIdentityDbContext>(x =>
             {
-                x.UseMySql(_config.GetConnectionString("IdentityConnection"));
+                x.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
             });
 
             ConfigureServices(services);

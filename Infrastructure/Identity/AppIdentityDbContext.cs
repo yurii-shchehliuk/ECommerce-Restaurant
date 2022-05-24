@@ -9,7 +9,10 @@ namespace Infrastructure.Identity
         public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options) : base(options)
         {
         }
+        public AppIdentityDbContext() : base()
+        {
 
+        }
         protected override void OnModelCreating(ModelBuilder builder) 
         {
             base.OnModelCreating(builder);

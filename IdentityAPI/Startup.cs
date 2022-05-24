@@ -32,7 +32,7 @@ namespace IdentityAPI
         {
             services.AddDbContext<AppIdentityDbContext>(x =>
             {
-                x.UseSqlite(_config.GetConnectionString("IdentityConnection"));
+                x.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
             });
             ConfigureServices(services);
         }
@@ -41,7 +41,7 @@ namespace IdentityAPI
         {
             services.AddDbContext<AppIdentityDbContext>(x =>
             {
-                x.UseMySql(_config.GetConnectionString("IdentityConnection"));
+                x.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
             });
             ConfigureServices(services);
         }
@@ -78,13 +78,13 @@ namespace IdentityAPI
 
             app.UseRouting();
             app.UseStaticFiles();
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "Content")
-                ),
-                RequestPath = "/content"
-            });
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //        Path.Combine(Directory.GetCurrentDirectory(), "Content")
+            //    ),
+            //    RequestPath = "/content"
+            //});
 
             app.UseCors("CorsPolicy");
 
@@ -92,6 +92,11 @@ namespace IdentityAPI
             app.UseAuthorization();
 
             app.UseSwaggerDocumention();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
         }
     }

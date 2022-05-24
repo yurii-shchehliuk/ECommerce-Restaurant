@@ -2,10 +2,11 @@
 
 # compiled output
 /dist
-/bin/*
-/obg/*
+
 /bin
-/obg
+/obj
+*/bin
+*/obj
 /tmp
 /out-tsc
 # Only exists if Bazel was run
@@ -47,3 +48,7 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+BaseAPI/bin/
+
+BaseAPI/obj/

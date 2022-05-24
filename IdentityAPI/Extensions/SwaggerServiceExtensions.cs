@@ -10,7 +10,7 @@ namespace IdentityAPI.Extensions
         {
             services.AddSwaggerGen(c => 
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "SkiNet API", Version = "v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "IdentityAPI", Version = "v1"});
 
                 var securitySchema = new OpenApiSecurityScheme
                 {
@@ -38,7 +38,7 @@ namespace IdentityAPI.Extensions
         {
             app.UseSwagger();
             app.UseSwaggerUI(c => {c
-                .SwaggerEndpoint("/swagger/v1/swagger.json", "SkiNet API v1");});
+                .SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityAPI v1");});
 
             return app;
         }

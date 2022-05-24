@@ -23,6 +23,7 @@ namespace Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //Database.EnsureCreated();
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
@@ -46,6 +47,14 @@ namespace Infrastructure.Data
                     }
                 }
             }
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer(("server=.;database=appdb;trusted_connection=true;"));
+            }
+            base.OnConfiguring(optionsBuilder);
         }
     }
 }
