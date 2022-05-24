@@ -3,9 +3,9 @@
 # compiled output
 /dist
 /bin/*
-/obj/*
+/obg/*
 /bin
-/obj
+/obg
 /tmp
 /out-tsc
 # Only exists if Bazel was run

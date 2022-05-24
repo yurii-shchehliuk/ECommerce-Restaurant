@@ -2,7 +2,7 @@ services:
   baseapi:
     build:
       context: C:\Users\yshchehliuk\source\RestaurantWebApp
-      dockerfile: API\Dockerfile
+      dockerfile: BaseAPI\Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: https://+:443;http://+:80
