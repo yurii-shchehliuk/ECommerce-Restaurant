@@ -6,6 +6,7 @@
 /obj
 */bin
 */obj
+*/bin
 /tmp
 /out-tsc
 # Only exists if Bazel was run
@@ -48,6 +49,4 @@ testem.log
 .DS_Store
 Thumbs.db
 
-BaseAPI/bin/
-
-BaseAPI/obj/
+API/wwwroot/

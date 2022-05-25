@@ -1,13 +1,73 @@
 version: '3.4'
 
 services:
-  baseapi:
-    image: ${DOCKER_REGISTRY-}baseapi
+  #
+  database:
+    #
+    container_name: sqlserver
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+        - "1433:1433"
+    environment:
+        - "ACCEPT_EULA=Y" 
+        - "SA_PASSWORD=P@ssw0rd"
+    volumes:
+        - sqldata:/var/opt/mssql
+    networks:
+        - network-connection
+
+  identity:
+    #
+    container_name: identity
+    #
+    image: ${DOCKER_REGISTRY-}identity
     build:
       context: .
-      dockerfile: BaseAPI\Dockerfile
-  basketapi:
-    image: ${DOCKER_REGISTRY-}basketapi
+      dockerfile: IdentityAPI/Dockerfile
+    ports:
+        - "5000:80"
+    env_file: Core/Common.env
+    restart: on-failure
+    volumes:
+        - ./.aspnet/identity/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+    networks:
+        - network-connection
+    depends_on:
+        - database
+
+
+  baseapi:
+    container_name: baseapi
+    image: ${DOCKER_REGISTRY-}baseapi:1.0
     build:
-        context: .
-        dockerfile: BasketAPI\Dockerfile
+      context: .
+      dockerfile: BaseAPI/Dockerfile
+    ports:
+        - "5010:80"
+    env_file: Core/Common.env
+    restart: on-failure
+    volumes:
+        - ./.aspnet/baseapi/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+    networks:
+        - network-connection
+    depends_on:
+        - database
+    
+  webclient:
+    container_name: webclient
+    image: ${DOCKER_REGISTRY-}webclient:1.0
+    build:
+      context: .
+      dockerfile: WebClient/Dockerfile
+    ports:
+        - "80:80"
+    restart: on-failure
+    depends_on:
+        - database
+        - identity
+        - baseapi
+volumes:
+  sqldata:
+networks: 
+  #
+  network-connection:

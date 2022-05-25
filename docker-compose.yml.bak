@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  database:
+    container_name: sqlserver
+    image: microsoft/mssql-server-windows-developer
+    ports:
+       - "1433:1433"
+    environment:
+       - "ACCEPT_EULA=Y" 
+       - "SA_PASSWORD=P@ssw0rd"
+    #volumes:
+
+  baseapi:
+    image: ${DOCKER_REGISTRY-}baseapi
+    build:
+      context: .
+      dockerfile: BaseAPI\Dockerfile
+  basketapi:
+    image: ${DOCKER_REGISTRY-}basketapi
+    build:
+        context: .
+        dockerfile: BasketAPI\Dockerfile

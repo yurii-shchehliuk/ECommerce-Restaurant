@@ -8,7 +8,7 @@ const baseUrl = `${environment.apiUrl}Products`;
 export class MenuService {
   constructor(private http: HttpClient) {}
 
-  getAll() {
+  getAll() : any {
     return this.http.get(baseUrl);
   }
 
