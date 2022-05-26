@@ -11,6 +11,7 @@ services:
     environment:
         - "ACCEPT_EULA=Y" 
         - "SA_PASSWORD=P@ssw0rd"
+        - "MSSQL_PID=Express"
     volumes:
         - sqldata:/var/opt/mssql
     networks:

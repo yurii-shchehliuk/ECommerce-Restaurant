@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using StackExchange.Redis;
+using Infrastructure;
 
 namespace BaseAPI
 {
@@ -106,6 +107,8 @@ namespace BaseAPI
             app.UseAuthorization();
 
             app.UseSwaggerDocumention();
+
+            PrepDB<StoreContext>.PrepPopulation(app);
 
             app.UseEndpoints(endpoints =>
             {
