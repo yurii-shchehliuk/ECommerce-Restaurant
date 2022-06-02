@@ -6,6 +6,7 @@ services:
     #
     container_name: sqlserver
     image: mcr.microsoft.com/mssql/server:2019-latest
+    restart: always
     ports:
         - "1433:1433"
     environment:
@@ -17,58 +18,95 @@ services:
     networks:
         - network-connection
 
-  identity:
-    #
-    container_name: identity
-    #
-    image: ${DOCKER_REGISTRY-}identity
-    build:
-      context: .
-      dockerfile: IdentityAPI/Dockerfile
-    ports:
-        - "5000:80"
-    env_file: Core/Common.env
-    restart: on-failure
-    volumes:
-        - ./.aspnet/identity/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
-    networks:
-        - network-connection
-    depends_on:
-        - database
+  #identity:
+  #  #
+  #  container_name: identity
+  #  #
+  #  image: ${DOCKER_REGISTRY-}identity
+  #  build:
+  #    context: .
+  #    dockerfile: IdentityAPI/Dockerfile
+  #  ports:
+  #      - "5000:80"
+  #  env_file: Core/Common.env
+  #  restart: on-failure
+  #  volumes:
+  #      - ./.aspnet/identity/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+  #  networks:
+  #      - network-connection
+  #  depends_on:
+  #      - database
 
 
-  baseapi:
-    container_name: baseapi
-    image: ${DOCKER_REGISTRY-}baseapi:1.0
-    build:
-      context: .
-      dockerfile: BaseAPI/Dockerfile
+  #baseapi:
+  #  container_name: baseapi
+  #  image: ${DOCKER_REGISTRY-}baseapi:1.0
+  #  build:
+  #    context: .
+  #    dockerfile: BaseAPI/Dockerfile
+  #  ports:
+  #      - "5010:80"
+  #  env_file: Core/Common.env
+  #  restart: on-failure
+  #  volumes:
+  #      - ./.aspnet/baseapi/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+  #  networks:
+  #      - network-connection
+  #  depends_on:
+  #      - database
+
+  #basketapi:
+  #  container_name: basketapi
+  #  image: ${DOCKER_REGISTRY-}basketapi:1.0
+  #  build:
+  #    context: .
+  #    dockerfile: BaseAPI/Dockerfile
+  #  ports:
+  #      - "5020:80"
+  #  env_file: Core/Common.env
+  #  restart: on-failure
+  #  volumes:
+  #      - ./.aspnet/basketapi/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+  #  networks:
+  #      - network-connection
+  #  depends_on:
+  #      - database
+
+  redis:
+    image: redis:latest
     ports:
-        - "5010:80"
-    env_file: Core/Common.env
-    restart: on-failure
+      - 6379:6379
+    command: ["redis-server", "--appendonly", "yes"]
     volumes:
-        - ./.aspnet/baseapi/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
-    networks:
-        - network-connection
-    depends_on:
-        - database
-    
-  webclient:
-    container_name: webclient
-    image: ${DOCKER_REGISTRY-}webclient:1.0
-    build:
-      context: .
-      dockerfile: WebClient/Dockerfile
+      - redis-data:/data
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+      - HTTP_USER=root
+      - HTTP_PASSWORD=secret
     ports:
-        - "80:80"
-    restart: on-failure
+      - 8081:8081
     depends_on:
-        - database
-        - identity
-        - baseapi
+      - redis
+
+  #webclient:
+  #  container_name: webclient
+  #  image: ${DOCKER_REGISTRY-}webclient:1.0
+  #  build:
+  #    context: .
+  #    dockerfile: WebClient/Dockerfile
+  #  ports:
+  #      - "80:80"
+  #  restart: on-failure
+  #  depends_on:
+  #      - database
+  #      - identity
+  #      - baseapi
 volumes:
   sqldata:
+  redis-data:
 networks: 
   #
   network-connection:

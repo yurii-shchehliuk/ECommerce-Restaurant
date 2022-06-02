@@ -53,16 +53,8 @@ namespace BaseAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
-            //basket
-            services.AddSingleton<IConnectionMultiplexer>(c =>
-            {
-                var configuration = ConfigurationOptions.Parse(_config
-                    .GetConnectionString("Redis"), true);
-                return ConnectionMultiplexer.Connect(configuration);
-            });
 
             services.AddSignalR(hubOptions =>
             {
@@ -72,7 +64,6 @@ namespace BaseAPI
             });
 
             services.AddApplicationServices();
-            //services.AddIdentityServices(_config);
             services.AddSwaggerDocumentation();
             services.AddCors(opt =>
             {

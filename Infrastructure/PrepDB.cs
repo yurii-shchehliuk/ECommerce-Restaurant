@@ -7,6 +7,10 @@ using System.Text;
 
 namespace Infrastructure
 {
+    /// <summary>
+    /// prepare database for docker
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public static class PrepDB<T> where T : DbContext
     {
         public static void PrepPopulation(IApplicationBuilder applicationBuilder)
@@ -23,7 +27,6 @@ namespace Infrastructure
             try
             {
                 context.Database.Migrate();
-
             }
             catch (Exception ex)
             {
