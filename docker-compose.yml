@@ -18,59 +18,59 @@ services:
     networks:
         - network-connection
 
-  #identity:
-  #  #
-  #  container_name: identity
-  #  #
-  #  image: ${DOCKER_REGISTRY-}identity
-  #  build:
-  #    context: .
-  #    dockerfile: IdentityAPI/Dockerfile
-  #  ports:
-  #      - "5000:80"
-  #  env_file: Core/Common.env
-  #  restart: on-failure
-  #  volumes:
-  #      - ./.aspnet/identity/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
-  #  networks:
-  #      - network-connection
-  #  depends_on:
-  #      - database
+  identity:
+    #
+    container_name: identity
+    #
+    image: ${DOCKER_REGISTRY-}identity
+    build:
+      context: .
+      dockerfile: IdentityAPI/Dockerfile
+    ports:
+        - "5000:80"
+    env_file: Core/Common.env
+    restart: on-failure
+    volumes:
+        - ./.aspnet/identity/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+    networks:
+        - network-connection
+    depends_on:
+        - database
 
 
-  #baseapi:
-  #  container_name: baseapi
-  #  image: ${DOCKER_REGISTRY-}baseapi:1.0
-  #  build:
-  #    context: .
-  #    dockerfile: BaseAPI/Dockerfile
-  #  ports:
-  #      - "5010:80"
-  #  env_file: Core/Common.env
-  #  restart: on-failure
-  #  volumes:
-  #      - ./.aspnet/baseapi/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
-  #  networks:
-  #      - network-connection
-  #  depends_on:
-  #      - database
+  baseapi:
+    container_name: baseapi
+    image: ${DOCKER_REGISTRY-}baseapi:1.0
+    build:
+      context: .
+      dockerfile: BaseAPI/Dockerfile
+    ports:
+        - "5010:80"
+    env_file: Core/Common.env
+    restart: on-failure
+    volumes:
+        - ./.aspnet/baseapi/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+    networks:
+        - network-connection
+    depends_on:
+        - database
 
-  #basketapi:
-  #  container_name: basketapi
-  #  image: ${DOCKER_REGISTRY-}basketapi:1.0
-  #  build:
-  #    context: .
-  #    dockerfile: BaseAPI/Dockerfile
-  #  ports:
-  #      - "5020:80"
-  #  env_file: Core/Common.env
-  #  restart: on-failure
-  #  volumes:
-  #      - ./.aspnet/basketapi/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
-  #  networks:
-  #      - network-connection
-  #  depends_on:
-  #      - database
+  basketapi:
+    container_name: basketapi
+    image: ${DOCKER_REGISTRY-}basketapi:1.0
+    build:
+      context: .
+      dockerfile: BaseAPI/Dockerfile
+    ports:
+        - "5020:80"
+    env_file: Core/Common.env
+    restart: on-failure
+    volumes:
+        - ./.aspnet/basketapi/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+    networks:
+        - network-connection
+    depends_on:
+        - database
 
   redis:
     image: redis:latest

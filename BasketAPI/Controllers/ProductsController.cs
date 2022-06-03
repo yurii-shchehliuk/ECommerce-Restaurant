@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BaseAPI.Dtos;
-using BaseAPI.Helpers;
 using AutoMapper;
+using BasketAPI.Dtos;
+using BasketAPI.Helpers;
 using Core.Entities;
 using Core.Errors;
 using Core.Interfaces;
@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace BaseAPI.Controllers
+namespace BasketAPI.Controllers
 {
     public class ProductsController : BaseApiController
     {

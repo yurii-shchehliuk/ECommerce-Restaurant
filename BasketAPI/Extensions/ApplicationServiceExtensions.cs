@@ -12,7 +12,9 @@ namespace BaseAPI.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddScoped<IBasketRepository, BasketRepository>();   
+            services.AddScoped<IBasketRepository, BasketRepository>();
+            services.AddSingleton<IResponseCacheService, ResponseCacheService>();
+            services.AddScoped<IProductRepository, ProductRepository>();
             return services;
         }
     }
