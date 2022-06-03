@@ -58,3 +58,4 @@ BaseAPI/wwwroot/
 .vs/
 .vscode/
 .aspnet/
+WebClient/.angular/

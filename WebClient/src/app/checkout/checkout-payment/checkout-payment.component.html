@@ -3,6 +3,7 @@
         <div class="form-group col-12" formGroupName="paymentForm">
             <app-text-input [label]="'Name on card'" formControlName="nameOnCard"></app-text-input>
         </div>
+        <!-- 4242 4242 4242 4242 | 12/25 123-->
         <div class="form-group col-6">
             <div #cardNumber id="cardNumber" class="form-control py-3"></div>
             <ng-container *ngIf="cardErrors">
@@ -23,12 +24,12 @@
     <button class="btn btn-outline-primary" cdkStepperPrevious>
         <i class="fa fa-angle-left"></i> Back to Review
     </button>
-    <button [disabled]="loading 
-        || checkoutForm.get('paymentForm').invalid 
-        || !cardNumberValid 
-        || !cardExpiryValid 
+    <button [disabled]="loading
+        || checkoutForm.get('paymentForm').invalid
+        || !cardNumberValid
+        || !cardExpiryValid
         || !cardCvcValid" class="btn btn-primary" (click)="submitOrder()" >
-        Submit Order <i class="fa fa-angle-right"></i> 
+        Submit Order <i class="fa fa-angle-right"></i>
         <i *ngIf="loading" class="fa fa-spinner fa-spin"></i>
     </button>
 </div>
