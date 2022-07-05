@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Stripe;
 using Order = Core.Entities.OrderAggregate.Order;
 
-namespace BaseAPI.Controllers
+namespace BasketAPI.Controllers
 {
     public class PaymentsController : BaseApiController
     {

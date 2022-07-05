@@ -1,6 +1,6 @@
 using Core.DTOs;
 
-namespace BaseAPI.Dtos
+namespace BasketAPI.Dtos
 {
     public class OrderDto
     {

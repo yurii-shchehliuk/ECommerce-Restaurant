@@ -29,6 +29,8 @@ services:
     ports:
         - "5000:80"
     env_file: Core/Common.env
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Docker
     restart: on-failure
     volumes:
         - ./.aspnet/identity/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
@@ -60,7 +62,7 @@ services:
     image: ${DOCKER_REGISTRY-}basketapi:1.0
     build:
       context: .
-      dockerfile: BaseAPI/Dockerfile
+      dockerfile: BasketAPI/Dockerfile
     ports:
         - "5020:80"
     env_file: Core/Common.env
@@ -79,7 +81,9 @@ services:
     command: ["redis-server", "--appendonly", "yes"]
     volumes:
       - redis-data:/data
-
+    networks:
+        - network-connection
+        
   redis-commander:
     image: rediscommander/redis-commander:latest
     environment:
@@ -88,22 +92,26 @@ services:
       - HTTP_PASSWORD=secret
     ports:
       - 8081:8081
+    networks:
+        - network-connection
     depends_on:
       - redis
 
-  #webclient:
-  #  container_name: webclient
-  #  image: ${DOCKER_REGISTRY-}webclient:1.0
-  #  build:
-  #    context: .
-  #    dockerfile: WebClient/Dockerfile
-  #  ports:
-  #      - "80:80"
-  #  restart: on-failure
-  #  depends_on:
-  #      - database
-  #      - identity
-  #      - baseapi
+#  webclient:
+#    container_name: webclient
+#    image: ${DOCKER_REGISTRY-}webclient:1.0
+#    build:
+#      context: .
+#      dockerfile: WebClient/Dockerfile
+#    ports:
+#        - "80:80"
+#    restart: on-failure
+#    depends_on:
+#        - database
+#        - identity
+#        - baseapi
+#    networks:
+#        - network-connection
 volumes:
   sqldata:
   redis-data:

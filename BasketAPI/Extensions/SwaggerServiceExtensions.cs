@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
-namespace BaseAPI.Extensions
+namespace BasketAPI.Extensions
 {
     public static class SwaggerServiceExtensions
     {

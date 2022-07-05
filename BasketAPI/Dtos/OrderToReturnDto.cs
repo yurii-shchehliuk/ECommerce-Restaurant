@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Core.Entities.OrderAggregate;
 
-namespace BaseAPI.Dtos
+namespace BasketAPI.Dtos
 {
     public class OrderToReturnDto
     {

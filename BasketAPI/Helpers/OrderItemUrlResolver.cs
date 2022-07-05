@@ -1,9 +1,9 @@
-using BaseAPI.Dtos;
+using BasketAPI.Dtos;
 using AutoMapper;
 using Core.Entities.OrderAggregate;
 using Microsoft.Extensions.Configuration;
 
-namespace BaseAPI.Helpers
+namespace BasketAPI.Helpers
 {
     public class OrderItemUrlResolver : IValueResolver<OrderItem, OrderItemDto, string>
     {

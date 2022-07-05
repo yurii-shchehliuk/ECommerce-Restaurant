@@ -1,4 +1,4 @@
-namespace BaseAPI.Dtos
+namespace BasketAPI.Dtos
 {
     public class OrderItemDto
     {

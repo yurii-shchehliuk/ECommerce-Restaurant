@@ -19,20 +19,20 @@ namespace Infrastructure.Data
             {
                 var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-                if (!context.ProductBrands.Any())
-                {
-                    var brandsData =
-                        File.ReadAllText(path + @"/Data/SeedData/brands.json");
+                //if (!context.ProductBrands.Any())
+                //{
+                //    var brandsData =
+                //        File.ReadAllText(path + @"/Data/SeedData/brands.json");
 
-                    var brands = JsonSerializer.Deserialize<List<ProductBrand>>(brandsData);
+                //    var brands = JsonSerializer.Deserialize<List<ProductBrand>>(brandsData);
 
-                    foreach (var item in brands)
-                    {
-                        context.ProductBrands.Add(item);
-                    }
+                //    foreach (var item in brands)
+                //    {
+                //        context.ProductBrands.Add(item);
+                //    }
 
-                    await context.SaveChangesAsync();
-                }
+                //    await context.SaveChangesAsync();
+                //}
 
                 if (!context.ProductTypes.Any())
                 {

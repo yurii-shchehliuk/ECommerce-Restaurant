@@ -8,16 +8,13 @@ WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 
 #install cache and dependencies
-#COPY package.json /app/package.json
 COPY ["./package.json", "/app/package.json"]
 RUN npm install
 
 #add app
 COPY . /app
 
-#generate build #development|production
-ARG configuration=production
-#RUN ng build --output-path=dist --configuration=$configuration
+#generate build development | production
 RUN npm run build --prod
 
 #base image
@@ -27,8 +24,7 @@ FROM nginx:alpine
 RUN rm -rf /usr/share/nginx/html/*
 
 #copy nginx configuration
-#COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY ["./nginx.conf", "/etc/nginx/conf.d/default.conf"]
+COPY ["./conf/nginx.conf", "/etc/nginx/conf.d/default.conf"]
 
 #copy artifact build from the 'build env'
 COPY --from=build /app/dist /usr/share/nginx/html

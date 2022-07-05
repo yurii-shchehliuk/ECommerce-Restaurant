@@ -50,6 +50,7 @@ namespace IdentityAPI
         {
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
+            services.AddHttpContextAccessor();
 
             services.AddApplicationServices();
             services.AddIdentityServices(_config);

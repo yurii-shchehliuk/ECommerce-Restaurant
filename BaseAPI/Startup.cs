@@ -1,6 +1,5 @@
 using System.IO;
 using BaseAPI.Extensions;
-using BaseAPI.Helpers;
 using Core.Middleware;
 using AutoMapper;
 using Infrastructure.Data;
@@ -53,7 +52,6 @@ namespace BaseAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
 
             services.AddSignalR(hubOptions =>
@@ -99,7 +97,6 @@ namespace BaseAPI
 
             app.UseSwaggerDocumention();
 
-            PrepDB<StoreContext>.PrepPopulation(app);
 
             app.UseEndpoints(endpoints =>
             {

@@ -9,16 +9,14 @@ namespace Infrastructure.Identity
         public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options) : base(options)
         {
         }
-        public AppIdentityDbContext() : base()
-        {
 
-        }
         protected override void OnModelCreating(ModelBuilder builder) 
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<AppUser>() //Use your application user class here
-          .ToTable("AspNetUsers");
+            //builder.Entity<AppUser>() //Use your application user class here
+            //       .ToTable("AspNetUsers");
         }
+        //add-migration add IdentityInitial -p Infrastructure -s IdentityAPI -c AppIdentityDbContext -o Identity/Migrations
     }
 }

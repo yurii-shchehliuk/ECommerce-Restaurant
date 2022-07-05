@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using BaseAPI.Dtos;
-using BaseAPI.Extensions;
 using AutoMapper;
 using Core.DTOs;
 using Core.Entities.OrderAggregate;
@@ -11,8 +9,10 @@ using Core.Errors;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using BasketAPI.Dtos;
+using BasketAPI.Extensions;
 
-namespace BaseAPI.Controllers
+namespace BasketAPI.Controllers
 {
     [Authorize]
     [AllowAnonymous]
