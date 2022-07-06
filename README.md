@@ -1,4 +1,4 @@
-Restaurant application based on .Net Core 3.1 (EntityFrameworkCore, Swagger, JWT Bearer, Stripe) and Angular 9 (RdJS, Nxg-bootstrap, xng-breadcrumb, bootswatch)
+Restaurant application based on .Net Core 3.1 (EntityFrameworkCore, Swagger, JWT Bearer, Stripe) and Angular 12 (RxJS, Nxg-bootstrap, xng-breadcrumb, bootswatch)
 App created as two separate projects, servers located on https://localhost:5001 | client located on https://localhost:4200
 
 Regular user's functionality:
