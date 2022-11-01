@@ -2,7 +2,7 @@
 using BasketAPI.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using WebApi.Domain.Entities;
+using WebApi.Domain.Entities.Store;
 using WebApi.Domain.Interfaces;
 
 namespace BasketAPI.Controllers

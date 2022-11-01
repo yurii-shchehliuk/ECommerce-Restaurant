@@ -1,7 +1,7 @@
 using AutoMapper;
 using BasketAPI.Dtos;
 using Microsoft.Extensions.Configuration;
-using WebApi.Domain.Entities;
+using WebApi.Domain.Entities.Store;
 
 namespace BasketAPI.Helpers
 {

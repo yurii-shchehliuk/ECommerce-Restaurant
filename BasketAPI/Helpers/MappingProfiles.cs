@@ -1,8 +1,8 @@
 using AutoMapper;
 using BasketAPI.Dtos;
 using WebApi.Domain.DTOs;
-using WebApi.Domain.Entities;
 using WebApi.Domain.Entities.OrderAggregate;
+using WebApi.Domain.Entities.Store;
 
 namespace BasketAPI.Helpers
 {

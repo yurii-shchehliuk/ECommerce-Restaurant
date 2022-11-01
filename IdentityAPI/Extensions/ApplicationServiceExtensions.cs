@@ -6,10 +6,9 @@ namespace IdentityAPI.Extensions
 {
     public static class ApplicationServicesExtensions
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static void AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<ITokenService, TokenService>();
-            return services;
         }
     }
 }

@@ -8,16 +8,17 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.1" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.3.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.3.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.1" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\**" CopyToPublishDirectory="PreserveNewest" />
-    <ProjectReference Include="..\..\WebApi.Db.Identity\WebApi.Db.Identity.csproj" />
-    <ProjectReference Include="..\..\WebApi.DB\WebApi.Db.Store.csproj" />
-    <ProjectReference Include="..\Infrastructure\WebApi.Infrastructure.csproj" />
+    <ProjectReference Include="..\WebApi.Db.Identity\WebApi.Db.Identity.csproj" />
+    <ProjectReference Include="..\WebApi.Db.Store\WebApi.Db.Store.csproj" />
+    <ProjectReference Include="..\WebApi.Domain\WebApi.Domain.csproj" />
+    <ProjectReference Include="..\WebApi.Infrastructure\WebApi.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

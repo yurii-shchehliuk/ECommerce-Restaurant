@@ -16,9 +16,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\WebApi.Db.Identity\WebApi.Db.Identity.csproj" />
-    <ProjectReference Include="..\..\WebApi.DB\WebApi.Db.Store.csproj" />
-    <ProjectReference Include="..\Infrastructure\WebApi.Infrastructure.csproj" />
+    <ProjectReference Include="..\WebApi.Db.Identity\WebApi.Db.Identity.csproj" />
+    <ProjectReference Include="..\WebApi.Db.Store\WebApi.Db.Store.csproj" />
+    <ProjectReference Include="..\WebApi.Domain\WebApi.Domain.csproj" />
+    <ProjectReference Include="..\WebApi.Infrastructure\WebApi.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\" />
+    <Folder Include="Views\" />
   </ItemGroup>
 
 

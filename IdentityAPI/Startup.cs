@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebApi.Db.Identity;
+using WebApi.Domain.Entities.Identity;
 using WebApi.Domain.Middleware;
 
 namespace IdentityAPI
@@ -19,32 +20,20 @@ namespace IdentityAPI
             _config = configuration;
         }
 
-        public void ConfigureDevelopmentServices(IServiceCollection services)
-        {
-            services.AddDbContext<AppIdentityDbContext>(x =>
-            {
-                x.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
-            });
-            ConfigureServices(services);
-        }
-
-        public void ConfigureProductionServices(IServiceCollection services)
-        {
-            services.AddDbContext<AppIdentityDbContext>(x =>
-            {
-                x.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
-            });
-            ConfigureServices(services);
-        }
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<AppIdentityDbContext>(x =>
+            {
+                x.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
+            });
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
             services.AddHttpContextAccessor();
 
             services.AddApplicationServices();
             services.AddIdentityServices(_config);
+
             services.AddSwaggerDocumentation();
             services.AddCors(opt =>
             {

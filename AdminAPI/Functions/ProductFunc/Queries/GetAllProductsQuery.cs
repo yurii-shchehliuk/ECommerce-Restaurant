@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using WebApi.Domain.Entities;
+using WebApi.Domain.Entities.Store;
 using WebApi.Domain.Interfaces;
 
 namespace AdminAPI.Functions.ProductFunc.Queries
