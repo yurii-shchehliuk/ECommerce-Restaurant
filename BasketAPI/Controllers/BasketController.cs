@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using BasketAPI.Dtos;
-using Core.Entities;
-using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using WebApi.Domain.Entities;
+using WebApi.Domain.Interfaces;
 
 namespace BasketAPI.Controllers
 {

@@ -1,13 +1,13 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Core.Errors;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using WebApi.Domain.Errors;
 
-namespace Core.Middleware
+namespace WebApi.Domain.Middleware
 {
     public class ExceptionMiddleware
     {
@@ -37,7 +37,7 @@ namespace Core.Middleware
                     ? new ApiException((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace.ToString())
                     : new ApiException((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace.ToString());
 
-                var options = new JsonSerializerOptions{PropertyNamingPolicy = JsonNamingPolicy.CamelCase};
+                var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
                 var json = JsonSerializer.Serialize(response, options);
 

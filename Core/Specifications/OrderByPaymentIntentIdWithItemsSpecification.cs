@@ -1,12 +1,10 @@
-using System;
-using System.Linq.Expressions;
-using Core.Entities.OrderAggregate;
+using WebApi.Domain.Entities.OrderAggregate;
 
-namespace Core.Specifications
+namespace WebApi.Domain.Specifications
 {
     public class OrderByPaymentIntentIdSpecification : BaseSpecification<Order>
     {
-        public OrderByPaymentIntentIdSpecification(string paymentIntentId) 
+        public OrderByPaymentIntentIdSpecification(string paymentIntentId)
             : base(o => o.PaymentIntentId == paymentIntentId)
         {
         }

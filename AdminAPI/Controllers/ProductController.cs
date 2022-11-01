@@ -3,29 +3,25 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AdminAPI.Controllers
 {
     public class ProductController : BaseApiController
     {
-        private readonly IMediator _mediator;
-        public ProductController(IMediator mediator)
+        public ProductController()
         {
-            _mediator = mediator;
         }
 
         [HttpGet("id")]
         public async Task<IActionResult> Details(int id)
         {
-            return Ok(await _mediator.Send(new GetProductByIdQuery { Id = id }));
+            return Ok(await Mediator.Send(new GetProductByIdQuery { Id = id }));
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _mediator.Send(new GetAllProductsQuery()));
+            return Ok(await Mediator.Send(new GetAllProductsQuery()));
         }
 
         [HttpPost]

@@ -1,10 +1,10 @@
-using System.Linq;
-using Core.Errors;
-using Core.Interfaces;
-using Infrastructure.Data;
-using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
+using WebApi.Domain.Errors;
+using WebApi.Domain.Interfaces;
+using WebApi.Infrastructure.Repositories;
+using WebApi.Infrastructure.Services;
 
 namespace BasketAPI.Extensions
 {

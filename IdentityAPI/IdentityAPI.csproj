@@ -23,8 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj" />
-    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\..\WebApi.Db.Identity\WebApi.Db.Identity.csproj" />
+    <ProjectReference Include="..\Core\WebApi.Domain.csproj" />
+    <ProjectReference Include="..\Infrastructure\WebApi.Infrastructure.csproj" />
   </ItemGroup>
 
 

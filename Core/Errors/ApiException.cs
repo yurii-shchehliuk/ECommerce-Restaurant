@@ -1,4 +1,4 @@
-namespace Core.Errors
+namespace WebApi.Domain.Errors
 {
     public class ApiException : ApiResponse
     {

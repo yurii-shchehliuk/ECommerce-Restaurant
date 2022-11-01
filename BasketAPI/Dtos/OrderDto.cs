@@ -1,4 +1,4 @@
-using Core.DTOs;
+using WebApi.Domain.DTOs;
 
 namespace BasketAPI.Dtos
 {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Core.Entities
+namespace WebApi.Domain.Entities
 {
     /// <summary>
     /// redis cart

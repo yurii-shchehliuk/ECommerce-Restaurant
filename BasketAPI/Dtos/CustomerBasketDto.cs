@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Core.DTOs;
-using Core.Entities;
+using WebApi.Domain.DTOs;
 
 namespace BasketAPI.Dtos
 {

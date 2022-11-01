@@ -1,25 +1,15 @@
-using BaseAPI.Helpers;
 using BasketAPI.Extensions;
-using Core.Middleware;
-using Infrastructure;
-using Infrastructure.Data;
-using Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using WebApi.Db.Identity;
+using WebApi.Db.Store;
+using WebApi.Domain.Middleware;
 
 namespace BasketAPI
 {
@@ -82,6 +72,12 @@ namespace BasketAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseSwaggerDocumention();
+            }
+
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
@@ -101,9 +97,6 @@ namespace BasketAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseSwaggerDocumention();
-
 
             app.UseEndpoints(endpoints =>
             {

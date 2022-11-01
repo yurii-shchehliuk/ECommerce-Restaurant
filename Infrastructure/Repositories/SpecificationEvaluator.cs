@@ -1,9 +1,9 @@
-using System.Linq;
-using Core.Entities;
-using Core.Specifications;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using WebApi.Domain.Entities;
+using WebApi.Domain.Specifications;
 
-namespace Infrastructure.Data
+namespace WebApi.Infrastructure.Repositories
 {
     public class SpecificationEvaluator<TEntity> where TEntity : BaseEntity
     {

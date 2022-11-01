@@ -1,10 +1,10 @@
+using StackExchange.Redis;
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Core.Interfaces;
-using StackExchange.Redis;
+using WebApi.Domain.Interfaces;
 
-namespace Infrastructure.Services
+namespace WebApi.Infrastructure.Services
 {
     public class ResponseCacheService : IResponseCacheService
     {

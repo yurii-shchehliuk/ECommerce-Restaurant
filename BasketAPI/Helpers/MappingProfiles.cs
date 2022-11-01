@@ -1,19 +1,17 @@
 using AutoMapper;
-using Core.DTOs;
-using Core.Entities;
-using Core.Entities.Identity;
-using Core.Entities.OrderAggregate;
 using BasketAPI.Dtos;
-using BasketAPI.Helpers;
+using WebApi.Domain.DTOs;
+using WebApi.Domain.Entities;
+using WebApi.Domain.Entities.OrderAggregate;
 
-namespace BaseAPI.Helpers
+namespace BasketAPI.Helpers
 {
     public class MappingProfiles : Profile
     {
         public MappingProfiles()
         {
-            CreateMap<Core.Entities.Identity.Address, AddressDto>().ReverseMap();
-            CreateMap<AddressDto, Core.Entities.OrderAggregate.Address>();
+            CreateMap<WebApi.Domain.Entities.Identity.Address, AddressDto>().ReverseMap();
+            CreateMap<AddressDto, Address>();
             CreateMap<Order, OrderToReturnDto>()
               .ForMember(d => d.DeliveryMethod, o => o.MapFrom(s => s.DeliveryMethod.ShortName))
               .ForMember(d => d.ShippingPrice, o => o.MapFrom(s => s.DeliveryMethod.Price));

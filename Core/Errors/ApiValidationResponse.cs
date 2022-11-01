@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Core.Errors
+namespace WebApi.Domain.Errors
 {
     public class ApiValidationErrorResponse : ApiResponse
     {

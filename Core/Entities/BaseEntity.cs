@@ -1,4 +1,4 @@
-namespace Core.Entities
+namespace WebApi.Domain.Entities
 {
     public class BaseEntity
     {

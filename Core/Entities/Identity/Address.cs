@@ -1,4 +1,4 @@
-namespace Core.Entities.Identity
+namespace WebApi.Domain.Entities.Identity
 {
     public class Address
     {

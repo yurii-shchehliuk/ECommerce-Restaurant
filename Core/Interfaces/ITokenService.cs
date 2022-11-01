@@ -1,9 +1,9 @@
-using Core.Entities.Identity;
+using WebApi.Domain.Entities.Identity;
 
-namespace Core.Interfaces
+namespace WebApi.Domain.Interfaces
 {
     public interface ITokenService
     {
-         string CreateToken(AppUser user);
+        string CreateToken(AppUser user);
     }
 }

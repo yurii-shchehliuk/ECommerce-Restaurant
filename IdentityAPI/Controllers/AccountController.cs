@@ -1,17 +1,16 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using IdentityAPI.Dtos;
-using IdentityAPI.Extensions;
 using AutoMapper;
-using Core.DTOs;
-using Core.Entities.Identity;
-using Core.Interfaces;
+using IdentityAPI.Dtos;
+using IdentityAPI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Core.Errors;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using WebApi.Domain.DTOs;
+using WebApi.Domain.Entities.Identity;
+using WebApi.Domain.Errors;
+using WebApi.Domain.Interfaces;
 
 namespace IdentityAPI.Controllers
 {

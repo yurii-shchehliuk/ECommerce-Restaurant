@@ -1,10 +1,7 @@
-﻿using Infrastructure.SignalR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using WebApi.Infrastructure.SignalR;
 
 namespace BaseAPI.Controllers
 {
@@ -19,7 +16,7 @@ namespace BaseAPI.Controllers
 
         [HttpPost]
         [Route("send")]
-        public async Task NewMessage([FromBody] MessageVM msg)
+        public async Task NewMessage([FromBody] MessageViewModel msg)
         {
             await _hubContext.Clients.All.SendAsync("MessageReceived", msg.UserName, msg.Message, msg.Date);
         }

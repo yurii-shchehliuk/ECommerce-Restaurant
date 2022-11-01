@@ -1,18 +1,16 @@
-using System.IO;
 using BaseAPI.Extensions;
-using Core.Middleware;
-using AutoMapper;
-using Infrastructure.Data;
-using Infrastructure.Identity;
-using Infrastructure.SignalR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using StackExchange.Redis;
-using Infrastructure;
+using Microsoft.Extensions.Hosting;
+using System.IO;
+using WebApi.Db.Identity;
+using WebApi.Db.Store;
+using WebApi.Domain.Middleware;
+using WebApi.Infrastructure.SignalR;
 
 namespace BaseAPI
 {
@@ -75,6 +73,12 @@ namespace BaseAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseSwaggerDocumention();
+            }
+
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
@@ -94,9 +98,6 @@ namespace BaseAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseSwaggerDocumention();
-
 
             app.UseEndpoints(endpoints =>
             {

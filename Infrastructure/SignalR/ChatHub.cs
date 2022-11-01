@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 
-namespace Infrastructure.SignalR
+namespace WebApi.Infrastructure.SignalR
 {
     public class ChatHub : Hub
     {
-        public async Task NewMessage(MessageVM message)
+        public async Task NewMessage(MessageViewModel message)
         {
-            await this.Clients.All.SendAsync("MessageReceived", message.Message, message.UserName, message.Date);
+            await Clients.All.SendAsync("MessageReceived", message.Message, message.UserName, message.Date);
         }
     }
 }

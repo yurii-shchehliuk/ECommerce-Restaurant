@@ -8,9 +8,9 @@ namespace IdentityAPI.Extensions
     {
         public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services)
         {
-            services.AddSwaggerGen(c => 
+            services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "IdentityAPI", Version = "v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityAPI", Version = "v1" });
 
                 var securitySchema = new OpenApiSecurityScheme
                 {
@@ -27,7 +27,7 @@ namespace IdentityAPI.Extensions
                 };
 
                 c.AddSecurityDefinition("Bearer", securitySchema);
-                var securityRequirement = new OpenApiSecurityRequirement {{securitySchema, new[] {"Bearer"}}};
+                var securityRequirement = new OpenApiSecurityRequirement { { securitySchema, new[] { "Bearer" } } };
                 c.AddSecurityRequirement(securityRequirement);
             });
 
@@ -37,8 +37,11 @@ namespace IdentityAPI.Extensions
         public static IApplicationBuilder UseSwaggerDocumention(this IApplicationBuilder app)
         {
             app.UseSwagger();
-            app.UseSwaggerUI(c => {c
-                .SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityAPI v1");});
+            app.UseSwaggerUI(c =>
+            {
+                c
+                .SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityAPI v1");
+            });
 
             return app;
         }

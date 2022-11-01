@@ -1,14 +1,14 @@
-using System.IO;
-using System.Threading.Tasks;
-using Core.Entities;
-using Core.Errors;
-using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Stripe;
-using Order = Core.Entities.OrderAggregate.Order;
+using System.IO;
+using System.Threading.Tasks;
+using WebApi.Domain.Entities;
+using WebApi.Domain.Errors;
+using WebApi.Domain.Interfaces;
+using Order = WebApi.Domain.Entities.OrderAggregate.Order;
 
 namespace BasketAPI.Controllers
 {
@@ -50,7 +50,7 @@ namespace BasketAPI.Controllers
                 case "payment_intent.succeeded":
                     intent = (PaymentIntent)stripeEvent.Data.Object;
                     _logger.LogInformation("Payment Succeeded: ", intent.Id);
-                    order  = await _paymentService.UpdateOrderPaymentSucceeded(intent.Id);
+                    order = await _paymentService.UpdateOrderPaymentSucceeded(intent.Id);
                     _logger.LogInformation("Order updated to payment received: ", order.Id);
                     break;
                 case "payment_intent.payment_failed":

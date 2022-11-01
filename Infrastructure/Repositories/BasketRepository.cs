@@ -1,11 +1,11 @@
+using StackExchange.Redis;
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Core.Entities;
-using Core.Interfaces;
-using StackExchange.Redis;
+using WebApi.Domain.Entities;
+using WebApi.Domain.Interfaces;
 
-namespace Infrastructure.Data
+namespace WebApi.Infrastructure.Repositories
 {
     public class BasketRepository : IBasketRepository
     {
@@ -29,7 +29,7 @@ namespace Infrastructure.Data
 
         public async Task<CustomerBasket> UpdateBasketAsync(CustomerBasket basket)
         {
-            var created = await _database.StringSetAsync(basket.Id, 
+            var created = await _database.StringSetAsync(basket.Id,
                 JsonSerializer.Serialize(basket), TimeSpan.FromDays(30));
 
             if (!created) return null;

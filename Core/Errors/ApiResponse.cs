@@ -1,6 +1,4 @@
-using System;
-
-namespace Core.Errors
+namespace WebApi.Domain.Errors
 {
     public class ApiResponse
     {

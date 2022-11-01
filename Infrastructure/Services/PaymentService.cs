@@ -1,16 +1,16 @@
+using Microsoft.Extensions.Configuration;
+using Stripe;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Entities;
-using Core.Entities.OrderAggregate;
-using Core.Interfaces;
-using Core.Specifications;
-using Microsoft.Extensions.Configuration;
-using Stripe;
-using Order = Core.Entities.OrderAggregate.Order;
-using Product = Core.Entities.Product;
+using WebApi.Domain.Entities;
+using WebApi.Domain.Entities.OrderAggregate;
+using WebApi.Domain.Interfaces;
+using WebApi.Domain.Specifications;
+using Order = WebApi.Domain.Entities.OrderAggregate.Order;
+using Product = WebApi.Domain.Entities.Product;
 
-namespace Infrastructure.Services
+namespace WebApi.Infrastructure.Services
 {
     public class PaymentService : IPaymentService
     {
@@ -59,9 +59,9 @@ namespace Infrastructure.Services
             {
                 var options = new PaymentIntentCreateOptions
                 {
-                    Amount = (long) basket.Items.Sum(i => i.Quantity * (i.Price * 100)) + (long) shippingPrice * 100,
+                    Amount = (long)basket.Items.Sum(i => i.Quantity * (i.Price * 100)) + (long)shippingPrice * 100,
                     Currency = "usd",
-                    PaymentMethodTypes = new List<string> {"card"}
+                    PaymentMethodTypes = new List<string> { "card" }
                 };
                 intent = await service.CreateAsync(options);
                 basket.PaymentIntentId = intent.Id;
@@ -71,7 +71,7 @@ namespace Infrastructure.Services
             {
                 var options = new PaymentIntentUpdateOptions
                 {
-                    Amount = (long) basket.Items.Sum(i => i.Quantity * (i.Price * 100)) + (long) shippingPrice * 100
+                    Amount = (long)basket.Items.Sum(i => i.Quantity * (i.Price * 100)) + (long)shippingPrice * 100
                 };
                 await service.UpdateAsync(basket.PaymentIntentId, options);
             }
@@ -100,7 +100,7 @@ namespace Infrastructure.Services
             var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
 
             if (order == null) return null;
-            
+
             order.Status = OrderStatus.PaymentRecevied;
             _unitOfWork.Repository<Order>().Update(order);
 

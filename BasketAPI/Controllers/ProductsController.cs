@@ -1,17 +1,14 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using BasketAPI.Dtos;
 using BasketAPI.Helpers;
-using Core.Entities;
-using Core.Errors;
-using Core.Interfaces;
-using Core.Specifications;
-using Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using WebApi.Domain.Entities;
+using WebApi.Domain.Errors;
+using WebApi.Domain.Interfaces;
+using WebApi.Domain.Specifications;
 
 namespace BasketAPI.Controllers
 {
@@ -34,7 +31,7 @@ namespace BasketAPI.Controllers
         [Cached(600)]
         [HttpGet]
         public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts(
-            [FromQuery]ProductSpecParams productParams)
+            [FromQuery] ProductSpecParams productParams)
         {
             var spec = new ProductsWithTypesAndBrandsSpecification(productParams);
 

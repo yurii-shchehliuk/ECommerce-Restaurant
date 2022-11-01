@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Entities;
-using Core.Entities.OrderAggregate;
-using Core.Interfaces;
-using Core.Specifications;
+using WebApi.Domain.Entities;
+using WebApi.Domain.Entities.OrderAggregate;
+using WebApi.Domain.Interfaces;
+using WebApi.Domain.Specifications;
 
-namespace Infrastructure.Services
+namespace WebApi.Infrastructure.Services
 {
     public class OrderService : IOrderService
     {

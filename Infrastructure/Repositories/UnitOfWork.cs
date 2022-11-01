@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
 using System.Threading.Tasks;
-using Core.Entities;
-using Core.Interfaces;
+using WebApi.Db.Store;
+using WebApi.Domain.Entities;
+using WebApi.Domain.Interfaces;
 
-namespace Infrastructure.Data
+namespace WebApi.Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
@@ -27,7 +28,7 @@ namespace Infrastructure.Data
 
         public IGenericRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity
         {
-            if(_repositories == null) _repositories = new Hashtable();
+            if (_repositories == null) _repositories = new Hashtable();
 
             var type = typeof(TEntity).Name;
 
@@ -39,7 +40,7 @@ namespace Infrastructure.Data
                 _repositories.Add(type, repositoryInstance);
             }
 
-            return (IGenericRepository<TEntity>) _repositories[type];
+            return (IGenericRepository<TEntity>)_repositories[type];
         }
     }
 }

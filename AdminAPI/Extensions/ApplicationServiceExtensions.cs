@@ -1,11 +1,7 @@
-using System.Linq;
-using Core.Errors;
-using Core.Interfaces;
-using Infrastructure.Data;
-using Infrastructure.Services;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using WebApi.Domain.Interfaces;
+using WebApi.Infrastructure.Repositories;
 
 namespace AdminAPI.Extensions
 {
@@ -18,7 +14,7 @@ namespace AdminAPI.Extensions
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
-          
+
             return services;
         }
     }

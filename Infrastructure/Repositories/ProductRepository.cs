@@ -1,10 +1,11 @@
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Core.Entities;
-using Core.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using WebApi.Db.Store;
+using WebApi.Domain.Entities;
+using WebApi.Domain.Interfaces;
 
-namespace Infrastructure.Data
+namespace WebApi.Infrastructure.Repositories
 {
     public class ProductRepository : IProductRepository
     {

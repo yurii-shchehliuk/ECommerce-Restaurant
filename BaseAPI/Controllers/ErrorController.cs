@@ -1,5 +1,5 @@
-using Core.Errors;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Domain.Errors;
 
 namespace BaseAPI.Controllers
 {

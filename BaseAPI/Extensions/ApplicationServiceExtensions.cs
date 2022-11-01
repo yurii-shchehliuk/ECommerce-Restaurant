@@ -1,10 +1,9 @@
-using System.Linq;
-using Core.Errors;
-using Core.Interfaces;
-using Infrastructure.Data;
-using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
+using WebApi.Domain.Errors;
+using WebApi.Domain.Interfaces;
+using WebApi.Infrastructure.Repositories;
 
 namespace BaseAPI.Extensions
 {
@@ -12,26 +11,26 @@ namespace BaseAPI.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-           
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
-                        services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.InvalidModelStateResponseFactory = actionContext => 
+            services.Configure<ApiBehaviorOptions>(options =>
                 {
-                    var errors = actionContext.ModelState
-                        .Where(e => e.Value.Errors.Count > 0)
-                        .SelectMany(x => x.Value.Errors)
-                        .Select(x => x.ErrorMessage).ToArray();
-                    
-                    var errorResponse = new ApiValidationErrorResponse
+                    options.InvalidModelStateResponseFactory = actionContext =>
                     {
-                        Errors = errors
-                    };
+                        var errors = actionContext.ModelState
+                            .Where(e => e.Value.Errors.Count > 0)
+                            .SelectMany(x => x.Value.Errors)
+                            .Select(x => x.ErrorMessage).ToArray();
 
-                    return new BadRequestObjectResult(errorResponse);
-                };
-            });
+                        var errorResponse = new ApiValidationErrorResponse
+                        {
+                            Errors = errors
+                        };
+
+                        return new BadRequestObjectResult(errorResponse);
+                    };
+                });
 
             return services;
         }

@@ -1,21 +1,13 @@
-using Infrastructure.Data;
-using Infrastructure.Identity;
+using AdminAPI.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using AdminAPI.Extensions;
-using Core.Middleware;
+using WebApi.Db.Identity;
+using WebApi.Db.Store;
+using WebApi.Domain.Middleware;
 
 namespace AdminAPI
 {
@@ -73,6 +65,7 @@ namespace AdminAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwaggerDocumention();
             }
 
             app.UseMiddleware<ExceptionMiddleware>();
@@ -94,8 +87,6 @@ namespace AdminAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseSwaggerDocumention();
 
             app.UseEndpoints(endpoints =>
             {

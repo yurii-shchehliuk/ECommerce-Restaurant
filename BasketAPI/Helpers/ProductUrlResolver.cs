@@ -1,7 +1,7 @@
 using AutoMapper;
 using BasketAPI.Dtos;
-using Core.Entities;
 using Microsoft.Extensions.Configuration;
+using WebApi.Domain.Entities;
 
 namespace BasketAPI.Helpers
 {
@@ -15,7 +15,7 @@ namespace BasketAPI.Helpers
 
         public string Resolve(Product source, ProductToReturnDto destination, string destMember, ResolutionContext context)
         {
-            if(!string.IsNullOrEmpty(source.PictureUrl))
+            if (!string.IsNullOrEmpty(source.PictureUrl))
             {
                 return _config["ApiUrl"] + source.PictureUrl;
             }

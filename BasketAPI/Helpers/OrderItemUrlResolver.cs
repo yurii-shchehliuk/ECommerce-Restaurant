@@ -1,7 +1,7 @@
-using BasketAPI.Dtos;
 using AutoMapper;
-using Core.Entities.OrderAggregate;
+using BasketAPI.Dtos;
 using Microsoft.Extensions.Configuration;
+using WebApi.Domain.Entities.OrderAggregate;
 
 namespace BasketAPI.Helpers
 {

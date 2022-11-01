@@ -1,16 +1,13 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using AutoMapper;
-using Core.DTOs;
-using Core.Entities.OrderAggregate;
-using Core.Errors;
-using Core.Interfaces;
+using BasketAPI.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using BasketAPI.Dtos;
-using BasketAPI.Extensions;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using WebApi.Domain.DTOs;
+using WebApi.Domain.Entities.OrderAggregate;
+using WebApi.Domain.Errors;
+using WebApi.Domain.Interfaces;
 
 namespace BasketAPI.Controllers
 {

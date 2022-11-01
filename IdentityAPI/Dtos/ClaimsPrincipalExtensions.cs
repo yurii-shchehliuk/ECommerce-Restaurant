@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Security.Claims;
 
-namespace IdentityAPI.Extensions
+namespace IdentityAPI.Dtos
 {
     public static class ClaimsPrincipalExtensions
     {

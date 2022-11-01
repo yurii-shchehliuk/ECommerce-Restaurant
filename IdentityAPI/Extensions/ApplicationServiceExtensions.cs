@@ -1,10 +1,6 @@
-using System.Linq;
-using Core.Errors;
-using Core.Interfaces;
-using Infrastructure.Data;
-using Infrastructure.Services;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using WebApi.Domain.Interfaces;
+using WebApi.Infrastructure.Services;
 
 namespace IdentityAPI.Extensions
 {

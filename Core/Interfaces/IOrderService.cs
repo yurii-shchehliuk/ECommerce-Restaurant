@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Core.Entities.OrderAggregate;
+using WebApi.Domain.Entities.OrderAggregate;
 
-namespace Core.Interfaces
+namespace WebApi.Domain.Interfaces
 {
     public interface IOrderService
     {

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Core.Entities.OrderAggregate;
+using WebApi.Domain.Entities.OrderAggregate;
 
 namespace BasketAPI.Dtos
 {

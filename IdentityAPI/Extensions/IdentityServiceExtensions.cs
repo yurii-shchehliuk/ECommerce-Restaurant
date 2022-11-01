@@ -1,11 +1,11 @@
-using System.Text;
-using Core.Entities.Identity;
-using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using WebApi.Db.Identity;
+using WebApi.Domain.Entities.Identity;
 
 namespace IdentityAPI.Extensions
 {
@@ -20,7 +20,7 @@ namespace IdentityAPI.Extensions
             builder.AddSignInManager<SignInManager<AppUser>>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options => 
+                .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {

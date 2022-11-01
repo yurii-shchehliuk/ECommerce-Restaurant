@@ -16,6 +16,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\**" CopyToPublishDirectory="PreserveNewest" />
-    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\..\WebApi.Db.Identity\WebApi.Db.Identity.csproj" />
+    <ProjectReference Include="..\..\WebApi.DB\WebApi.Db.Store.csproj" />
+    <ProjectReference Include="..\Infrastructure\WebApi.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

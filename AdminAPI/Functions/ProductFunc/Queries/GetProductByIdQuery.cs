@@ -1,11 +1,8 @@
-﻿using Core.Entities;
-using Core.Interfaces;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using WebApi.Domain.Entities;
+using WebApi.Domain.Interfaces;
 
 namespace AdminAPI.Functions.ProductFunc.Queries
 {

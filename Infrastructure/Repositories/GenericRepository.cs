@@ -1,12 +1,13 @@
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Entities;
-using Core.Interfaces;
-using Core.Specifications;
-using Microsoft.EntityFrameworkCore;
+using WebApi.Db.Store;
+using WebApi.Domain.Entities;
+using WebApi.Domain.Interfaces;
+using WebApi.Domain.Specifications;
 
-namespace Infrastructure.Data
+namespace WebApi.Infrastructure.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
