@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using WebApi.Domain.Entities.Identity;
 
-namespace IdentityAPI.Helpers
+namespace API.Identity.Helpers
 {
     public static class UserManagerExtensions
     {

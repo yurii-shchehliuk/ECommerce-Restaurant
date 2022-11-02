@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WebApi.Domain.DTOs;
 
-namespace IdentityAPI.Dtos
+namespace API.Identity.Dtos
 {
     public class CustomerBasketDto
     {

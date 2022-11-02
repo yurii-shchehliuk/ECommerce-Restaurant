@@ -10,6 +10,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.29" />
 
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
+
+    <PackageReference Include="StackExchange.Redis" Version="2.6.70" />
   </ItemGroup>
 
   <ItemGroup>

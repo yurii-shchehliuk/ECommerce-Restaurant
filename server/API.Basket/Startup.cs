@@ -1,4 +1,3 @@
-using BasketAPI.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -6,12 +5,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using StackExchange.Redis;
 using System.IO;
 using WebApi.Db.Identity;
 using WebApi.Db.Store;
 using WebApi.Domain.Middleware;
+using WebApi.Infrastructure.Integration;
+using WebApi.Infrastructure.Integration.Basket;
 
-namespace BasketAPI
+namespace API.Basket
 {
     public class Startup
     {
@@ -21,40 +23,24 @@ namespace BasketAPI
             _config = config;
         }
 
-        public void ConfigureDevelopmentServices(IServiceCollection services)
-        {
-            services.AddDbContext<StoreContext>(x =>
-                x.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
-
-            ConfigureServices(services);
-        }
-
-        public void ConfigureProductionServices(IServiceCollection services)
-        {
-            services.AddDbContext<StoreContext>(x =>
-                x.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
-
-            ConfigureServices(services);
-        }
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
 
-            services.AddSignalR(hubOptions =>
-            {
+            services.AddDbContext<StoreContext>(x =>
+                x.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
 
-                hubOptions.EnableDetailedErrors = true;
-                hubOptions.KeepAliveInterval = System.TimeSpan.FromMinutes(1);
-            });
-
-            services.AddApplicationServices();
+            services.AddApplicationServices(_config);
             services.AddSwaggerDocumentation();
+
             services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200").AllowCredentials();
+                    policy.AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .WithOrigins("https://localhost:4200")
+                    .AllowCredentials();
                 });
             });
         }

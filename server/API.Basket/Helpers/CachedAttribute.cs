@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApi.Domain.Interfaces;
 
-namespace BasketAPI.Helpers
+namespace API.Basket.Helpers
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class CachedAttribute : Attribute, IAsyncActionFilter

@@ -10,7 +10,7 @@ using WebApi.Domain.Errors;
 using WebApi.Domain.Interfaces;
 using Order = WebApi.Domain.Entities.OrderAggregate.Order;
 
-namespace BasketAPI.Controllers
+namespace API.Basket.Controllers
 {
     public class PaymentsController : BaseApiController
     {

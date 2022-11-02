@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
-namespace BaseAPI.Extensions
+namespace WebApi.Infrastructure.Integration
 {
     public static class SwaggerServiceExtensions
     {
@@ -10,7 +10,7 @@ namespace BaseAPI.Extensions
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BaseAPI", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = System.Reflection.Assembly.GetEntryAssembly().GetName().Name, Version = "v1" });
 
                 var securitySchema = new OpenApiSecurityScheme
                 {
@@ -40,7 +40,7 @@ namespace BaseAPI.Extensions
             app.UseSwaggerUI(c =>
             {
                 c
-                .SwaggerEndpoint("/swagger/v1/swagger.json", "BaseAPI v1");
+                .SwaggerEndpoint("/swagger/v1/swagger.json", $"{System.Reflection.Assembly.GetEntryAssembly().GetName().Name} v1");
             });
 
             return app;

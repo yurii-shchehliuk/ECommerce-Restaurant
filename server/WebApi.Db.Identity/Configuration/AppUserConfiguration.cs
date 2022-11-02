@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using WebApi.Domain.Entities.Identity;
 using WebApi.Domain.Entities.Store;
 
-namespace WebApi.DB.Store.Configuration
+namespace WebApi.Db.Identity.Configuration
 {
     public class AppUserConfiguration : IEntityTypeConfiguration<AppUser>
     {

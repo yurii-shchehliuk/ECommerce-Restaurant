@@ -1,15 +1,21 @@
-using AdminAPI.Extensions;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Stripe;
 using WebApi.Db.Identity;
 using WebApi.Db.Store;
 using WebApi.Domain.Middleware;
+using WebApi.Infrastructure.Integration;
+using WebApi.Infrastructure.Integration.Admin;
 
-namespace AdminAPI
+namespace API.Admin
 {
     public class Startup
     {
@@ -47,9 +53,18 @@ namespace AdminAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(config =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                                 .RequireAuthenticatedUser()
+                                 .Build();
+                config.Filters.Add(new AuthorizeFilter(policy));
+            });
+
             services.AddApplicationServices();
             services.AddSwaggerDocumentation();
+            services.AddMediatR(typeof(Startup));
+
             services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolicy", policy =>

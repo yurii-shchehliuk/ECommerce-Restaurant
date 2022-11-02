@@ -1,4 +1,3 @@
-using BaseAPI.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -10,9 +9,10 @@ using System.IO;
 using WebApi.Db.Identity;
 using WebApi.Db.Store;
 using WebApi.Domain.Middleware;
+using WebApi.Infrastructure.Integration;
 using WebApi.Infrastructure.SignalR;
 
-namespace BaseAPI
+namespace API.Base
 {
     public class Startup
     {
@@ -33,7 +33,6 @@ namespace BaseAPI
                 hubOptions.KeepAliveInterval = System.TimeSpan.FromMinutes(1);
             });
 
-            services.AddApplicationServices();
             services.AddSwaggerDocumentation();
             services.AddCors(opt =>
             {

@@ -7,12 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="10.0.1" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    <Compile Remove="Areas\**" />
+    <Compile Remove="Views\**" />
+    <Content Remove="Areas\**" />
+    <Content Remove="Views\**" />
+    <EmbeddedResource Remove="Areas\**" />
+    <EmbeddedResource Remove="Views\**" />
+    <None Remove="Areas\**" />
+    <None Remove="Views\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="11.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.3.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.3.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.3.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,11 +31,6 @@
     <ProjectReference Include="..\WebApi.Db.Store\WebApi.Db.Store.csproj" />
     <ProjectReference Include="..\WebApi.Domain\WebApi.Domain.csproj" />
     <ProjectReference Include="..\WebApi.Infrastructure\WebApi.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Areas\" />
-    <Folder Include="Views\" />
   </ItemGroup>
 
 

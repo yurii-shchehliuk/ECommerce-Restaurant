@@ -1,4 +1,3 @@
-using Infrastructure.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +10,7 @@ using WebApi.Db.Identity;
 using WebApi.Domain.Entities.Identity;
 using Serilog;
 
-namespace IdentityAPI
+namespace API.Identity
 {
     public class Program
     {
@@ -54,4 +53,3 @@ namespace IdentityAPI
                 });
     }
 }
- 

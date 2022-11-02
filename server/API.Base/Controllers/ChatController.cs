@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using WebApi.Infrastructure.SignalR;
 
-namespace BaseAPI.Controllers
+namespace API.Base.Controllers
 {
     public class ChatController : BaseApiController
     {

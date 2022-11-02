@@ -1,16 +1,15 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Db.Store;
 using WebApi.Domain.Errors;
 
-namespace BaseAPI.Controllers
+namespace API.Base.Controllers
 {
     public class BuggyController : BaseApiController
     {
-        private readonly StoreContext _context;
         public BuggyController(StoreContext context)
         {
-            _context = context;
         }
 
         [HttpGet("testauth")]
@@ -23,24 +22,13 @@ namespace BaseAPI.Controllers
         [HttpGet("notfound")]
         public ActionResult GetNotFoundRequest()
         {
-            var thing = _context.Products.Find(42);
-
-            if (thing == null)
-            {
-                return NotFound(new ApiResponse(404));
-            }
-
-            return Ok();
+            return NotFound(new ApiResponse(404));
         }
 
         [HttpGet("servererror")]
         public ActionResult GetServerError()
         {
-            var thing = _context.Products.Find(42);
-
-            var thingToReturn = thing.ToString();
-
-            return Ok();
+            return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
         }
 
         [HttpGet("badrequest")]

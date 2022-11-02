@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using WebApi.Domain.Entities.Identity;
 
-namespace Infrastructure.Identity
+namespace WebApi.Db.Identity
 {
     public class AppIdentityDbContextSeed
     {

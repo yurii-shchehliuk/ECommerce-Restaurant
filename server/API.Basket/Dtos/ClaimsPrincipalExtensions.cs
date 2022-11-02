@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Security.Claims;
 
-namespace BasketAPI.Dtos
+namespace API.Basket.Dtos
 {
     public static class ClaimsPrincipalExtensions
     {

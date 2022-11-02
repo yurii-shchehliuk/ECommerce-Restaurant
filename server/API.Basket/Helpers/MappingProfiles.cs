@@ -1,10 +1,10 @@
+using API.Basket.Dtos;
 using AutoMapper;
-using BasketAPI.Dtos;
 using WebApi.Domain.DTOs;
 using WebApi.Domain.Entities.OrderAggregate;
 using WebApi.Domain.Entities.Store;
 
-namespace BasketAPI.Helpers
+namespace API.Basket.Helpers
 {
     public class MappingProfiles : Profile
     {

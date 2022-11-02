@@ -1,6 +1,6 @@
+using API.Basket.Dtos;
+using API.Basket.Helpers;
 using AutoMapper;
-using BasketAPI.Dtos;
-using BasketAPI.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using WebApi.Domain.Errors;
 using WebApi.Domain.Interfaces;
 using WebApi.Domain.Specifications;
 
-namespace BasketAPI.Controllers
+namespace API.Basket.Controllers
 {
     public class ProductsController : BaseApiController
     {

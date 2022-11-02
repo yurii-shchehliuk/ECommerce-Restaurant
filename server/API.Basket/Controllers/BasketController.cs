@@ -1,20 +1,24 @@
-﻿using AutoMapper;
-using BasketAPI.Dtos;
+﻿using API.Basket.Dtos;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 using WebApi.Domain.Entities.Store;
 using WebApi.Domain.Interfaces;
 
-namespace BasketAPI.Controllers
+namespace API.Basket.Controllers
 {
     public class BasketController : BaseApiController
     {
         private readonly IBasketRepository _basketRepository;
         private readonly IMapper _mapper;
-        public BasketController(IBasketRepository basketRepository, IMapper mapper)
+        private readonly ILogger<BasketController> _logger;
+        public BasketController(IBasketRepository repository, IMapper mapper, ILogger<BasketController> logger)
         {
-            _mapper = mapper;
-            _basketRepository = basketRepository;
+            _basketRepository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpGet]

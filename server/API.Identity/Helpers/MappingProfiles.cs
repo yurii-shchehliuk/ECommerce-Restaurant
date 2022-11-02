@@ -1,9 +1,9 @@
+using API.Identity.Dtos;
 using AutoMapper;
-using IdentityAPI.Dtos;
 using WebApi.Domain.DTOs;
 using WebApi.Domain.Entities.Identity;
 
-namespace IdentityAPI.Helpers
+namespace API.Identity.Helpers
 {
     public class MappingProfiles : Profile
     {

@@ -1,6 +1,6 @@
+using API.Identity.Dtos;
+using API.Identity.Helpers;
 using AutoMapper;
-using IdentityAPI.Dtos;
-using IdentityAPI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +13,7 @@ using WebApi.Domain.Entities.Identity;
 using WebApi.Domain.Errors;
 using WebApi.Domain.Interfaces;
 
-namespace IdentityAPI.Controllers
+namespace API.Identity.Controllers
 {
     public class AccountController : BaseApiController
     {

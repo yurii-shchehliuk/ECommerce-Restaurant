@@ -1,5 +1,4 @@
-using IdentityAPI.Extensions;
-using IdentityAPI.Helpers;
+using API.Identity.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -9,8 +8,10 @@ using Microsoft.Extensions.Hosting;
 using WebApi.Db.Identity;
 using WebApi.Domain.Entities.Identity;
 using WebApi.Domain.Middleware;
+using WebApi.Infrastructure.Integration;
+using WebApi.Infrastructure.Integration.Identity;
 
-namespace IdentityAPI
+namespace API.Identity
 {
     public class Startup
     {
@@ -27,14 +28,15 @@ namespace IdentityAPI
             {
                 x.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
             });
+
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
             services.AddHttpContextAccessor();
 
             services.AddApplicationServices(_config);
             services.AddIdentityServices(_config);
-
             services.AddSwaggerDocumentation();
+
             services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolicy", policy =>

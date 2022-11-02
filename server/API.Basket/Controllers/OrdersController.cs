@@ -1,5 +1,5 @@
+using API.Basket.Dtos;
 using AutoMapper;
-using BasketAPI.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using WebApi.Domain.Entities.OrderAggregate;
 using WebApi.Domain.Errors;
 using WebApi.Domain.Interfaces;
 
-namespace BasketAPI.Controllers
+namespace API.Basket.Controllers
 {
     [Authorize]
     [AllowAnonymous]

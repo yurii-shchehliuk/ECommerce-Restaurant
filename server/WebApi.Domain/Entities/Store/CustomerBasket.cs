@@ -16,7 +16,7 @@ namespace WebApi.Domain.Entities.Store
             Id = id;
         }
         /// <summary>
-        /// client genereted 
+        /// client side genereted 
         /// </summary>
         public string Id { get; set; }
         public List<BasketItem> Items { get; set; } = new List<BasketItem>();

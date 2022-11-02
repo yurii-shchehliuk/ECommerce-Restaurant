@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
 
-namespace BaseAPI
+namespace API.Base
 {
     public class Program
     {

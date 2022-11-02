@@ -1,9 +1,9 @@
+using API.Basket.Dtos;
 using AutoMapper;
-using BasketAPI.Dtos;
 using Microsoft.Extensions.Configuration;
 using WebApi.Domain.Entities.Store;
 
-namespace BasketAPI.Helpers
+namespace API.Basket.Helpers
 {
     public class ProductUrlResolver : IValueResolver<Product, ProductToReturnDto, string>
     {

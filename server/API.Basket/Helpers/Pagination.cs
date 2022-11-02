@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace BasketAPI.Helpers
+namespace API.Basket.Helpers
 {
     public class Pagination<T> where T : class
     {

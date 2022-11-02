@@ -1,4 +1,4 @@
-﻿namespace AdminAPI.Functions.UserFunc.Queries
+﻿namespace API.Admin.Functions.UserFunc.Queries
 {
     public class GetAllUsersQuery
     {

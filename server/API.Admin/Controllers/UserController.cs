@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 
-namespace AdminAPI.Controllers
+namespace API.Admin.Controllers
 {
     public class UserController : BaseApiController
     {

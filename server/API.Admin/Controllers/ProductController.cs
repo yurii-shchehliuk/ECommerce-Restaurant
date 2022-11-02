@@ -1,15 +1,15 @@
-﻿using AdminAPI.Functions.ProductFunc.Queries;
+﻿using API.Admin.Functions.ProductFunc.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
-namespace AdminAPI.Controllers
+namespace API.Admin.Controllers
 {
     public class ProductController : BaseApiController
     {
-        public ProductController()
+        public ProductController(IMediator mediator) : base(mediator)
         {
         }
 

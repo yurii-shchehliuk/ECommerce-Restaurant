@@ -1,4 +1,4 @@
-﻿namespace AdminAPI.Functions.UserFunc.Commands
+﻿namespace API.Admin.Functions.UserFunc.Commands
 {
     public class CreateUserCommand
     {

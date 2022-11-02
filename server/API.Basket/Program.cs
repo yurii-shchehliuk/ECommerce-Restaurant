@@ -7,7 +7,7 @@ using System;
 using System.Threading.Tasks;
 using WebApi.Db.Store;
 
-namespace BasketAPI
+namespace API.Basket
 {
     public class Program
     {
