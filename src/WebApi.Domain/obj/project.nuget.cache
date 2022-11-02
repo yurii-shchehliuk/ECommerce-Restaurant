@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "dgSpecHash": "KUYsk/2MZ133/u/d0vajdPzTR5ooQeKFENhrDs3DwRGlgUKG5KCEcx3bMDysHp+5LPs92SmiQzr9Yx8pT4vllQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\yshchehliuk\\source\\ECommerce-Restaurant\\src\\WebApi.Domain\\WebApi.Domain.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\3.1.1\\microsoft.aspnetcore.cryptography.internal.3.1.1.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\3.1.1\\microsoft.aspnetcore.cryptography.keyderivation.3.1.1.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\microsoft.aspnetcore.http.abstractions\\2.2.0\\microsoft.aspnetcore.http.abstractions.2.2.0.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\microsoft.aspnetcore.http.features\\2.2.0\\microsoft.aspnetcore.http.features.2.2.0.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\3.1.1\\microsoft.extensions.caching.abstractions.3.1.1.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\microsoft.extensions.configuration\\3.1.1\\microsoft.extensions.configuration.3.1.1.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\6.0.0\\microsoft.extensions.configuration.abstractions.6.0.0.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\microsoft.extensions.configuration.binder\\3.1.1\\microsoft.extensions.configuration.binder.3.1.1.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\3.1.1\\microsoft.extensions.dependencyinjection.3.1.1.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\6.0.0\\microsoft.extensions.dependencyinjection.abstractions.6.0.0.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\microsoft.extensions.fileproviders.abstractions\\6.0.0\\microsoft.extensions.fileproviders.abstractions.6.0.0.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\microsoft.extensions.hosting.abstractions\\6.0.0\\microsoft.extensions.hosting.abstractions.6.0.0.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\microsoft.extensions.identity.core\\3.1.1\\microsoft.extensions.identity.core.3.1.1.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\microsoft.extensions.identity.stores\\3.1.1\\microsoft.extensions.identity.stores.3.1.1.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\microsoft.extensions.logging\\3.1.1\\microsoft.extensions.logging.3.1.1.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\3.1.1\\microsoft.extensions.logging.abstractions.3.1.1.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\microsoft.extensions.options\\3.1.1\\microsoft.extensions.options.3.1.1.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\microsoft.extensions.primitives\\6.0.0\\microsoft.extensions.primitives.6.0.0.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\system.text.encodings.web\\6.0.0\\system.text.encodings.web.6.0.0.nupkg.sha512",
+    "C:\\Users\\yshchehliuk\\.nuget\\packages\\system.text.json\\6.0.4\\system.text.json.6.0.4.nupkg.sha512"
+  ],
+  "logs": []
+}

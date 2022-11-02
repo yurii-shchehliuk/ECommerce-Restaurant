@@ -1,120 +1,44 @@
 version: '3.4'
 
 services:
-  #
-  database:
-    #
-    container_name: sqlserver
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    restart: always
-    ports:
-        - "1433:1433"
-    environment:
-        - "ACCEPT_EULA=Y" 
-        - "SA_PASSWORD=P@ssw0rd"
-        - "MSSQL_PID=Express"
-    volumes:
-        - sqldata:/var/opt/mssql
-    networks:
-        - network-connection
+    
+    reverseproxy:
+        build:
+            context: .
+            dockerfile: nginx/nginx.Dockerfile
+        depends_on:
+            - api.identity
+        ports:
+            - "5200:5100"
 
-  identity:
-    #
-    container_name: identity
-    #
-    image: ${DOCKER_REGISTRY-}identity
-    build:
-      context: .
-      dockerfile: IdentityAPI/Dockerfile
-    ports:
-        - "5000:80"
-    env_file: Core/Common.env
-    environment:
-        - ASPNETCORE_ENVIRONMENT=Docker
-    restart: on-failure
-    volumes:
-        - ./.aspnet/identity/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
-    networks:
-        - network-connection
-    depends_on:
-        - database
+    api.identity:
+        image: ${DOCKER_REGISTRY-}apiidentity
+        build:
+            context: .
+            dockerfile: API.Identity/Dockerfile
+        environment:
+            - ASPNETCORE_URLS=HTTP://*:5000
+        ports:
+            - "5000:5000"
+#3rd services
+    #logging
+    globoseq:
+        image: datalust/seq
+        restart: unless-stopped
+        ports:
+             - "5342:80"
+        environment:
+              - ACCEPT_EULA=Y
+        networks:
+             - globonet
+    #server
+    globosmtp:
+        image: rnwood/smtp4dev
+        restart: always
+        ports:
+          - "5010:80"
+        networks:
+          - globonet
 
-
-  baseapi:
-    container_name: baseapi
-    image: ${DOCKER_REGISTRY-}baseapi:1.0
-    build:
-      context: .
-      dockerfile: BaseAPI/Dockerfile
-    ports:
-        - "5010:80"
-    env_file: Core/Common.env
-    restart: on-failure
-    volumes:
-        - ./.aspnet/baseapi/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
-    networks:
-        - network-connection
-    depends_on:
-        - database
-
-  basketapi:
-    container_name: basketapi
-    image: ${DOCKER_REGISTRY-}basketapi:1.0
-    build:
-      context: .
-      dockerfile: BasketAPI/Dockerfile
-    ports:
-        - "5020:80"
-    env_file: Core/Common.env
-    restart: on-failure
-    volumes:
-        - ./.aspnet/basketapi/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
-    networks:
-        - network-connection
-    depends_on:
-        - database
-
-  redis:
-    image: redis:latest
-    ports:
-      - 6379:6379
-    command: ["redis-server", "--appendonly", "yes"]
-    volumes:
-      - redis-data:/data
-    networks:
-        - network-connection
-        
-  redis-commander:
-    image: rediscommander/redis-commander:latest
-    environment:
-      - REDIS_HOSTS=local:redis:6379
-      - HTTP_USER=root
-      - HTTP_PASSWORD=secret
-    ports:
-      - 8081:8081
-    networks:
-        - network-connection
-    depends_on:
-      - redis
-
-#  webclient:
-#    container_name: webclient
-#    image: ${DOCKER_REGISTRY-}webclient:1.0
-#    build:
-#      context: .
-#      dockerfile: WebClient/Dockerfile
-#    ports:
-#        - "80:80"
-#    restart: on-failure
-#    depends_on:
-#        - database
-#        - identity
-#        - baseapi
-#    networks:
-#        - network-connection
-volumes:
-  sqldata:
-  redis-data:
-networks: 
-  #
-  network-connection:
+networks:
+    globonet: {}

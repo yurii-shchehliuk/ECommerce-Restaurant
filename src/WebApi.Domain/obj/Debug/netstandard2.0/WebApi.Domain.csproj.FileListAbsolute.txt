@@ -1,0 +1,5 @@
+C:\Users\yshchehliuk\source\ECommerce-Restaurant\Core\obj\Debug\netstandard2.0\WebApi.Domain.csproj.AssemblyReference.cache
+C:\Users\yshchehliuk\source\ECommerce-Restaurant\Core\obj\Debug\netstandard2.0\WebApi.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yshchehliuk\source\ECommerce-Restaurant\Core\obj\Debug\netstandard2.0\WebApi.Domain.AssemblyInfoInputs.cache
+C:\Users\yshchehliuk\source\ECommerce-Restaurant\Core\obj\Debug\netstandard2.0\WebApi.Domain.AssemblyInfo.cs
+C:\Users\yshchehliuk\source\ECommerce-Restaurant\Core\obj\Debug\netstandard2.0\WebApi.Domain.csproj.CoreCompileInputs.cache

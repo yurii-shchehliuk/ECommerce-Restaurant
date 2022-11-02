@@ -1,0 +1,10 @@
+C:\Users\yshchehliuk\source\ECommerce-Restaurant\WebApi.Domain\bin\Release\netcoreapp3.1\WebApi.Domain.deps.json
+C:\Users\yshchehliuk\source\ECommerce-Restaurant\WebApi.Domain\bin\Release\netcoreapp3.1\WebApi.Domain.dll
+C:\Users\yshchehliuk\source\ECommerce-Restaurant\WebApi.Domain\bin\Release\netcoreapp3.1\WebApi.Domain.pdb
+C:\Users\yshchehliuk\source\ECommerce-Restaurant\WebApi.Domain\obj\Release\netcoreapp3.1\WebApi.Domain.csproj.AssemblyReference.cache
+C:\Users\yshchehliuk\source\ECommerce-Restaurant\WebApi.Domain\obj\Release\netcoreapp3.1\WebApi.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yshchehliuk\source\ECommerce-Restaurant\WebApi.Domain\obj\Release\netcoreapp3.1\WebApi.Domain.AssemblyInfoInputs.cache
+C:\Users\yshchehliuk\source\ECommerce-Restaurant\WebApi.Domain\obj\Release\netcoreapp3.1\WebApi.Domain.AssemblyInfo.cs
+C:\Users\yshchehliuk\source\ECommerce-Restaurant\WebApi.Domain\obj\Release\netcoreapp3.1\WebApi.Domain.csproj.CoreCompileInputs.cache
+C:\Users\yshchehliuk\source\ECommerce-Restaurant\WebApi.Domain\obj\Release\netcoreapp3.1\WebApi.Domain.dll
+C:\Users\yshchehliuk\source\ECommerce-Restaurant\WebApi.Domain\obj\Release\netcoreapp3.1\WebApi.Domain.pdb
