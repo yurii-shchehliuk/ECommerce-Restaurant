@@ -3,16 +3,13 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <ProjectGuid>131d7d04-28da-40f7-9580-eb8a1e010e1b</ProjectGuid>
+    <ProjectGuid>c9f9518d-5063-4437-90d9-735477927ebf</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger/index.html</DockerServiceUrl>
-    <DockerServiceName>api.identity</DockerServiceName>
+    <DockerServiceName>api.web</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="launchSettings.json" />
   </ItemGroup>
 </Project>

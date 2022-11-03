@@ -1,45 +1,75 @@
 version: '3.4' 
  
 services: 
-     
+    ##nginx proxy
     reverseproxy: 
         build: 
             context: . 
-            dockerfile: nginx/nginx.Dockerfile 
+            dockerfile: src/nginx/nginx.Dockerfile 
         depends_on: 
             - api.identity 
         ports: 
             - "5200:5100" 
- 
+        networks:
+            owletnet:
+                aliases:
+                    - "id-local.owlet.com"
+                    - "www-local.owlet.com"
+    ##API
     api.identity: 
         image: ${DOCKER_REGISTRY-}apiidentity 
         build: 
             context: . 
-            dockerfile: API.Identity/Dockerfile 
+            dockerfile: src/API.Identity/Dockerfile 
         environment: 
-            - ASPNETCORE_URLS=HTTP://*:5041 
+            - ASPNETCORE_URLS=http://*:5041 
         ports:
             - "5041:5041"
-    api.Basket: 
-        image: ${DOCKER_REGISTRY-}apibase 
+        depends_on:
+            - database
+        networks:
+            - owletnet
+    api.basket: 
+        image: ${DOCKER_REGISTRY-}apibasket 
         build: 
             context: . 
-            dockerfile: API.Basket/Dockerfile 
+            dockerfile: src/API.Basket/Dockerfile 
         environment: 
-            - ASPNETCORE_URLS=HTTP://*:5031 
+            - ASPNETCORE_URLS=http://*:5031 
         ports:
             - "5031:5031"
-    api.base: 
-        image: ${DOCKER_REGISTRY-}apibase 
+        depends_on:
+            - database
+        networks:
+            - owletnet
+    api.web: 
+        image: ${DOCKER_REGISTRY-}apiweb 
         build: 
             context: . 
-            dockerfile: API.Base/Dockerfile 
+            dockerfile: src/API.Web/Dockerfile 
         environment: 
-            - ASPNETCORE_URLS=HTTP://*:5021 
+            - ASPNETCORE_URLS=http://*:5021 
         ports:
             - "5021:5021"
-#3rd services
-    #basket's redis
+        networks:
+            - owletnet
+    ##sql database
+    database:
+        container_name: sqlserver
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        restart: always
+        ports:
+            - "1433:1433"
+        environment:
+            - "ACCEPT_EULA=Y" 
+            - "SA_PASSWORD=P@ssw0rd"
+            - "MSSQL_PID=Express"
+        volumes:
+            - sqldata:/var/opt/mssql
+        networks:
+            - owletnet
+##3rd services
+    ##basket's redis
     redis: 
         image: redis:latest 
         ports: 
@@ -48,8 +78,7 @@ services:
         volumes: 
             - redis-data:/data 
         networks: 
-            - network-connection 
-            
+            - owletnet 
     redis-commander: 
         image: rediscommander/redis-commander:latest 
         environment: 
@@ -59,12 +88,12 @@ services:
         ports: 
             - 8081:8081 
         networks: 
-            - network-connection 
+            - owletnet 
         depends_on: 
             - redis
 
     #logging
-    owletsql:
+    owletseq:
         image: datalust/seq
         restart: unless-stopped
         ports:
@@ -73,7 +102,7 @@ services:
               - ACCEPT_EULA=Y
         networks:
              - owletnet
-    #server
+    #email smtp
     owletsmtp:
         image: rnwood/smtp4dev
         restart: always
@@ -81,6 +110,8 @@ services:
           - "5010:80"
         networks:
           - owletnet
-
+volumes:
+    sqldata:
+    redis-data:
 networks:
     owletnet: {}

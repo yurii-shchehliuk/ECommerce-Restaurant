@@ -3,11 +3,15 @@
     "Docker Compose": {
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
-      "composeLaunchAction": "LaunchBrowser",
-      "composeLaunchServiceName": "api.identity",
-      "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger/index.html",
       "serviceActions": {
-        "api.identity": "StartDebugging"
+        "api.basket": "StartDebugging",
+        "api.identity": "StartDebugging",
+        "api.web": "StartDebugging",
+        "database": "StartWithoutDebugging",
+        "owletsmtp": "StartWithoutDebugging",
+        "owletseq": "StartWithoutDebugging",
+        "redis": "StartWithoutDebugging",
+        "redis-commander": "StartWithoutDebugging"
       }
     }
   }
