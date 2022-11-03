@@ -6,7 +6,7 @@ USE master;
 GO
 CREATE LOGIN [owlet_dbuser] WITH PASSWORD=N'P@ssw0rd', CHECK_EXPIRATION=OFF, CHECK_POLICY=ON;
 GO
-USE owletDB;
+USE appdb;
 GO
 CREATE USER [owlet_dbuser] FOR LOGIN [owlet_dbuser];
 GO

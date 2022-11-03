@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WebApi.Db.Store;
-using WebApi.Infrastructure.IntegrationExtentions;
-using WebApi.Infrastructure.IntegrationExtentions.Basket;
-using WebApi.Infrastructure.IntegrationExtentions.Middleware;
-
+using WebApi.Db.Store;
+using WebApi.Infrastructure.IntegrationExtentions;
+using WebApi.Infrastructure.IntegrationExtentions.Basket;
+using WebApi.Infrastructure.IntegrationExtentions.Middleware;
+
 namespace API.Basket
 {
     public class Startup
@@ -32,28 +32,32 @@ namespace API.Basket
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwaggerDocumention();
-            }
-
-            app.ApplicationConfiguration();
-
-            app.UseStatusCodePagesWithReExecute("/errors/{0}");
-
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-                endpoints.MapFallbackToController("Index", "Fallback");
+        {
+            var virtualPath = "/api";
+            app.Map(virtualPath, builder =>
+            {
+                if (env.IsDevelopment())
+                {
+                    app.UseDeveloperExceptionPage();
+                    app.UseSwaggerDocumention();
+                }
+
+                app.ApplicationConfiguration();
+
+                app.UseStatusCodePagesWithReExecute("/errors/{0}");
+
+                app.UseHttpsRedirection();
+
+                app.UseRouting();
+
+                app.UseAuthentication();
+                app.UseAuthorization();
+
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                    endpoints.MapFallbackToController("Index", "Fallback");
+                });
             });
         }
     }
