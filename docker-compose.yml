@@ -1,62 +1,43 @@
 version: '3.4' 
  
 services: 
-    #nginx proxy
+     
     reverseproxy: 
         build: 
             context: . 
-            dockerfile: server/nginx/nginx.Dockerfile 
+            dockerfile: nginx/nginx.Dockerfile 
         depends_on: 
             - api.identity 
         ports: 
             - "5200:5100" 
-    #API
+ 
     api.identity: 
         image: ${DOCKER_REGISTRY-}apiidentity 
         build: 
             context: . 
-            dockerfile: server/API.Identity/Dockerfile 
+            dockerfile: API.Identity/Dockerfile 
         environment: 
             - ASPNETCORE_URLS=HTTP://*:5041 
         ports:
             - "5041:5041"
-        depends_on:
-            - database
-    api.basket: 
-        image: ${DOCKER_REGISTRY-}apibasket 
+    api.Basket: 
+        image: ${DOCKER_REGISTRY-}apibase 
         build: 
             context: . 
-            dockerfile: server/API.Basket/Dockerfile 
+            dockerfile: API.Basket/Dockerfile 
         environment: 
             - ASPNETCORE_URLS=HTTP://*:5031 
         ports:
             - "5031:5031"
-        depends_on:
-            - database
     api.base: 
         image: ${DOCKER_REGISTRY-}apibase 
         build: 
             context: . 
-            dockerfile: server/API.Base/Dockerfile 
+            dockerfile: API.Base/Dockerfile 
         environment: 
             - ASPNETCORE_URLS=HTTP://*:5021 
         ports:
             - "5021:5021"
-    #sql database
-    database:
-        container_name: sqlserver
-        image: mcr.microsoft.com/mssql/server:2019-latest
-        restart: always
-        ports:
-            - "1433:1433"
-        environment:
-            - "ACCEPT_EULA=Y" 
-            - "SA_PASSWORD=P@ssw0rd"
-            - "MSSQL_PID=Express"
-        volumes:
-            - sqldata:/var/opt/mssql
-        networks:
-            - owletnet
 #3rd services
     #basket's redis
     redis: 
@@ -67,7 +48,7 @@ services:
         volumes: 
             - redis-data:/data 
         networks: 
-            - owletnet 
+            - network-connection 
             
     redis-commander: 
         image: rediscommander/redis-commander:latest 
@@ -78,7 +59,7 @@ services:
         ports: 
             - 8081:8081 
         networks: 
-            - owletnet 
+            - network-connection 
         depends_on: 
             - redis
 
@@ -100,8 +81,6 @@ services:
           - "5010:80"
         networks:
           - owletnet
-volumes:
-    sqldata:
-    redis-data:
+
 networks:
     owletnet: {}
