@@ -1,35 +1,87 @@
-version: '3.4'
-
-services:
-    
-    reverseproxy:
-        build:
-            context: .
-            dockerfile: nginx/nginx.Dockerfile
+version: '3.4' 
+ 
+services: 
+    #nginx proxy
+    reverseproxy: 
+        build: 
+            context: . 
+            dockerfile: server/nginx/nginx.Dockerfile 
+        depends_on: 
+            - api.identity 
+        ports: 
+            - "5200:5100" 
+    #API
+    api.identity: 
+        image: ${DOCKER_REGISTRY-}apiidentity 
+        build: 
+            context: . 
+            dockerfile: server/API.Identity/Dockerfile 
+        environment: 
+            - ASPNETCORE_URLS=HTTP://*:5041 
+        ports:
+            - "5041:5041"
         depends_on:
-            - api.identity
+            - database
+    api.basket: 
+        image: ${DOCKER_REGISTRY-}apibasket 
+        build: 
+            context: . 
+            dockerfile: server/API.Basket/Dockerfile 
+        environment: 
+            - ASPNETCORE_URLS=HTTP://*:5031 
         ports:
-            - "5200:5100"
-
-    api.identity:
-        image: ${DOCKER_REGISTRY-}apiidentity
-        build:
-            context: .
-            dockerfile: API.Identity/Dockerfile
+            - "5031:5031"
+        depends_on:
+            - database
+    api.base: 
+        image: ${DOCKER_REGISTRY-}apibase 
+        build: 
+            context: . 
+            dockerfile: server/API.Base/Dockerfile 
+        environment: 
+            - ASPNETCORE_URLS=HTTP://*:5021 
+        ports:
+            - "5021:5021"
+    #sql database
+    database:
+        container_name: sqlserver
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        restart: always
+        ports:
+            - "1433:1433"
         environment:
-            - ASPNETCORE_URLS=HTTP://*:5000
-        ports:
-            - "5000:5000"
-    api.identity:
-        image: ${DOCKER_REGISTRY-}apiidentity
-        build:
-            context: .
-            dockerfile: API.Identity/Dockerfile
-        environment:
-            - ASPNETCORE_URLS=HTTP://*:5000
-        ports:
-            - "5000:5000"
+            - "ACCEPT_EULA=Y" 
+            - "SA_PASSWORD=P@ssw0rd"
+            - "MSSQL_PID=Express"
+        volumes:
+            - sqldata:/var/opt/mssql
+        networks:
+            - owletnet
 #3rd services
+    #basket's redis
+    redis: 
+        image: redis:latest 
+        ports: 
+            - 6379:6379 
+        command: ["redis-server", "--appendonly", "yes"] 
+        volumes: 
+            - redis-data:/data 
+        networks: 
+            - owletnet 
+            
+    redis-commander: 
+        image: rediscommander/redis-commander:latest 
+        environment: 
+            - REDIS_HOSTS=local:redis:6379 
+            - HTTP_USER=root 
+            - HTTP_PASSWORD=secret 
+        ports: 
+            - 8081:8081 
+        networks: 
+            - owletnet 
+        depends_on: 
+            - redis
+
     #logging
     owletsql:
         image: datalust/seq
@@ -48,6 +100,8 @@ services:
           - "5010:80"
         networks:
           - owletnet
-
+volumes:
+    sqldata:
+    redis-data:
 networks:
     owletnet: {}
