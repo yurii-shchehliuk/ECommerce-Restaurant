@@ -43,7 +43,7 @@ namespace API.Admin.Controllers
             });
         }
 
-        protected async new Task<IActionResult> Response(ICommand command, object? data = null)
+        protected async new Task<IActionResult> Response(ICommand command, object data = null)
         {
             try
             {

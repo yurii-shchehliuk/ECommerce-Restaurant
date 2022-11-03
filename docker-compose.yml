@@ -1,35 +1,68 @@
-version: '3.4'
-
-services:
-    
-    reverseproxy:
-        build:
-            context: .
-            dockerfile: nginx/nginx.Dockerfile
-        depends_on:
-            - api.identity
+version: '3.4' 
+ 
+services: 
+     
+    reverseproxy: 
+        build: 
+            context: . 
+            dockerfile: nginx/nginx.Dockerfile 
+        depends_on: 
+            - api.identity 
+        ports: 
+            - "5200:5100" 
+ 
+    api.identity: 
+        image: ${DOCKER_REGISTRY-}apiidentity 
+        build: 
+            context: . 
+            dockerfile: API.Identity/Dockerfile 
+        environment: 
+            - ASPNETCORE_URLS=HTTP://*:5041 
         ports:
-            - "5200:5100"
-
-    api.identity:
-        image: ${DOCKER_REGISTRY-}apiidentity
-        build:
-            context: .
-            dockerfile: API.Identity/Dockerfile
-        environment:
-            - ASPNETCORE_URLS=HTTP://*:5000
+            - "5041:5041"
+    api.Basket: 
+        image: ${DOCKER_REGISTRY-}apibase 
+        build: 
+            context: . 
+            dockerfile: API.Basket/Dockerfile 
+        environment: 
+            - ASPNETCORE_URLS=HTTP://*:5031 
         ports:
-            - "5000:5000"
-    api.identity:
-        image: ${DOCKER_REGISTRY-}apiidentity
-        build:
-            context: .
-            dockerfile: API.Identity/Dockerfile
-        environment:
-            - ASPNETCORE_URLS=HTTP://*:5000
+            - "5031:5031"
+    api.base: 
+        image: ${DOCKER_REGISTRY-}apibase 
+        build: 
+            context: . 
+            dockerfile: API.Base/Dockerfile 
+        environment: 
+            - ASPNETCORE_URLS=HTTP://*:5021 
         ports:
-            - "5000:5000"
+            - "5021:5021"
 #3rd services
+    #basket's redis
+    redis: 
+        image: redis:latest 
+        ports: 
+            - 6379:6379 
+        command: ["redis-server", "--appendonly", "yes"] 
+        volumes: 
+            - redis-data:/data 
+        networks: 
+            - network-connection 
+            
+    redis-commander: 
+        image: rediscommander/redis-commander:latest 
+        environment: 
+            - REDIS_HOSTS=local:redis:6379 
+            - HTTP_USER=root 
+            - HTTP_PASSWORD=secret 
+        ports: 
+            - 8081:8081 
+        networks: 
+            - network-connection 
+        depends_on: 
+            - redis
+
     #logging
     owletsql:
         image: datalust/seq
