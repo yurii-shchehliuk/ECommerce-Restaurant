@@ -1,0 +1,53 @@
+version: '3.4'
+
+services:
+    
+    reverseproxy:
+        build:
+            context: .
+            dockerfile: nginx/nginx.Dockerfile
+        depends_on:
+            - api.identity
+        ports:
+            - "5200:5100"
+
+    api.identity:
+        image: ${DOCKER_REGISTRY-}apiidentity
+        build:
+            context: .
+            dockerfile: API.Identity/Dockerfile
+        environment:
+            - ASPNETCORE_URLS=HTTP://*:5000
+        ports:
+            - "5000:5000"
+    api.identity:
+        image: ${DOCKER_REGISTRY-}apiidentity
+        build:
+            context: .
+            dockerfile: API.Identity/Dockerfile
+        environment:
+            - ASPNETCORE_URLS=HTTP://*:5000
+        ports:
+            - "5000:5000"
+#3rd services
+    #logging
+    owletsql:
+        image: datalust/seq
+        restart: unless-stopped
+        ports:
+             - "5342:80"
+        environment:
+              - ACCEPT_EULA=Y
+        networks:
+             - owletnet
+    #server
+    owletsmtp:
+        image: rnwood/smtp4dev
+        restart: always
+        ports:
+          - "5010:80"
+        networks:
+          - owletnet
+
+networks:
+    owletnet: {}
