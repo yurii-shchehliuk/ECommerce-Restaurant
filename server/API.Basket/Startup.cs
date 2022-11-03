@@ -33,16 +33,16 @@ namespace API.Basket
             services.AddApplicationServices(_config);
             services.AddSwaggerDocumentation();
 
-            services.AddCors(opt =>
-            {
-                opt.AddPolicy("CorsPolicy", policy =>
-                {
-                    policy.AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .WithOrigins("https://localhost:4200")
-                    .AllowCredentials();
-                });
-            });
+            //services.AddCors(opt =>
+            //{
+            //    opt.AddPolicy("CorsPolicy", policy =>
+            //    {
+            //        policy.AllowAnyHeader()
+            //        .AllowAnyMethod()
+            //        .WithOrigins("https://localhost:4200")
+            //        .AllowCredentials();
+            //    });
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,15 +60,8 @@ namespace API.Basket
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "Content")
-                ),
-                RequestPath = "/content"
-            });
 
-            app.UseCors("CorsPolicy");
+            //app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();

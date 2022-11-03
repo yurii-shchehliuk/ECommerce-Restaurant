@@ -5,6 +5,7 @@ using StackExchange.Redis;
 using System.Linq;
 using WebApi.Domain.Errors;
 using WebApi.Domain.Interfaces;
+using WebApi.Infrastructure.BackgroundTasks;
 using WebApi.Infrastructure.Repositories;
 using WebApi.Infrastructure.Services;
 
@@ -14,17 +15,19 @@ namespace WebApi.Infrastructure.Integration.Basket
     {
         public static void AddApplicationServices(this IServiceCollection services, IConfiguration _config)
         {
+            services.AddSingleton<IResponseCacheService, ResponseCacheService>();
             services.AddSingleton<IConnectionMultiplexer>(c =>
             {
                 var configuration = ConfigurationOptions.Parse(_config
                     .GetConnectionString("Redis"), true);
+                //configuration.AbortOnConnectFail = false;
                 return ConnectionMultiplexer.Connect(configuration);
             });
-
+            services.AddHostedService<RedisSubscriber>();
             services.AddScoped<IBasketRepository, BasketContext>();
-            services.AddSingleton<IResponseCacheService, ResponseCacheService>();
-            services.AddScoped<IProductRepository, ProductRepository>();
+
             //
+            services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IPaymentService, PaymentService>();
             //

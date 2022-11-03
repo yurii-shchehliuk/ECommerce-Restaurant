@@ -20,9 +20,18 @@ services:
             - ASPNETCORE_URLS=HTTP://*:5000
         ports:
             - "5000:5000"
+    api.identity:
+        image: ${DOCKER_REGISTRY-}apiidentity
+        build:
+            context: .
+            dockerfile: API.Identity/Dockerfile
+        environment:
+            - ASPNETCORE_URLS=HTTP://*:5000
+        ports:
+            - "5000:5000"
 #3rd services
     #logging
-    globoseq:
+    owletsql:
         image: datalust/seq
         restart: unless-stopped
         ports:
@@ -30,15 +39,15 @@ services:
         environment:
               - ACCEPT_EULA=Y
         networks:
-             - globonet
+             - owletnet
     #server
-    globosmtp:
+    owletsmtp:
         image: rnwood/smtp4dev
         restart: always
         ports:
           - "5010:80"
         networks:
-          - globonet
+          - owletnet
 
 networks:
-    globonet: {}
+    owletnet: {}
