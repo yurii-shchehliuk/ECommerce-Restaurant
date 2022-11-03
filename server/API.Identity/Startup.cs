@@ -10,6 +10,7 @@ using WebApi.Domain.Entities.Identity;
 using WebApi.Domain.Middleware;
 using WebApi.Infrastructure.Integration;
 using WebApi.Infrastructure.Integration.Identity;
+using WebApi.Infrastructure.Integration.Middleware;
 
 namespace API.Identity
 {
@@ -55,15 +56,8 @@ namespace API.Identity
                 app.UseSwaggerDocumention();
             }
 
-            var forwardedHeaderOptions = new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
-            };
-            forwardedHeaderOptions.KnownNetworks.Clear();
-            forwardedHeaderOptions.KnownProxies.Clear();
-            app.UseForwardedHeaders(forwardedHeaderOptions);
+            app.ApplicationConfiguration();
 
-            app.UseMiddleware<ExceptionMiddleware>();
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             app.UseHttpsRedirection();

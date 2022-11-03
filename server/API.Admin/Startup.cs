@@ -14,6 +14,7 @@ using WebApi.Db.Store;
 using WebApi.Domain.Middleware;
 using WebApi.Infrastructure.Integration;
 using WebApi.Infrastructure.Integration.Admin;
+using WebApi.Infrastructure.Integration.Middleware;
 
 namespace API.Admin
 {
@@ -83,7 +84,8 @@ namespace API.Admin
                 app.UseSwaggerDocumention();
             }
 
-            app.UseMiddleware<ExceptionMiddleware>();
+            app.ApplicationConfiguration();
+
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             app.UseHttpsRedirection();

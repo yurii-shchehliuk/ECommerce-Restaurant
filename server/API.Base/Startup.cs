@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +11,7 @@ using WebApi.Db.Identity;
 using WebApi.Db.Store;
 using WebApi.Domain.Middleware;
 using WebApi.Infrastructure.Integration;
+using WebApi.Infrastructure.Integration.Middleware;
 using WebApi.Infrastructure.SignalR;
 
 namespace API.Base
@@ -25,6 +27,11 @@ namespace API.Base
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "wwwroot/dist";
+            });
 
             services.AddSignalR(hubOptions =>
             {
@@ -52,13 +59,14 @@ namespace API.Base
                 app.UseSwaggerDocumention();
             }
 
-            app.UseMiddleware<ExceptionMiddleware>();
+            app.ApplicationConfiguration();
+
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            app.UseStaticFiles();
+
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
@@ -67,10 +75,22 @@ namespace API.Base
                 RequestPath = "/content"
             });
 
+            app.UseSpaStaticFiles();
+
             app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "wwwroot";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseAngularCliServer(npmScript: "start");
+                }
+            });
 
             app.UseEndpoints(endpoints =>
             {
