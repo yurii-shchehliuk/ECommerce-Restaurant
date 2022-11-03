@@ -7,7 +7,7 @@
         "api.basket": "StartDebugging",
         "api.identity": "StartDebugging",
         "api.web": "StartDebugging",
-        "database": "StartWithoutDebugging",
+        "owletsql": "StartWithoutDebugging",
         "owletsmtp": "StartWithoutDebugging",
         "owletseq": "StartWithoutDebugging",
         "redis": "StartWithoutDebugging",

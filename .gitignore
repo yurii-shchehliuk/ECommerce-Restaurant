@@ -63,6 +63,4 @@ WebClient/.angular/
 bin/
 obj/
 
-server/API.Base/wwwroot/.angular/
-
-src/API.Web/wwwroot/.angular/
+.angular/

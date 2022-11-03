@@ -45,7 +45,7 @@ namespace API.Identity
                         .ReadFrom.Configuration(ctx.Configuration) // minimum levels defined per project in json files 
                         .Enrich.FromLogContext()
                         .WriteTo.Console()
-                        .WriteTo.Seq("http://localhost:5342/"); //host.docker.internal
+                        .WriteTo.Seq("http://owletseq/"); //host.docker.internal
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

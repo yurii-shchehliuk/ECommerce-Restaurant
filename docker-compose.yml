@@ -26,7 +26,7 @@ services:
         ports:
             - "5041:5041"
         depends_on:
-            - database
+            - owletsql
         networks:
             - owletnet
     api.basket: 
@@ -39,7 +39,7 @@ services:
         ports:
             - "5031:5031"
         depends_on:
-            - database
+            - owletsql
         networks:
             - owletnet
     api.web: 
@@ -54,7 +54,7 @@ services:
         networks:
             - owletnet
     ##sql database
-    database:
+    owletsql:
         container_name: sqlserver
         image: mcr.microsoft.com/mssql/server:2019-latest
         restart: always
@@ -63,7 +63,6 @@ services:
         environment:
             - "ACCEPT_EULA=Y" 
             - "SA_PASSWORD=P@ssw0rd"
-            - "MSSQL_PID=Express"
         volumes:
             - sqldata:/var/opt/mssql
         networks:

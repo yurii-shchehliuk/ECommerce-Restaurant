@@ -67,7 +67,7 @@ namespace API.Admin
             {
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200").AllowCredentials();
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("*");
                 });
             });
         }
@@ -85,7 +85,7 @@ namespace API.Admin
 
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseStaticFiles();

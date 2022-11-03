@@ -40,7 +40,7 @@ namespace API.Identity
             {
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("*").AllowCredentials();
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("*");
                 });
             });
         }
@@ -48,32 +48,28 @@ namespace API.Identity
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            var virtualPath = "/api";
-            app.Map(virtualPath, builder =>
+            if (env.IsDevelopment())
             {
-                if (env.IsDevelopment())
-                {
-                    builder.UseDeveloperExceptionPage();
-                    builder.UseSwaggerDocumention();
-                }
+                app.UseDeveloperExceptionPage();
+                app.UseSwaggerDocumention();
+            }
 
-                builder.ApplicationConfiguration();
-                
-                builder.UseStatusCodePagesWithReExecute("/errors/{0}");
-                
-                builder.UseHttpsRedirection();
-                
-                builder.UseRouting();
-                
-                builder.UseCors("CorsPolicy");
-                
-                builder.UseAuthentication();
-                builder.UseAuthorization();
-                
-                builder.UseEndpoints(endpoints =>
-                {
-                    endpoints.MapControllers();
-                });
+            app.ApplicationConfiguration();
+
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
+
+            //app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseCors("CorsPolicy");
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
             });
         }
     }
