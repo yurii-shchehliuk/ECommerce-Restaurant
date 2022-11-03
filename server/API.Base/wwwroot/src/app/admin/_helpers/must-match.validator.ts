@@ -1,6 +1,7 @@
 import { FormGroup } from '@angular/forms';
 
 // custom validator to check that two fields match
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
 export function MustMatch(controlName: string, matchingControlName: string) {
     return (formGroup: FormGroup) => {
         const control = formGroup.controls[controlName];
@@ -17,5 +18,5 @@ export function MustMatch(controlName: string, matchingControlName: string) {
         } else {
             matchingControl.setErrors(null);
         }
-    }
+    };
 }

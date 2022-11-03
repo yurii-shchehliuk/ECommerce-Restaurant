@@ -24,7 +24,7 @@ export class OrdersComponent implements OnInit {
     });
   }
   onChat(){
-    
+
   }
 
 }

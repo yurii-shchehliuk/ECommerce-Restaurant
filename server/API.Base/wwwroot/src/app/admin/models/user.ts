@@ -5,5 +5,5 @@ export class User {
     displayName: string;
     token: string;
     email: string;
-    isAdmin: Role
+    isAdmin: Role;
 }

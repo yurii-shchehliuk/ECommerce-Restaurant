@@ -22,8 +22,13 @@ export class AddEditComponent implements OnInit {
     private alertService: AlertService
   ) {}
 
+  // convenience getter for easy access to form fields
+  get f() {
+    return this.form.controls;
+  }
+
   ngOnInit() {
-    this.id = this.route.snapshot.params['id'];
+    this.id = this.route.snapshot.params.id;
     this.isAddMode = !this.id;
 
     // password not required in edit mode
@@ -62,11 +67,6 @@ export class AddEditComponent implements OnInit {
         .pipe(first())
         .subscribe((x) => this.form.patchValue(x));
     }
-  }
-
-  // convenience getter for easy access to form fields
-  get f() {
-    return this.form.controls;
   }
 
   onSubmit() {

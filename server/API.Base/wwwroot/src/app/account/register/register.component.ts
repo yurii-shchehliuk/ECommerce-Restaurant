@@ -41,20 +41,16 @@ export class RegisterComponent implements OnInit {
   }
 
   validateEmailNotTaken(): AsyncValidatorFn {
-    return control => {
-      return timer(500).pipe(
-        switchMap(() => {
-          if (!control.value) {
-            return of(null);
-          }
-          return this.accountService.checkEmailExists(control.value).pipe(
-            map(res => {
-              return res ? { emailExists: true } : null;
-            })
-          );
-        })
-      );
-    };
+    return control => timer(500).pipe(
+      switchMap(() => {
+        if (!control.value) {
+          return of(null);
+        }
+        return this.accountService.checkEmailExists(control.value).pipe(
+          map(res => res ? { emailExists: true } : null)
+        );
+      })
+    );
   }
 
 }

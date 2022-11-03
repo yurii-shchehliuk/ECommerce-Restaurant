@@ -13,6 +13,7 @@ import { IAddress } from '../shared/models/address';
 export class AccountService {
   baseUrl = environment.identityApi;
   private currentUserSource = new ReplaySubject<IUser>(1);
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   currentUser$ = this.currentUserSource.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {}

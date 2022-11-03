@@ -21,11 +21,6 @@ export class ReservationDialogComponent implements OnInit {
     this.createLDAPServerForm();
   }
 
-  private createLDAPServerForm() {
-    this.frmLDAPSvr = this.fb.group({
-      txtTableId:[1],
-    });
-  }
   onSubmit() {
     console.log(this.frmLDAPSvr);
     this.onCancel();
@@ -33,5 +28,11 @@ export class ReservationDialogComponent implements OnInit {
 
   onCancel(): void {
     this.dialogRef.close();
+  }
+
+  private createLDAPServerForm() {
+    this.frmLDAPSvr = this.fb.group({
+      txtTableId:[1],
+    });
   }
 }

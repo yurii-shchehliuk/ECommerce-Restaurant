@@ -13,7 +13,7 @@ export class UserListComponent implements OnInit {
         this.userService.getAll()
             .pipe(first())
             .subscribe(users => this.users = users);
-            console.log(this.users, "all users");
+            console.log(this.users, 'all users');
 
     }
 

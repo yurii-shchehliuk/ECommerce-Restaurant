@@ -20,17 +20,9 @@ export class ChatComponent implements OnInit {
   ngOnInit(): void {
     this.subscribeToEvents();
   }
-  private subscribeToEvents() {
-    this.signalRService
-      .retrieveMappedObject()
-      .subscribe((receivedObj: MessageVM) => {
-        console.log(receivedObj, 'retrieveMappedObject');
-        this.addToInbox(receivedObj);
-      }); // calls the service method to get the new messages sent
-  }
 
   addToInbox(obj: MessageVM) {
-    let newObj = new MessageVM();
+    const newObj = new MessageVM();
     newObj.userName = obj.userName;
     newObj.message = obj.message;
     newObj.date = Date.now().toString();
@@ -45,8 +37,8 @@ export class ChatComponent implements OnInit {
     if (this.message) {
       this.message.userName = localStorage.getItem('user_name');
       if (
-        this.message.userName.length == 0 ||
-        this.message.message.length == 0
+        this.message.userName.length === 0 ||
+        this.message.message.length === 0
       ) {
         window.alert('Both fields are required.');
         return;
@@ -55,5 +47,14 @@ export class ChatComponent implements OnInit {
       }
     }
     this.message.message = '';
+  }
+
+  private subscribeToEvents() {
+    this.signalRService
+      .retrieveMappedObject()
+      .subscribe((receivedObj: MessageVM) => {
+        console.log(receivedObj, 'retrieveMappedObject');
+        this.addToInbox(receivedObj);
+      }); // calls the service method to get the new messages sent
   }
 }

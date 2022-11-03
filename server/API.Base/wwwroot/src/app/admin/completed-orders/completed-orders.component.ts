@@ -9,7 +9,7 @@ import { CompletedOrdersService } from './completed-orders.service';
 })
 export class CompletedOrdersComponent implements OnInit {
   orders: any;
-  constructor(private service: CompletedOrdersService) {}
+  constructor(private service: CompletedOrdersService) { }
 
   ngOnInit(): void {
     this.service.getOrders().subscribe(
@@ -28,13 +28,13 @@ export class CompletedOrdersComponent implements OnInit {
     this.download(blob, 'fileName.json');
   }
   download(blob, filename) {
-    var a = document.createElement('a'),
-      url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const url = URL.createObjectURL(blob);
     a.href = url;
     a.download = filename;
     document.body.appendChild(a);
     a.click();
-    setTimeout(function () {
+    setTimeout(() => {
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
     }, 0);

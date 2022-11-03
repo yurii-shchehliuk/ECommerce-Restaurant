@@ -9,54 +9,19 @@ import { environment } from 'src/environment';
   providedIn: 'root',
 })
 export class SignalRService {
-  private hubConnection: signalR.HubConnection;
   messageReceived = new EventEmitter<MessageVM>();
-
   baseUrl = environment.baseApi + 'Chat/send';
+
+  private hubConnection: signalR.HubConnection;
   private receivedMessage: MessageVM = new MessageVM();
   private sharedObj = new Subject<MessageVM>();
   private messageDTO = new MessageVM();
+
   constructor(private http: HttpClient) {
     this.buildConnection();
     this.registerOnServerEvents();
     this.startConnection();
   }
-  private buildConnection() {
-    this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(environment.baseApi)
-      .configureLogging(signalR.LogLevel.Information)
-      .build();
-  }
-  private startConnection(): void {
-    this.hubConnection
-      .start()
-      .then(() => {
-        console.log('Connection started');
-      })
-      .catch((err) => {
-        console.log('Error while starting connection:' + err);
-        setTimeout(function () {
-          this.startConnection();
-        }, 1000);
-      });
-  }
-  private registerOnServerEvents() {
-    this.hubConnection.on('MessageReceived', (user, message, date) => {
-      this.mapReceivedMessage(user, message, date);
-
-    });
-    this.hubConnection.onclose(async () => {
-      await this.startConnection();
-    });
-  }
-  private mapReceivedMessage(user: string, message: string, date: string): void {
-    this.receivedMessage.userName = user;
-    this.receivedMessage.message = message;
-    this.receivedMessage.date = date;
-    console.log("asdasd", date);
-
-    this.sharedObj.next(this.receivedMessage);
- }
 
   sendMessage(message: MessageVM) {
     this.messageDTO = message;
@@ -79,4 +44,41 @@ export class SignalRService {
   public retrieveMappedObject(): Observable<MessageVM> {
     return this.sharedObj.asObservable();
   }
+
+  private buildConnection() {
+    this.hubConnection = new signalR.HubConnectionBuilder()
+      .withUrl(environment.baseApi)
+      .configureLogging(signalR.LogLevel.Information)
+      .build();
+  }
+  private startConnection(): void {
+    this.hubConnection
+      .start()
+      .then(() => {
+        console.log('Connection started');
+      })
+      .catch((err) => {
+        console.log('Error while starting connection:' + err);
+        setTimeout(function() {
+          this.startConnection();
+        }, 1000);
+      });
+  }
+  private registerOnServerEvents() {
+    this.hubConnection.on('MessageReceived', (user, message, date) => {
+      this.mapReceivedMessage(user, message, date);
+
+    });
+    this.hubConnection.onclose(async () => {
+      await this.startConnection();
+    });
+  }
+  private mapReceivedMessage(user: string, message: string, date: string): void {
+    this.receivedMessage.userName = user;
+    this.receivedMessage.message = message;
+    this.receivedMessage.date = date;
+    console.log('asdasd', date);
+
+    this.sharedObj.next(this.receivedMessage);
+ }
 }

@@ -12,11 +12,13 @@ import { IDeliveryMethod } from '../shared/models/deliveryMethod';
 })
 export class BasketService {
   baseUrl = environment.basketApi;
-  private basketSource = new BehaviorSubject<IBasket>(null);
-  basket$ = this.basketSource.asObservable();
-  private basketTotalSource = new BehaviorSubject<IBasketTotals>(null);
-  basketTotal$ = this.basketTotalSource.asObservable();
   shipping = 0;
+  private basketSource = new BehaviorSubject<IBasket>(null);
+  private basketTotalSource = new BehaviorSubject<IBasketTotals>(null);
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  basket$ = this.basketSource.asObservable();
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  basketTotal$ = this.basketTotalSource.asObservable();
 
   constructor(private http: HttpClient) { }
 

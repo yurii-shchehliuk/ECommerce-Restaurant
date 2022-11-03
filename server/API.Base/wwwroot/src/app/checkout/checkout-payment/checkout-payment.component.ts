@@ -7,7 +7,7 @@ import { IBasket } from 'src/app/shared/models/basket';
 import { IOrder } from 'src/app/shared/models/order';
 import { Router, NavigationExtras } from '@angular/router';
 
-declare var Stripe;
+declare let Stripe;
 
 @Component({
   selector: 'app-checkout-payment',
