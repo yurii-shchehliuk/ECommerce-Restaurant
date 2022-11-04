@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using System;
 using System.Text.Json;
@@ -9,9 +10,12 @@ namespace WebApi.Infrastructure.Services
     public class ResponseCacheService : IResponseCacheService
     {
         private readonly IDatabase _database;
-        public ResponseCacheService(IConnectionMultiplexer redis)
+        private readonly ILogger<ResponseCacheService> logger;
+
+        public ResponseCacheService(IConnectionMultiplexer redis, ILogger<ResponseCacheService> logger)
         {
             _database = redis.GetDatabase();
+            this.logger = logger;
         }
 
         public async Task CacheResponseAsync(string cacheKey, object response, TimeSpan timeToLive)
@@ -28,14 +32,20 @@ namespace WebApi.Infrastructure.Services
 
             var serialisedResponse = JsonSerializer.Serialize(response, options);
 
-            await _database.StringSetAsync(cacheKey, serialisedResponse, timeToLive);
+            try
+            {
+                await _database.StringSetAsync(cacheKey, serialisedResponse, timeToLive);
+            }
+            catch (Exception ex)
+            {
+                logger.LogCritical("Falied to cache response. Ex: {message}", ex.Message);
+            }
         }
 
         public async Task<string> GetCachedResponseAsync(string cacheKey)
         {
             try
             {
-
                 var cachedResponse = await _database.StringGetAsync(cacheKey);
 
                 if (cachedResponse.IsNullOrEmpty)
@@ -47,6 +57,7 @@ namespace WebApi.Infrastructure.Services
             }
             catch (Exception ex)
             {
+                logger.LogCritical("Falied to get cache. Ex: {message}", ex.Message);
                 return null;
             }
         }

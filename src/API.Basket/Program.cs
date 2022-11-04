@@ -22,6 +22,7 @@ namespace API.Basket
                 var context = services.GetRequiredService<StoreContext>();
                 try
                 {
+                    Log.ForContext("ConnectionString:", context.Database.GetDbConnection().ConnectionString).Information("Information");
                     await context.Database.EnsureCreatedAsync();
                     //await context.Database.MigrateAsync();
                     await StoreContextSeed.SeedAsync(context, loggerFactory);

@@ -33,7 +33,7 @@ namespace API.Basket
             {
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("*");
                 });
             });
         }

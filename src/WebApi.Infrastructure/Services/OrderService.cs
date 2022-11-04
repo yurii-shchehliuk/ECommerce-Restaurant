@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using WebApi.Domain.Entities.OrderAggregate;
 using WebApi.Domain.Entities.Store;
 using WebApi.Domain.Interfaces;
+using WebApi.Domain.Interfaces.Integration;
 using WebApi.Domain.Specifications;
 
 namespace WebApi.Infrastructure.Services
@@ -13,11 +14,16 @@ namespace WebApi.Infrastructure.Services
         private readonly IBasketRepository _basketRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPaymentService _paymentService;
-        public OrderService(IBasketRepository basketRepo, IUnitOfWork unitOfWork, IPaymentService paymentService)
+        private readonly IOrderProcessingNotification _orderProcessingNotification;
+        public OrderService(IBasketRepository basketRepo,
+                            IUnitOfWork unitOfWork,
+                            IPaymentService paymentService,
+                            IOrderProcessingNotification orderProcessingNotification)
         {
             _paymentService = paymentService;
             _unitOfWork = unitOfWork;
             _basketRepo = basketRepo;
+            _orderProcessingNotification = orderProcessingNotification;
         }
 
         public async Task<Order> CreateOrderAsync(string buyerEmail, int deliveryMethodId, string basketId, Address shippingAddress)
@@ -59,7 +65,7 @@ namespace WebApi.Infrastructure.Services
             var result = await _unitOfWork.Complete();
 
             if (result <= 0) return null;
-
+            _orderProcessingNotification.QickOrderReceived(order, buyerEmail, basket.PaymentIntentId);
             // return order
             return order;
         }

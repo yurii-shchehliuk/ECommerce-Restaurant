@@ -11,7 +11,8 @@
         "owletsmtp": "StartWithoutDebugging",
         "owletseq": "StartWithoutDebugging",
         "redis": "StartWithoutDebugging",
-        "redis-commander": "StartWithoutDebugging"
+        "redis-commander": "StartWithoutDebugging",
+        "rabbitowlet": "StartWithoutDebugging"
       }
     }
   }

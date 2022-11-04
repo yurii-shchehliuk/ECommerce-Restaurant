@@ -1,3 +1,4 @@
+#wsl --shutdown
 cd server
 docker ps
 docker-compose down

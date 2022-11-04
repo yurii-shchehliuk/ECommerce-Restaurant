@@ -6,8 +6,10 @@ using System.Linq;
 using WebApi.Db.Store;
 using WebApi.Domain.Errors;
 using WebApi.Domain.Interfaces;
+using WebApi.Domain.Interfaces.Integration;
 using WebApi.Infrastructure.BackgroundTasks;
 using WebApi.Infrastructure.Repositories;
+using WebApi.Infrastructure.Repositories.Integration;
 using WebApi.Infrastructure.Services;
 
 namespace WebApi.Infrastructure.IntegrationExtentions.Basket
@@ -51,6 +53,8 @@ namespace WebApi.Infrastructure.IntegrationExtentions.Basket
                     return new BadRequestObjectResult(errorResponse);
                 };
             });
+
+            services.AddScoped<IOrderProcessingNotification, OrderProcessingNotification>();
 
             services.AddSignalR(hubOptions =>
             {

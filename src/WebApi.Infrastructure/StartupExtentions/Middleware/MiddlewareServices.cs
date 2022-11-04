@@ -15,7 +15,7 @@ namespace WebApi.Infrastructure.IntegrationExtentions.Middleware
             forwardedHeaderOptions.KnownProxies.Clear();
             app.UseForwardedHeaders(forwardedHeaderOptions);
 
-            //app.UseMiddleware<ExceptionMiddleware>();
+            app.UseMiddleware<ExceptionMiddleware>();
         }
     }
 }

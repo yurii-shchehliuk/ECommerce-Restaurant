@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using System;
 using System.Text.Json;
@@ -14,6 +15,7 @@ namespace WebApi.Db.Store
     public class BasketContext : IBasketRepository
     {
         private readonly IDatabase _database;
+
         public BasketContext(IConnectionMultiplexer redis)
         {
             _database = redis.GetDatabase();
