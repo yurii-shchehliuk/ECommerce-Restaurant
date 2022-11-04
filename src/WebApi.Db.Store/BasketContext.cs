@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Core;
 using StackExchange.Redis;
 using System;
 using System.Text.Json;
@@ -28,9 +30,16 @@ namespace WebApi.Db.Store
 
         public async Task<CustomerBasket> GetBasketAsync(string basketId)
         {
-            var data = await _database.StringGetAsync(basketId);
-
-            return data.IsNullOrEmpty ? null : JsonSerializer.Deserialize<CustomerBasket>(data);
+            try
+            {
+                var data = await _database.StringGetAsync(basketId);
+                return data.IsNullOrEmpty ? null : JsonSerializer.Deserialize<CustomerBasket>(data);
+            }
+            catch (Exception ex)
+            {
+                Log.ForContext("REDIS exception:", ex).Error("REDIS exception");
+                return null;
+            }
         }
 
         public async Task<CustomerBasket> UpdateBasketAsync(CustomerBasket basket)

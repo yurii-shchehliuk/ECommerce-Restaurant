@@ -115,7 +115,6 @@ services:
         restart: always
         ports:
             - 8088:15672
-            - "5672:5672"
 volumes: 
     sqldata: 
     redis-data: 
