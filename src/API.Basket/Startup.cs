@@ -1,3 +1,4 @@
+using API.Basket.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,8 @@ namespace API.Basket
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(MappingProfiles));
+
             services.AddControllers();
 
             services.AddDbContext<StoreContext>(x =>
@@ -25,6 +28,14 @@ namespace API.Basket
 
             services.AddApplicationServices(_config);
             services.AddSwaggerDocumentation();
+
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -34,9 +45,12 @@ namespace API.Basket
             {
                 if (env.IsDevelopment())                {                    app.UseDeveloperExceptionPage();                    app.UseSwaggerDocumention();                }
                 app.ApplicationConfiguration();                app.UseStatusCodePagesWithReExecute("/errors/{0}");                //app.UseHttpsRedirection();
-                app.UseRouting();
+                app.UseRouting();
+
+                app.UseCors("CorsPolicy");
+
                 app.UseAuthentication();                app.UseAuthorization();
-                app.UseEndpoints(endpoints =>                {                    endpoints.MapControllers();                    endpoints.MapFallbackToController("Index", "Fallback");                });            });
+                app.UseEndpoints(endpoints =>                {                    endpoints.MapControllers();                    //endpoints.MapFallbackToController("Index", "Fallback");                });            });
         }
     }
 }

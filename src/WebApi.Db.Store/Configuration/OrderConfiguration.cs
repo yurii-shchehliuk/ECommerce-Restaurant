@@ -9,17 +9,15 @@ namespace WebApi.DB.Store.Configuration
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
+            builder.Property(s => s.Status).HasConversion(o => o.ToString(),o => (OrderStatus)Enum.Parse(typeof(OrderStatus), o));
+            builder.Property(o=>o.Subtotal).HasColumnType("decimal(18,2)");
             builder.OwnsOne(o => o.ShipToAddress, a =>
             {
                 a.WithOwner();
             });
-            builder.Property(s => s.Status)
-                .HasConversion(
-                    o => o.ToString(),
-                    o => (OrderStatus)Enum.Parse(typeof(OrderStatus), o)
-                );
-
             builder.HasMany(o => o.OrderItems).WithOne().OnDelete(DeleteBehavior.Cascade);
+
+
         }
     }
 }

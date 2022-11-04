@@ -90,7 +90,7 @@ namespace API.Web
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<ChatHub>("/chatsocket");
-                endpoints.MapFallbackToController("Index", "Fallback");
+                //endpoints.MapFallbackToController("Index", "Fallback");
             });
         }
     }

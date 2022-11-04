@@ -22,9 +22,9 @@ services:
             context: . 
             dockerfile: src/API.Identity/Dockerfile 
         environment: 
-            - ASPNETCORE_URLS=http://*:5041 
+            - ASPNETCORE_URLS=http://*:80 
         ports:
-            - "5041:5041"
+            - "5041:80"
         depends_on:
             - owletsql
         networks:
@@ -35,9 +35,9 @@ services:
             context: . 
             dockerfile: src/API.Basket/Dockerfile 
         environment: 
-            - ASPNETCORE_URLS=http://*:5031 
+            - ASPNETCORE_URLS=http://*:80
         ports:
-            - "5031:5031"
+            - "5031:80"
         depends_on:
             - owletsql
         networks:
@@ -48,9 +48,9 @@ services:
             context: . 
             dockerfile: src/API.Web/Dockerfile 
         environment: 
-            - ASPNETCORE_URLS=http://*:5021 
+            - ASPNETCORE_URLS=http://*:80 
         ports:
-            - "5021:5021"
+            - "5021:80"
         networks:
             - owletnet
     ##sql database
@@ -74,6 +74,7 @@ services:
         ports: 
             - 6379:6379 
         command: ["redis-server", "--appendonly", "yes"] 
+        restart: always
         volumes: 
             - redis-data:/data 
         networks: 
@@ -82,8 +83,7 @@ services:
         image: rediscommander/redis-commander:latest 
         environment: 
             - REDIS_HOSTS=local:redis:6379 
-            - HTTP_USER=root 
-            - HTTP_PASSWORD=secret 
+            - ALLOW_EMPTY_PASSWORD=yes
         ports: 
             - 8081:8081 
         networks: 

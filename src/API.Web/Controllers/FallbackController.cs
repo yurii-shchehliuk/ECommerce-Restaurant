@@ -3,6 +3,9 @@ using System.IO;
 
 namespace API.Web.Controllers
 {
+    /// <summary>
+    /// "Fallback"
+    /// </summary>
     public class FallbackController : Controller
     {
         public IActionResult Index()

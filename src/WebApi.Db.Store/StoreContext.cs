@@ -23,13 +23,5 @@ namespace WebApi.Db.Store
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer(("server=.;database=appdb;trusted_connection=true;"));
-            }
-            base.OnConfiguring(optionsBuilder);
-        }
     }
 }

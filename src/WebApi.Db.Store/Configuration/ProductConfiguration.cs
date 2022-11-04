@@ -19,4 +19,13 @@ namespace WebApi.DB.Store.Configuration
                 .HasForeignKey(p => p.ProductTypeId);
         }
     }
+
+    public class ProductTypes: IEntityTypeConfiguration<ProductType>
+    {
+        public void Configure(EntityTypeBuilder<ProductType> builder)
+        {
+            builder.Property(p => p.Id).IsRequired().ValueGeneratedNever();
+            builder.Property(p => p.Name).IsRequired().HasMaxLength(20);
+        }
+    }
 }

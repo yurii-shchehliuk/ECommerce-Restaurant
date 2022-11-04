@@ -19,16 +19,17 @@ namespace API.Basket
             {
                 var services = scope.ServiceProvider;
                 var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+                var context = services.GetRequiredService<StoreContext>();
                 try
                 {
-                    var context = services.GetRequiredService<StoreContext>();
-                    await context.Database.MigrateAsync();
+                    await context.Database.EnsureCreatedAsync();
+                    //await context.Database.MigrateAsync();
                     await StoreContextSeed.SeedAsync(context, loggerFactory);
                 }
                 catch (Exception ex)
                 {
                     var logger = loggerFactory.CreateLogger<Program>();
-                    logger.LogError(ex, "An error occured during migration");
+                    logger.LogError(ex, String.Format("An error occured during migration {0}", context.Database.GetDbConnection().ConnectionString));
                 }
             }
 

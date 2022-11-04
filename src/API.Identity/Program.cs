@@ -24,8 +24,8 @@ namespace API.Identity
                 try
                 {
                     var userManager = services.GetRequiredService<UserManager<AppUser>>();
-                    var identityContext = services.GetRequiredService<AppIdentityDbContext>();
-                    await identityContext.Database.MigrateAsync();
+                    var context = services.GetRequiredService<AppIdentityDbContext>();
+                    await context.Database.EnsureCreatedAsync();
                     await AppIdentityDbContextSeed.SeedUsersAsync(userManager);
                 }
                 catch (Exception ex)

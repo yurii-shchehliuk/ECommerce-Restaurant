@@ -33,14 +33,22 @@ namespace WebApi.Infrastructure.Services
 
         public async Task<string> GetCachedResponseAsync(string cacheKey)
         {
-            var cachedResponse = await _database.StringGetAsync(cacheKey);
+            try
+            {
 
-            if (cachedResponse.IsNullOrEmpty)
+                var cachedResponse = await _database.StringGetAsync(cacheKey);
+
+                if (cachedResponse.IsNullOrEmpty)
+                {
+                    return null;
+                }
+
+                return cachedResponse;
+            }
+            catch (Exception ex)
             {
                 return null;
             }
-
-            return cachedResponse;
         }
     }
 }
