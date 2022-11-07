@@ -12,6 +12,10 @@ using WebApi.Domain.Integration;
 
 namespace API.Admin.Processor
 {
+    /// <summary>
+    /// Message reciever
+    /// </summary>
+    /// <seealso cref="MassTransit"/>
     public class Worker : BackgroundService
     {
         private const string queueName = "qickorder.received";

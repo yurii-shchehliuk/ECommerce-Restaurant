@@ -6,15 +6,17 @@ services:
         build:  
             context: .  
             dockerfile: src/nginx/nginx.Dockerfile  
+        ports:  
+            - "5200:5200"
         depends_on:  
             - api.identity  
-        ports:  
-            - "5200:5100"  
-        networks: 
-            owletnet: 
-                aliases:
-                    - "id-local.owlet.com" 
-                    - "www-local.owlet.com" 
+            - api.basket  
+            - api.web  
+        #networks: 
+        #    owletnet: 
+        #        aliases:
+        #            - "id-local.owlet.com" 
+        #            - "www-local.owlet.com" 
     ##API 
     api.identity:  
         image: ${DOCKER_REGISTRY-}apiidentity  

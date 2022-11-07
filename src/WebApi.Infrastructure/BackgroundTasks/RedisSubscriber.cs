@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
+using Serilog;
 using StackExchange.Redis;
 using System;
 using System.Threading;
@@ -22,11 +23,19 @@ namespace WebApi.Infrastructure.BackgroundTasks
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var subscriber = connection.GetSubscriber();
-            return subscriber.SubscribeAsync("messagesChannel", (channel, value) =>
+            try
             {
-                Console.WriteLine($"The message content: {value}");
-            });
+                var subscriber = connection.GetSubscriber();
+                return subscriber.SubscribeAsync("messagesChannel", (channel, value) =>
+                {
+                    Console.WriteLine($"The message content: {value}");
+                });
+            }
+            catch (Exception ex)
+            {
+                Log.Error("", "");
+                return Task.FromException(ex);
+            }
         }
     }
 }

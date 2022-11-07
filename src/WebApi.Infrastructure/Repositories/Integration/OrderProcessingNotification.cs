@@ -11,6 +11,9 @@ using WebApi.Domain.Interfaces.Integration;
 
 namespace WebApi.Infrastructure.Repositories.Integration
 {
+    /// <summary>
+    /// Message sender
+    /// </summary>
     public class OrderProcessingNotification : IOrderProcessingNotification, IDisposable
     {
         private readonly IConnection _connection;
