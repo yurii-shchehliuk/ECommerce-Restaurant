@@ -12,12 +12,18 @@ namespace WebApi.Infrastructure.Services
 {
     public class TokenService : ITokenService
     {
-        private readonly IConfiguration _config;
         private readonly SymmetricSecurityKey _key;
+        private readonly string _issuer;
+
         public TokenService(IConfiguration config)
         {
-            _config = config;
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token:Key"]));
+            _issuer = config["Token:Issuer"];
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Token:Key"]));
+        }
+        public TokenService(string key, string issuer)
+        {
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            _issuer = issuer;
         }
 
         public string CreateToken(AppUser user)
@@ -35,7 +41,7 @@ namespace WebApi.Infrastructure.Services
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.Now.AddDays(7),
                 SigningCredentials = creds,
-                Issuer = _config["Token:Issuer"]
+                Issuer = _issuer 
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
