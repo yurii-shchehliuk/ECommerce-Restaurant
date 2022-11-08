@@ -27,6 +27,8 @@ namespace WebApi.Test
 
             //assert
             Assert.NotEmpty(result);
+            Assert.IsType<string>(result);
+            Assert.DoesNotContain("Bearer", result);
         }
     }
 }
