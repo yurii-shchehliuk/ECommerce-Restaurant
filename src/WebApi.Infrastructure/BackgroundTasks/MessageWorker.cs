@@ -3,29 +3,29 @@ using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Serilog;
-using System;
 using System.Text.Json;
 using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using WebApi.Domain.Integration;
+using WebApi.Domain.Integration.MessageDTOs;
 
-namespace API.Admin.Processor
+namespace WebApi.Infrastructure.BackgroundTasks
 {
     /// <summary>
     /// Message reciever
     /// </summary>
     /// <seealso cref="MassTransit"/>
-    public class Worker : BackgroundService
+    /// <seealso cref="RabbitMQ Sagas"/>
+    /// <see cref="Message sender"/>
+    public class MessageWorker : BackgroundService
     {
-        private const string queueName = "qickorder.received";
 
         private readonly IConnection connection;
         private readonly IModel channel;
         private readonly EventingBasicConsumer consumer;
 
 
-        public Worker(IConfiguration configuration)
+        public MessageWorker(IConfiguration configuration)
         {
             var factory = new ConnectionFactory
             {
@@ -34,7 +34,7 @@ namespace API.Admin.Processor
 
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
-            channel.QueueDeclare(queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+            channel.QueueDeclare(MessageConstants.queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
             consumer = new EventingBasicConsumer(channel);
             consumer.Received += ProcessQuickOrderReceived;
@@ -43,7 +43,7 @@ namespace API.Admin.Processor
 
         private void ProcessQuickOrderReceived(object sender, BasicDeliverEventArgs eventArgs)
         {
-            var orderInfo = JsonSerializer.Deserialize<QickReceivedMessage>(eventArgs.Body.ToArray());
+            var orderInfo = JsonSerializer.Deserialize<OrderMessage>(eventArgs.Body.ToArray());
 
             Log.ForContext("Order received", orderInfo, true)
                 .Information("Received a message from qieie for processing");
@@ -53,7 +53,7 @@ namespace API.Admin.Processor
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                channel.BasicConsume(queueName, true, consumer);
+                channel.BasicConsume(MessageConstants.queueName, true, consumer);
             }
         }
     }

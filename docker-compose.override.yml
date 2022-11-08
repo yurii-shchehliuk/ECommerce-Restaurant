@@ -72,7 +72,7 @@ services:
 ##3rd services 
     ##basket's redis 
     redis:  
-        image: redis:latest  
+        image: redis:6.0.10-alpine
         ports:  
             - 6379:6379  
         command: ["redis-server", "--appendonly", "yes"]  

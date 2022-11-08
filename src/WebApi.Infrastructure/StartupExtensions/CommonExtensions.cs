@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using WebApi.Domain.Integration;
 
-namespace WebApi.Infrastructure.IntegrationExtentions
+namespace WebApi.Infrastructure.StartupExtensions
 {
-    public static class SwaggerServiceExtensions
+    public static class CommonExtensions
     {
+        #region service
         public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services)
         {
             services.AddSwaggerGen(c =>
@@ -33,7 +35,9 @@ namespace WebApi.Infrastructure.IntegrationExtentions
 
             return services;
         }
+        #endregion
 
+        #region application
         public static IApplicationBuilder UseSwaggerDocumention(this IApplicationBuilder app)
         {
             app.UseSwagger();
@@ -45,5 +49,19 @@ namespace WebApi.Infrastructure.IntegrationExtentions
 
             return app;
         }
+
+        public static void ApplicationConfiguration(this IApplicationBuilder app)
+        {
+            var forwardedHeaderOptions = new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+            };
+            forwardedHeaderOptions.KnownNetworks.Clear();
+            forwardedHeaderOptions.KnownProxies.Clear();
+            app.UseForwardedHeaders(forwardedHeaderOptions);
+
+            app.UseMiddleware<ExceptionMiddleware>();
+        }
+        #endregion
     }
 }

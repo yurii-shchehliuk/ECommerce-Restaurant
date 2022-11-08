@@ -6,9 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebApi.Db.Identity;
-using WebApi.Infrastructure.IntegrationExtentions;
-using WebApi.Infrastructure.IntegrationExtentions.Identity;
-using WebApi.Infrastructure.IntegrationExtentions.Middleware;
+using WebApi.Infrastructure.StartupExtensions;
+using WebApi.Infrastructure.StartupExtensions.Identity;
 
 namespace API.Identity
 {

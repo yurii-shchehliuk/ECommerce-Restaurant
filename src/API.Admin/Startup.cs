@@ -9,9 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebApi.Db.Identity;
 using WebApi.Db.Store;
-using WebApi.Infrastructure.IntegrationExtentions;
-using WebApi.Infrastructure.IntegrationExtentions.Admin;
-using WebApi.Infrastructure.IntegrationExtentions.Middleware;
+using WebApi.Infrastructure.StartupExtensions;
+using WebApi.Infrastructure.StartupExtensions.Admin;
 
 namespace API.Admin
 {

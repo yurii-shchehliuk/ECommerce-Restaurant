@@ -7,6 +7,10 @@ using WebApi.Domain.Interfaces;
 
 namespace WebApi.Infrastructure.Services
 {
+    /// <summary>Redis data access</summary>
+    /// <remarks>
+    /// It's rather repository but lets remain it
+    /// </remarks>
     public class ResponseCacheService : IResponseCacheService
     {
         private readonly IDatabase _database;
@@ -38,7 +42,7 @@ namespace WebApi.Infrastructure.Services
             }
             catch (Exception ex)
             {
-                logger.LogCritical("Falied to cache response. Ex: {message}", ex.Message);
+                logger.LogCritical("REDIS. Falied to cache response. Ex: {message}", ex.Message);
             }
         }
 
@@ -57,7 +61,7 @@ namespace WebApi.Infrastructure.Services
             }
             catch (Exception ex)
             {
-                logger.LogCritical("Falied to get cache. Ex: {message}", ex.Message);
+                logger.LogCritical("REDIS. Falied to get cache. Ex: {message}", ex.Message);
                 return null;
             }
         }

@@ -1,6 +1,4 @@
-using Microsoft.Extensions.Logging;
 using Serilog;
-using Serilog.Core;
 using StackExchange.Redis;
 using System;
 using System.Text.Json;

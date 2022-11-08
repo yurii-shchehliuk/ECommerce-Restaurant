@@ -2,10 +2,11 @@ using Microsoft.Extensions.DependencyInjection;
 using WebApi.Domain.Interfaces;
 using WebApi.Infrastructure.Repositories;
 
-namespace WebApi.Infrastructure.IntegrationExtentions.Admin
+namespace WebApi.Infrastructure.StartupExtensions.Admin
 {
-    public static class ApplicationServices
+    public static class AdminExtensions
     {
+        #region service
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddTransient<IUnitOfWork, UnitOfWork>();
@@ -14,5 +15,6 @@ namespace WebApi.Infrastructure.IntegrationExtentions.Admin
 
             return services;
         }
+        #endregion
     }
 }

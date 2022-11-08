@@ -5,6 +5,7 @@ Regular user's functionality:
 * Meals ordering
 * SignalR online chat
 * Stripe payment
+* RabbitMQ messages
 
 Admin's functionality:
 * SignalR online chat
@@ -68,7 +69,10 @@ Admin's functionality:
   </tbody>  
 </table>
 
-#docker container 
+##Asynchronous services with synchronous and asynchronous communication
+https://learn.microsoft.com/en-us/dotnet/architecture/microservices/architect-microservice-container-applications/communication-in-microservice-architecture
+
+#nginx docker container 
 https://gist.github.com/dahlsailrunner/679e6dec5fd769f30bce90447ae80081
 
 #redis

@@ -1,16 +1,26 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebApi.Db.Identity;
 using WebApi.Domain.Entities.Identity;
+using WebApi.Domain.Interfaces;
+using WebApi.Infrastructure.Services;
 
-namespace WebApi.Infrastructure.IntegrationExtentions.Identity
+namespace WebApi.Infrastructure.StartupExtensions.Identity
 {
-    public static class IdentityServices
+    public static class IdentityExtensions
     {
+        #region service
+        public static void AddApplicationServices(this IServiceCollection services, IConfiguration config)
+        {
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddTransient<IEmailSender>(s => new EmailSender(config));
+        }
+
         public static void AddIdentityServices(this IServiceCollection services, IConfiguration config)
         {
             var builder = services.AddIdentityCore<AppUser>(c =>
@@ -40,5 +50,6 @@ namespace WebApi.Infrastructure.IntegrationExtentions.Identity
                 };
             });
         }
+        #endregion
     }
 }

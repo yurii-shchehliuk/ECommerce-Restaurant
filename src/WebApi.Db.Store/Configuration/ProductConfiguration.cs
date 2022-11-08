@@ -20,7 +20,7 @@ namespace WebApi.DB.Store.Configuration
         }
     }
 
-    public class ProductTypes: IEntityTypeConfiguration<ProductType>
+    public class ProductTypes : IEntityTypeConfiguration<ProductType>
     {
         public void Configure(EntityTypeBuilder<ProductType> builder)
         {

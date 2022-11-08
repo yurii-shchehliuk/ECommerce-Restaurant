@@ -65,7 +65,7 @@ namespace WebApi.Infrastructure.Services
             var result = await _unitOfWork.Complete();
 
             if (result <= 0) return null;
-            _orderProcessingNotification.QickOrderReceived(order, buyerEmail, basket.PaymentIntentId);
+            _orderProcessingNotification.OrderReceived(order, buyerEmail, basket.PaymentIntentId);
             // return order
             return order;
         }

@@ -33,7 +33,7 @@ namespace WebApi.Infrastructure.BackgroundTasks
             }
             catch (Exception ex)
             {
-                Log.Error("", "");
+                Log.Error("REDIS sunscriber error: {ex}", ex);
                 return Task.FromException(ex);
             }
         }

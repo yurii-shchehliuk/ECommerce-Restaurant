@@ -9,13 +9,14 @@ using WebApi.Domain.Interfaces;
 using WebApi.Domain.Interfaces.Integration;
 using WebApi.Infrastructure.BackgroundTasks;
 using WebApi.Infrastructure.Repositories;
-using WebApi.Infrastructure.Repositories.Integration;
 using WebApi.Infrastructure.Services;
+using WebApi.Infrastructure.Services.Integration;
 
-namespace WebApi.Infrastructure.IntegrationExtentions.Basket
+namespace WebApi.Infrastructure.StartupExtensions.Basket
 {
-    public static class ApplicationServices
+    public static class BasketExtensions
     {
+        #region service
         public static void AddApplicationServices(this IServiceCollection services, IConfiguration _config)
         {
             services.AddSingleton<IResponseCacheService, ResponseCacheService>();
@@ -27,12 +28,16 @@ namespace WebApi.Infrastructure.IntegrationExtentions.Basket
                 return ConnectionMultiplexer.Connect(configuration);
             });
             services.AddHostedService<RedisSubscriber>();
+
+            //services.AddHostedService<MessageWorker>();
+            services.AddSingleton<IOrderProcessingNotification, MessageNotification>();
+
             services.AddScoped<IBasketRepository, BasketContext>();
 
             //
-            services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IProductRepository, ProductRepository>();
             //
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -54,13 +59,12 @@ namespace WebApi.Infrastructure.IntegrationExtentions.Basket
                 };
             });
 
-            services.AddScoped<IOrderProcessingNotification, OrderProcessingNotification>();
-
             services.AddSignalR(hubOptions =>
             {
                 hubOptions.EnableDetailedErrors = true;
                 hubOptions.KeepAliveInterval = System.TimeSpan.FromMinutes(1);
             });
         }
+        #endregion
     }
 }

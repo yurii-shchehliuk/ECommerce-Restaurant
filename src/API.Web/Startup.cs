@@ -4,9 +4,8 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WebApi.Infrastructure.IntegrationExtentions;
-using WebApi.Infrastructure.IntegrationExtentions.Middleware;
 using WebApi.Infrastructure.SignalR;
+using WebApi.Infrastructure.StartupExtensions;
 
 namespace API.Web
 {
