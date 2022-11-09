@@ -17,13 +17,12 @@ namespace WebApi.Infrastructure.Services
         private readonly IOrderProcessingNotification _orderProcessingNotification;
         public OrderService(IBasketRepository basketRepo,
                             IUnitOfWork unitOfWork,
-                            IPaymentService paymentService,
-                            IOrderProcessingNotification orderProcessingNotification)
+                            IPaymentService paymentService)
         {
             _paymentService = paymentService;
             _unitOfWork = unitOfWork;
             _basketRepo = basketRepo;
-            _orderProcessingNotification = orderProcessingNotification;
+            //_orderProcessingNotification = orderProcessingNotification;
         }
 
         public async Task<Order> CreateOrderAsync(string buyerEmail, int deliveryMethodId, string basketId, Address shippingAddress)
@@ -65,7 +64,7 @@ namespace WebApi.Infrastructure.Services
             var result = await _unitOfWork.Complete();
 
             if (result <= 0) return null;
-            _orderProcessingNotification.OrderReceived(order, buyerEmail, basket.PaymentIntentId);
+            //_orderProcessingNotification.OrderReceived(order, buyerEmail, basket.PaymentIntentId);
             // return order
             return order;
         }

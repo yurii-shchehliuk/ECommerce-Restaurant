@@ -20,41 +20,47 @@ namespace API.Basket
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(MappingProfiles));
-
-            services.AddControllers();
-
             services.AddDbContext<StoreContext>(x =>
                 x.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
 
+            services.AddAutoMapper(typeof(MappingProfiles));
+
+            services.AddServicesConfiguration();
+            services.AddControllers();
+
             services.AddApplicationServices(_config);
-
             services.AddSwaggerDocumentation();
-
-            services.AddCors(opt =>
-            {
-                opt.AddPolicy("CorsPolicy", policy =>
-                {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("*");
-                });
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {            var virtualPath = "/api";
-            app.Map(virtualPath, builder =>
-            {
-                if (env.IsDevelopment())                {                    app.UseDeveloperExceptionPage();                    app.UseSwaggerDocumention();                }
-                app.ApplicationConfiguration();                app.UseStatusCodePagesWithReExecute("/errors/{0}");                //app.UseHttpsRedirection();
-                app.UseRouting();
+        {            //var virtualPath = "/api";
+            //app.Map(virtualPath, builder =>
+            //{
 
-                app.UseCors("CorsPolicy");
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseSwaggerDocumention();
+            }
 
-                app.UseAuthentication();                app.UseAuthorization();
-                app.UseEndpoints(endpoints =>                {                    endpoints.MapControllers();
-                    //endpoints.MapFallbackToController("Index", "Fallback");
-                });            });
+            app.ApplicationConfiguration();
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
+
+            //app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseCors("CorsPolicy");
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                //endpoints.MapFallbackToController("Index", "Fallback");
+            });            //});
         }
     }
 }

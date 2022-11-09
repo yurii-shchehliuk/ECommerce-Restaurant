@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using WebApi.Domain.Errors;
@@ -25,6 +26,7 @@ namespace WebApi.Domain.Integration
         {
             try
             {
+                context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
                 await _next(context);
             }
             catch (Exception ex)

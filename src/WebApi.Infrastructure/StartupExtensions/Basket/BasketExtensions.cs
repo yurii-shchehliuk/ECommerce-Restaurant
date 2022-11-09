@@ -27,10 +27,10 @@ namespace WebApi.Infrastructure.StartupExtensions.Basket
                 configuration.AbortOnConnectFail = false;
                 return ConnectionMultiplexer.Connect(configuration);
             });
-            services.AddHostedService<RedisSubscriber>();
+            //services.AddHostedService<RedisSubscriber>();
 
             //services.AddHostedService<MessageWorker>();
-            services.AddSingleton<IOrderProcessingNotification, MessageNotification>();
+            //services.AddSingleton<IOrderProcessingNotification, MessageNotification>();
 
             services.AddScoped<IBasketRepository, BasketContext>();
 

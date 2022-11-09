@@ -27,7 +27,8 @@ namespace WebApi.Infrastructure.StartupExtensions.Identity
             {
                 c.SignIn.RequireConfirmedAccount = true;
             })
-            .AddEntityFrameworkStores<AppIdentityDbContext>();
+            .AddEntityFrameworkStores<AppIdentityDbContext>()
+            .AddTokenProvider<DataProtectorTokenProvider<AppUser>>(TokenOptions.DefaultProvider);
 
             builder = new IdentityBuilder(builder.UserType, builder.Services);
             builder.AddEntityFrameworkStores<AppIdentityDbContext>();

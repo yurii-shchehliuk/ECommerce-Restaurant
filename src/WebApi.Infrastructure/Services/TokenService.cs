@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using WebApi.Domain.Entities.Identity;
 using WebApi.Domain.Interfaces;
+using WebApi.Infrastructure.Helpers;
 
 namespace WebApi.Infrastructure.Services
 {
@@ -48,7 +49,8 @@ namespace WebApi.Infrastructure.Services
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return tokenHandler.WriteToken(token);
+            string result =  tokenHandler.WriteToken(token);
+            return result;
         }
 
         //public TokenResponse RefreshToken(string refreshToken, string userEmail)

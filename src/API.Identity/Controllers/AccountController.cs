@@ -80,10 +80,18 @@ namespace API.Identity.Controllers
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
             if (user == null) return NotFound(new ApiResponse(400, "INVALID_CREDENTIALS"));
+            if (!await _userManager.IsEmailConfirmedAsync(user))
+            {
+                var confirmation = await _userManager.ConfirmEmailAsync(user, _userManager.GenerateEmailConfirmationTokenAsync(user).Result);
+                if (!confirmation.Succeeded)
+                {
+                    return Unauthorized(new ApiResponse(401, " User cannot sign in without a confirmed account"));
+                }
+            }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
-            if (!result.Succeeded) return Unauthorized(new ApiResponse(401));
+            if (!result.Succeeded) return Unauthorized(new ApiResponse(401, " Invalid login attempt"));
 
             return new UserDto
             {
@@ -111,7 +119,6 @@ namespace API.Identity.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
-
             if (!result.Succeeded) return BadRequest(new ApiResponse(400));
 
             return new UserDto

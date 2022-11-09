@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Stripe;
 using WebApi.Domain.Integration;
 
 namespace WebApi.Infrastructure.StartupExtensions
@@ -35,6 +36,17 @@ namespace WebApi.Infrastructure.StartupExtensions
 
             return services;
         }
+
+        public static void AddServicesConfiguration(this IServiceCollection services)
+        {
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("*");
+                });
+            });
+        }
         #endregion
 
         #region application
@@ -62,6 +74,8 @@ namespace WebApi.Infrastructure.StartupExtensions
 
             app.UseMiddleware<ExceptionMiddleware>();
         }
+
+
         #endregion
     }
 }
