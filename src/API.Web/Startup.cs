@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using System.IO;
 using WebApi.Infrastructure.SignalR;
 using WebApi.Infrastructure.StartupExtensions;
 
@@ -59,7 +61,10 @@ namespace API.Web
             //    RequestPath = "/content"
             //});
 
-            app.UseSpaStaticFiles();
+            app.UseSpaStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Content"))
+            });
 
             app.UseAuthentication();
             app.UseAuthorization();

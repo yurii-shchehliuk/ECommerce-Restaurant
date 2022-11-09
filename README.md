@@ -1,4 +1,4 @@
-Restaurant application based on .NET 5 (EntityFrameworkCore, Swagger, JWT Bearer, Stripe) and Angular 14 (RxJS, Nxg-bootstrap, xng-breadcrumb, bootswatch)
+Restaurant application based on .NET 5 (EF Core, Swagger, JWT, Stripe, AutoMapper,...) and Angular 14 (RxJS, Nxg-bootstrap, xng-breadcrumb, bootswatch), RabbitMQ, Redis, MSSQL
 
 Regular user's functionality:
 * JWT authentication
@@ -6,11 +6,13 @@ Regular user's functionality:
 * SignalR online chat
 * Stripe payment
 * RabbitMQ messages
+* Redis basket
 
 Admin's functionality:
 * SignalR online chat
 * User CRUD
 * Meals CRUD
+* RabbitMQ
 
 ## List of micro-services and infrastructure components
 
@@ -33,7 +35,7 @@ Admin's functionality:
     <tr>
         <td align="center">2.</td>
         <td>Basket API</td>
-        <td>Manages customer basket in order to keep items on in-memory cache using redis</td>
+        <td>Manages customer basket in order to keep items on in-memory cache using Redis. RabbitMQ messages.</td>
         <td>
             <a href="#">dev</a> |
             <a href="#">prod</a>
@@ -41,16 +43,7 @@ Admin's functionality:
     </tr>
     <tr>
         <td align="center">3.</td>
-        <td>Base API</td>
-        <td>Manages data for showing restaurant menu</td>
-        <td>
-            <a href="#">dev</a> |
-            <a href="#">prod</a>
-        </td>
-    </tr>
-	<tr>
-        <td align="center">5.</td>
-        <td>WebClient</td>
+        <td>WebAPI</td>
         <td>Angular web client</td>
         <td>
             <a href="#">dev</a> |
@@ -60,7 +53,7 @@ Admin's functionality:
 	 <tr>
         <td align="center">4.</td>
         <td>Admin API (tbd)</td>
-        <td>Manages customer & orders (tbd)</td>
+        <td>Manages customer & orders (tbd). CQRS MediatR. Serilog</td>
         <td>
             <a href="#">dev</a> |
             <a href="#">prod</a>
@@ -69,13 +62,12 @@ Admin's functionality:
   </tbody>  
 </table>
 
-##Asynchronous services with synchronous and asynchronous communication
-https://learn.microsoft.com/en-us/dotnet/architecture/microservices/architect-microservice-container-applications/communication-in-microservice-architecture
+## Asynchronous services with synchronous and asynchronous communication
 
-#nginx docker container 
+### nginx docker container 
 https://gist.github.com/dahlsailrunner/679e6dec5fd769f30bce90447ae80081
 
-#redis
+### redis
 https://chocolatey.org/install
 cmd: redis-server
 	 redis-cli
