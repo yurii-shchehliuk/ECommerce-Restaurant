@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Db.Store;
 using WebApi.Domain.Entities;
-using WebApi.Domain.Interfaces;
+using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Domain.Specifications;
 
 namespace WebApi.Infrastructure.Repositories

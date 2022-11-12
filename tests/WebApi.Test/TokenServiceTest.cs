@@ -7,7 +7,7 @@ namespace WebApi.Test
 {
     /// <example>
     /// + Algorithms, behaviour or rules
-    /// - Data access, UI, sustem interactions
+    /// - Data access, UI, system interactions
     /// </example>
     public class TokenServiceTest
     {

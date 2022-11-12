@@ -50,17 +50,21 @@ namespace API.Admin
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews(config =>
-            {
-                var policy = new AuthorizationPolicyBuilder()
-                                 .RequireAuthenticatedUser()
-                                 .Build();
-                config.Filters.Add(new AuthorizeFilter(policy));
-            });
+            //services.AddControllersWithViews(config =>
+            //{
+            //    var policy = new AuthorizationPolicyBuilder()
+            //                     .RequireAuthenticatedUser()
+            //                     .Build();
+            //    config.Filters.Add(new AuthorizeFilter(policy));
+            //});
 
+            services.AddControllers();
             services.AddApplicationServices();
             services.AddSwaggerDocumentation();
+            
+            // Add assebply with handlers
             services.AddMediatR(typeof(Startup));
+            services.AddAutoMapper(typeof(Helpers.MappingProfiles));
 
             services.AddCors(opt =>
             {

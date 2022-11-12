@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using WebApi.Domain.Entities.Identity;
-using WebApi.Domain.Interfaces;
+using WebApi.Domain.Interfaces.Services;
 using WebApi.Infrastructure.Helpers;
 
 namespace WebApi.Infrastructure.Services

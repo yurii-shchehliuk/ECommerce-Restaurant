@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace WebApi.Domain.Interfaces
+namespace WebApi.Domain.Interfaces.Services
 {
     public interface IResponseCacheService
     {

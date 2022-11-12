@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using WebApi.Domain.DTOs;
 using WebApi.Domain.Entities.Identity;
 using WebApi.Domain.Errors;
-using WebApi.Domain.Interfaces;
+using WebApi.Domain.Interfaces.Services;
 
 namespace API.Identity.Controllers
 {

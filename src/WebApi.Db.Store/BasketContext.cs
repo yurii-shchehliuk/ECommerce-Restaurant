@@ -4,7 +4,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using WebApi.Domain.Entities.Store;
-using WebApi.Domain.Interfaces;
+using WebApi.Domain.Interfaces.Repositories;
 
 namespace WebApi.Db.Store
 {

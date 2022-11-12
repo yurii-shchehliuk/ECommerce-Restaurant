@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using WebApi.Domain.DTOs;
 using WebApi.Domain.Entities.OrderAggregate;
 using WebApi.Domain.Errors;
-using WebApi.Domain.Interfaces;
+using WebApi.Domain.Interfaces.Services;
 
 namespace API.Basket.Controllers
 {

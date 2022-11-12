@@ -1,45 +1,46 @@
-﻿using API.Admin.Functions.ProductFunc.Queries;
+﻿using API.Admin.Functions.ProductFunc.Commands;
+using API.Admin.Functions.ProductFunc.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using WebApi.Domain.DTOs;
+using WebApi.Domain.Entities.Store;
 
 namespace API.Admin.Controllers
 {
     public class ProductController : BaseApiController
     {
-        public ProductController(IMediator mediator) : base(mediator)
+        [HttpGet("id")]
+        public async Task<ActionResult<Product>> Details(int id)
         {
+            return await Mediator.Send(new GetProductByIdQuery { Id = id });
         }
 
-        [HttpGet("id")]
-        public async Task<IActionResult> Details(int id)
-        {
-            return Ok(await Mediator.Send(new GetProductByIdQuery { Id = id }));
-        }
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<List<Product>>> GetAll()
         {
-            return Ok(await Mediator.Send(new GetAllProductsQuery()));
+            return await Mediator.Send(new GetAllProductsQuery());
         }
 
         [HttpPost]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create(ProductCreateDto product)
         {
-            return RedirectToAction(nameof(Index));
+            return Ok(await Mediator.Send(new CreateProductCommand { Product = product }));
         }
 
         [HttpPut("id")]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(int id, Product product)
         {
-            return null;
+            product.Id = id;
+            return Ok(await Mediator.Send(new UpdateProductCommand { Product = product }));
         }
         [HttpDelete("id")]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int id)
         {
-            return null;
-
+            return Ok(await Mediator.Send(new DeleteProductCommand { Id = id }));
         }
     }
 }
