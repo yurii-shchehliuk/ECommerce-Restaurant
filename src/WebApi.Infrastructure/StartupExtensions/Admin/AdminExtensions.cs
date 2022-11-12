@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using WebApi.Domain.Interfaces;
+using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Infrastructure.Repositories;
 
 namespace WebApi.Infrastructure.StartupExtensions.Admin
@@ -10,7 +10,7 @@ namespace WebApi.Infrastructure.StartupExtensions.Admin
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-            services.AddTransient<IProductRepository, ProductRepository>();
+            //services.AddTransient<IProductRepository, ProductRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             return services;

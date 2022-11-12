@@ -3,7 +3,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using WebApi.Db.Store;
 using WebApi.Domain.Entities;
-using WebApi.Domain.Interfaces;
+using WebApi.Domain.Interfaces.Repositories;
 
 namespace WebApi.Infrastructure.Repositories
 {

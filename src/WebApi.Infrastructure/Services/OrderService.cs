@@ -3,8 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Domain.Entities.OrderAggregate;
 using WebApi.Domain.Entities.Store;
-using WebApi.Domain.Interfaces;
 using WebApi.Domain.Interfaces.Integration;
+using WebApi.Domain.Interfaces.Repositories;
+using WebApi.Domain.Interfaces.Services;
 using WebApi.Domain.Specifications;
 
 namespace WebApi.Infrastructure.Services

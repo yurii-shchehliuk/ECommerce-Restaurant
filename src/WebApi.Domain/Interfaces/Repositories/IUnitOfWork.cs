@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using WebApi.Domain.Entities;
 
-namespace WebApi.Domain.Interfaces
+namespace WebApi.Domain.Interfaces.Repositories
 {
     public interface IUnitOfWork : IDisposable
     {

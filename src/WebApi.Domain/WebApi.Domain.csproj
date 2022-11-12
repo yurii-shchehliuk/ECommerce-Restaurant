@@ -3,11 +3,18 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Interfaces\Repositories\IProductRepository.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="6.0.10" />
     <PackageReference Include="System.Text.Json" Version="6.0.6" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CQRS\QueryHandling\DTOs\" />
   </ItemGroup>
 </Project>

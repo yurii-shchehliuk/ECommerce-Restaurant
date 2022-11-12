@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
 using WebApi.Domain.CQRS.CommandHandling;
@@ -11,14 +12,16 @@ namespace API.Admin.Controllers
     [Route("api/[controller]")]
     public class BaseApiController : ControllerBase
     {
-        public IMediator Mediator;
+        private IMediator _mediator;
 
         public BaseApiController() { }
 
         protected BaseApiController(IMediator mediator)
         {
-            Mediator = mediator;
+            _mediator = mediator;
         }
+        protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>()!;
+
 
         protected async new Task<IActionResult> Response<TResult>(IQuery<TResult> query)
         {
@@ -29,7 +32,7 @@ namespace API.Admin.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest();
 
-                result = await Mediator.Send(query);
+                result = await _mediator.Send(query);
             }
             catch (Exception e)
             {
@@ -50,7 +53,7 @@ namespace API.Admin.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest();
 
-                await Mediator.Send(command);
+                await _mediator.Send(command);
             }
             catch (Exception e)
             {

@@ -3,7 +3,7 @@ using StackExchange.Redis;
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
-using WebApi.Domain.Interfaces;
+using WebApi.Domain.Interfaces.Services;
 
 namespace WebApi.Infrastructure.Services
 {

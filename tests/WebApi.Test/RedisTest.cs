@@ -1,13 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WebApi.Db.Store;
-using WebApi.Infrastructure.BackgroundTasks;
-using WebApi.Infrastructure.Services;
+﻿using WebApi.Infrastructure.Services;
 using WebApi.Test.Fixtures;
 using Xunit;
 

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using WebApi.Domain.Entities;
 using WebApi.Domain.Specifications;
 
-namespace WebApi.Domain.Interfaces
+namespace WebApi.Domain.Interfaces.Repositories
 {
     public interface IGenericRepository<T> where T : BaseEntity
     {

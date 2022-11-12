@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApi.Domain.Entities.Store;
 using WebApi.Domain.Errors;
-using WebApi.Domain.Interfaces;
+using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Domain.Specifications;
 
 namespace API.Basket.Controllers

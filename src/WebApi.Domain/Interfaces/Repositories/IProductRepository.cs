@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApi.Domain.Entities.Store;
 
-namespace WebApi.Domain.Interfaces
+namespace WebApi.Domain.Interfaces.Repositories
 {
     public interface IProductRepository
     {

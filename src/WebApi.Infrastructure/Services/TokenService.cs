@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using WebApi.Domain.Entities.Identity;
-using WebApi.Domain.Interfaces;
-using WebApi.Infrastructure.Helpers;
+using WebApi.Domain.Interfaces.Services;
 
 namespace WebApi.Infrastructure.Services
 {
@@ -42,23 +42,24 @@ namespace WebApi.Infrastructure.Services
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.Now.AddDays(7),
                 SigningCredentials = creds,
-                Issuer = _issuer 
+                Issuer = _issuer
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            string result =  tokenHandler.WriteToken(token);
+            string result = tokenHandler.WriteToken(token);
             return result;
         }
 
-        //public TokenResponse RefreshToken(string refreshToken, string userEmail)
-        //{
-        //    var token = _tokenHandler.TakeRefreshToken(refreshToken, userEmail);
-        //    var user = _userService.FindByEmail(userEmail);
-        //    var accessToken = _tokenHandler.CreateAccessToken(user);
-        //    return new TokenResponse(true, null, accessToken);
-        //}
+        public RefreshToken GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return new RefreshToken { Token = Convert.ToBase64String(randomNumber) };
+
+        }
     }
 }

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using WebApi.Domain.CQRS.QueryHandling;
 using WebApi.Domain.Entities.Store;
-using WebApi.Domain.Interfaces;
+using WebApi.Domain.Interfaces.Repositories;
 
 namespace API.Admin.Functions.ProductFunc.Queries
 {
@@ -18,8 +18,7 @@ namespace API.Admin.Functions.ProductFunc.Queries
             }
             public async Task<Product> Handle(GetProductByIdQuery query, CancellationToken cancellationToken)
             {
-                var product = await _productsRepo.GetByIdAsync(query.Id);
-                return product;
+                return await _productsRepo.GetByIdAsync(query.Id);
             }
         }
     }

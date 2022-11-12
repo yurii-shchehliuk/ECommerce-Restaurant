@@ -6,7 +6,7 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebApi.Domain.Interfaces;
+using WebApi.Domain.Interfaces.Services;
 
 namespace API.Basket.Helpers
 {

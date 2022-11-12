@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using WebApi.Domain.Entities.OrderAggregate;
 using WebApi.Domain.Entities.Store;
 
-namespace WebApi.Domain.Interfaces
+namespace WebApi.Domain.Interfaces.Services
 {
     public interface IPaymentService
     {

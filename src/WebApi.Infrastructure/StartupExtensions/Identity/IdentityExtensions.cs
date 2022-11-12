@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebApi.Db.Identity;
 using WebApi.Domain.Entities.Identity;
-using WebApi.Domain.Interfaces;
+using WebApi.Domain.Interfaces.Services;
 using WebApi.Infrastructure.Services;
 
 namespace WebApi.Infrastructure.StartupExtensions.Identity

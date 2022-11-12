@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration;
 using WebApi.Domain.Entities.Identity;
 using WebApi.Infrastructure.Services;
 using Xunit;
@@ -7,7 +6,7 @@ namespace WebApi.Test
 {
     /// <example>
     /// + Algorithms, behaviour or rules
-    /// - Data access, UI, sustem interactions
+    /// - Data access, UI, system interactions
     /// </example>
     public class TokenServiceTest
     {

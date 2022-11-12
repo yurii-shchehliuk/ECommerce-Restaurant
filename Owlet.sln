@@ -32,7 +32,16 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C10ABA96-34E8-4F2B-B9A2-735B83B7E9EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.Test", "tests\WebApi.Test\WebApi.Test.csproj", "{B17DD0FC-417B-4FB3-95BD-7AA8514C1448}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi.Test", "tests\WebApi.Test\WebApi.Test.csproj", "{B17DD0FC-417B-4FB3-95BD-7AA8514C1448}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{1E530805-9C59-45B7-A3D5-7F5354AE3EA2}"
+	ProjectSection(SolutionItems) = preProject
+		sql\entrypoint.sh = sql\entrypoint.sh
+		sql\InitializeOwletDb.sql = sql\InitializeOwletDb.sql
+		sql\setup.sh = sql\setup.sh
+		sql\sql.Dockerfile = sql\sql.Dockerfile
+		sql\wait-for-it.sh = sql\wait-for-it.sh
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

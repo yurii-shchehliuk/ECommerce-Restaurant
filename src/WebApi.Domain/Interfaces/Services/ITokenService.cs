@@ -1,6 +1,6 @@
 using WebApi.Domain.Entities.Identity;
 
-namespace WebApi.Domain.Interfaces
+namespace WebApi.Domain.Interfaces.Services
 {
     public interface ITokenService
     {

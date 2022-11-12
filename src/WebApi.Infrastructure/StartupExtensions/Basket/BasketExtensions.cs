@@ -5,12 +5,10 @@ using StackExchange.Redis;
 using System.Linq;
 using WebApi.Db.Store;
 using WebApi.Domain.Errors;
-using WebApi.Domain.Interfaces;
-using WebApi.Domain.Interfaces.Integration;
-using WebApi.Infrastructure.BackgroundTasks;
+using WebApi.Domain.Interfaces.Repositories;
+using WebApi.Domain.Interfaces.Services;
 using WebApi.Infrastructure.Repositories;
 using WebApi.Infrastructure.Services;
-using WebApi.Infrastructure.Services.Integration;
 
 namespace WebApi.Infrastructure.StartupExtensions.Basket
 {
@@ -37,7 +35,7 @@ namespace WebApi.Infrastructure.StartupExtensions.Basket
             //
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IPaymentService, PaymentService>();
-            services.AddScoped<IProductRepository, ProductRepository>();
+            //services.AddScoped<IProductRepository, ProductRepository>();
             //
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

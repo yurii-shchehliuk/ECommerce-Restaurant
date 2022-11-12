@@ -1,13 +1,23 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using Stripe;
 using WebApi.Domain.Integration;
 
 namespace WebApi.Infrastructure.StartupExtensions
 {
     public static class CommonExtensions
     {
+        public static IConfiguration SeedConfiguration(Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
+        {
+            var builder = new ConfigurationBuilder()
+               .SetBasePath(env.ContentRootPath)
+               .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+               .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+               .AddEnvironmentVariables();
+            return builder.Build();
+        }
+
         #region service
         public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services)
         {

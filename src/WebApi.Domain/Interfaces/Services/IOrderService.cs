@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApi.Domain.Entities.OrderAggregate;
 
-namespace WebApi.Domain.Interfaces
+namespace WebApi.Domain.Interfaces.Services
 {
     public interface IOrderService
     {
