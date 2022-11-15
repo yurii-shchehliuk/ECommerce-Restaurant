@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: owletseq-app
+spec:
+  selector:
+    matchLabels:
+      app: owletseq-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: owletseq-app
+    spec:
+      containers:
+        - name: sql
+          image: yshchehliuk/seq:latest
+          ports:
+            - containerPort: 5341
+            - containerPort: 80
+          env:
+            - name: ACCEPT_EULA
+              value: "Y"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: owletseq-service
+spec:
+  selector:
+    app: owletseq-app
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 31534
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: owletseq
+spec:
+  clusterIP: None # handless service
+  selector:
+    app: owletseq-app
+  ports:
+    - port: 5341
+      targetPort: 5341
+      protocol: TCP

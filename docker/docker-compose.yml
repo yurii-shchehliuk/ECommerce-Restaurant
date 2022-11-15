@@ -2,10 +2,10 @@ version: '3.4'
  
 services: 
     ##nginx proxy
-    reverseproxy: 
-        build: 
-            context: . 
-            dockerfile: src/nginx/nginx.Dockerfile 
+    #reverseproxy: 
+    #    build: 
+    #        context: . 
+    #        dockerfile: ../src/nginx/nginx.Dockerfile 
     ##API
     api.identity: 
         image: ${DOCKER_REGISTRY-}apiidentity 
@@ -32,13 +32,13 @@ services:
         image: redis:latest 
     redis-commander: 
         image: rediscommander/redis-commander:latest 
-    #logging
+    #3logging
     owletseq:
         image: datalust/seq
-    #email smtp
+    ##email smtp
     owletsmtp:
         image: rnwood/smtp4dev
-    #message broker
+    ##message broker
     rabbitowlet:
         image: rabbitmq:3-management
 volumes:

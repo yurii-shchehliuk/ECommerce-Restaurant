@@ -2,27 +2,27 @@ version: '3.4'
 #attach to Docker 
 services:  
     ##nginx proxy 
-    reverseproxy:  
-        build:  
-            context: .  
-            dockerfile: src/nginx/nginx.Dockerfile  
-        ports:  
-            - "5200:5200"
-        depends_on:  
-            - api.identity  
-            - api.basket  
-            - api.web  
-        #networks: 
-        #    owletnet: 
-        #        aliases:
-        #            - "id-local.owlet.com" 
-        #            - "www-local.owlet.com" 
+    #reverseproxy:  
+    #    build:  
+    #        context: .  
+    #        dockerfile: ../src/nginx/nginx.Dockerfile  
+    #    ports:  
+    #        - "5200:5200"
+    #    depends_on:  
+    #        - api.identity  
+    #        - api.basket  
+    #        - api.web  
+        ##networks: 
+        ##    owletnet: 
+        ##        aliases:
+        ##            - "id-local.owlet.com" 
+        ##            - "www-local.owlet.com" 
     ##API 
     api.identity:  
         image: ${DOCKER_REGISTRY-}apiidentity  
         build:  
             context: .  
-            dockerfile: src/API.Identity/Dockerfile  
+            dockerfile: ../src/API.Identity/Dockerfile  
         environment:  
             - ASPNETCORE_URLS=http://*:80  
         ports: 
@@ -35,7 +35,7 @@ services:
         image: ${DOCKER_REGISTRY-}apibasket  
         build:  
             context: .  
-            dockerfile: src/API.Basket/Dockerfile  
+            dockerfile: ../src/API.Basket/Dockerfile  
         environment:  
             - ASPNETCORE_URLS=http://*:80 
         ports: 
@@ -48,7 +48,7 @@ services:
         image: ${DOCKER_REGISTRY-}apiweb  
         build:  
             context: .  
-            dockerfile: src/API.Web/Dockerfile  
+            dockerfile: ../src/API.Web/Dockerfile  
         environment:  
             - ASPNETCORE_URLS=http://*:80  
         ports: 
@@ -93,7 +93,7 @@ services:
         depends_on:  
             - redis 
  
-    #logging 
+    ##logging 
     owletseq: 
         image: datalust/seq 
         restart: unless-stopped 
@@ -103,7 +103,7 @@ services:
               - ACCEPT_EULA=Y 
         networks: 
              - owletnet 
-    #email smtp 
+    ##email smtp 
     owletsmtp: 
         image: rnwood/smtp4dev 
         restart: always 
@@ -111,7 +111,7 @@ services:
           - "5010:80" 
         networks: 
           - owletnet 
-    #message broker
+    ##message broker
     rabbitowlet:
         image: rabbitmq:3-management
         restart: always
