@@ -17,7 +17,7 @@ namespace API.Basket.Helpers
         {
             if (!string.IsNullOrEmpty(source.ItemOrdered.PictureUrl))
             {
-                return _config["ApiUrl"] + source.ItemOrdered.PictureUrl;
+                return _config["ContentSrcUrl"] + source.ItemOrdered.PictureUrl;
             }
 
             return null;

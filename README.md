@@ -71,3 +71,6 @@ https://gist.github.com/dahlsailrunner/679e6dec5fd769f30bce90447ae80081
 https://chocolatey.org/install
 cmd: redis-server
 	 redis-cli
+
+## Launching
+Wether set docker-compose as startup either set all the API projects

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using WebApi.Domain.CQRS.CommandHandling;
@@ -26,13 +27,12 @@ namespace API.Admin.Functions.ProductFunc.Commands
             {
                 try
                 {
-
                     var product = _mapper.Map<Product>(request.Product);
                     _unitOfWork.Repository<Product>().Add(product);
                 }
-                catch (System.Exception ex)
+                catch(Exception ex)
                 {
-
+                    throw ex;
                 }
 
                 var result = await _unitOfWork.Complete();

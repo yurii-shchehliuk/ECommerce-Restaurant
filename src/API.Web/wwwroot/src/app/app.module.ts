@@ -11,7 +11,6 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { DataTablesModule } from 'angular-datatables';
-import { ReservationModule } from './reservation/reservation.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -40,7 +39,6 @@ import { FeaturesModule } from './features/features.module';
     HomeModule,
     AdminModule,
     FeaturesModule,
-    ReservationModule,
     NgxSpinnerModule,
     DataTablesModule,
   ],

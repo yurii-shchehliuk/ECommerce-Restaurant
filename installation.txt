@@ -1,0 +1,11 @@
+#install packages
+npm install
+#check angular build
+ng build
+#make sure server is installed
+SQLCMD -S localhost\SQLEXPRESS
+select @@version
+go
+
+#if error ng.ps1 appears 
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser

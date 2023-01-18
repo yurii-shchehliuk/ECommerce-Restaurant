@@ -1,0 +1,20 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "api.basket": "StartDebugging",
+        "api.identity": "StartDebugging",
+        "api.web": "StartDebugging",
+        "owletsql": "StartWithoutDebugging",
+        "owletsmtp": "StartWithoutDebugging",
+        "owletseq": "StartWithoutDebugging",
+        "redis": "StartWithoutDebugging",
+        "redis-commander": "StartWithoutDebugging",
+        "rabbitowlet": "StartWithoutDebugging",
+        "reverseproxy": "StartWithoutDebugging"
+      }
+    }
+  }
+}

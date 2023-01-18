@@ -61,23 +61,21 @@ namespace API.Web
             //    RequestPath = "/content"
             //});
 
-            app.UseSpaStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Content"))
-            });
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "wwwroot/dist";
+                //path to the angular application
+                spa.Options.SourcePath = "wwwroot";
 
                 if (env.IsDevelopment())
                 {
                     spa.UseAngularCliServer(npmScript: "start");
+                    //spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+
                 }
             });
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.IO;
 using WebApi.Db.Store;using WebApi.Infrastructure.StartupExtensions;
 using WebApi.Infrastructure.StartupExtensions.Basket;
 
@@ -34,7 +35,8 @@ namespace API.Basket
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {            //var virtualPath = "/api";
+        {
+            //var virtualPath = "/api";
             //app.Map(virtualPath, builder =>
             //{
 

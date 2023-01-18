@@ -11,7 +11,6 @@ const routes: Routes = [
   { path: 'test-error', component: TestErrorComponent,  },
   { path: 'server-error', component: ServerErrorComponent,  },
   { path: 'not-found', component: NotFoundComponent,  },
-  { path: 'reservation', loadChildren: () => import('./reservation/reservation.module').then(mod => mod.ReservationModule)  },
   { path: 'shop', loadChildren: () => import('./shop/shop.module').then(mod => mod.ShopModule), },
   { path: 'basket', loadChildren: () => import('./basket/basket.module').then(mod => mod.BasketModule), },
   { path: 'admin', loadChildren: () => import('./admin/admin.module').then(mod => mod.AdminModule), },
@@ -31,7 +30,7 @@ const routes: Routes = [
     loadChildren: () => import('./account/account.module')
       .then(mod => mod.AccountModule)
   },
-  { path: '**', redirectTo: 'not-found', pathMatch: 'full' }
+  // { path: '**', redirectTo: 'not-found', pathMatch: 'full' }
 ];
 
 @NgModule({
