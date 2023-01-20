@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Serilog;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ namespace API.Admin.Functions.ProductFunc.Commands
                 }
                 catch(Exception ex)
                 {
-                    throw ex;
+                    Log.Error(ex, ex.Message);
                 }
 
                 var result = await _unitOfWork.Complete();

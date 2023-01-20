@@ -8,7 +8,7 @@ namespace WebApi.Infrastructure.StartupExtensions
 {
     public static class CommonExtensions
     {
-        public static IConfiguration SeedConfiguration(Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
+        public static IConfiguration SeedConfiguration(Microsoft.AspNetCore.Hosting.IWebHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()
                .SetBasePath(env.ContentRootPath)

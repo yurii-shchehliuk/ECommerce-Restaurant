@@ -57,7 +57,7 @@ namespace API.Admin
             //});
 
             services.AddControllers();
-            services.AddApplicationServices();
+            services.AddApplicationServices(_config);
             services.AddSwaggerDocumentation();
 
             // Add assebply with handlers

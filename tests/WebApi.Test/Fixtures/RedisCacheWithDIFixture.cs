@@ -24,21 +24,9 @@ namespace WebApi.Test.Fixtures
             _serviceProvider = services.BuildServiceProvider();
         }
 
-        public IConnectionMultiplexer GetIConnectionMultiplexer
-        {
-            get
-            {
-                return _serviceProvider.GetService<IConnectionMultiplexer>();
-            }
-        }
+        public IConnectionMultiplexer? GetIConnectionMultiplexer => _serviceProvider.GetService<IConnectionMultiplexer>();
 
-        public ILogger<ResponseCacheService> GetILogger
-        {
-            get
-            {
-                return _serviceProvider.GetService<ILogger<ResponseCacheService>>();
-            }
-        }
+        public ILogger<ResponseCacheService>? GetILogger => _serviceProvider.GetService<ILogger<ResponseCacheService>>();
 
         public void Dispose()
         {

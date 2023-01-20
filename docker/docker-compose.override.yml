@@ -1,7 +1,7 @@
 version: '3.4'  
 #attach to Docker 
 services:  
-    ##nginx proxy 
+    #nginx proxy 
     reverseproxy:  
         build:  
             context: .  
@@ -17,7 +17,7 @@ services:
         #        aliases:
         #            - "id-local.owlet.com" 
         #            - "www-local.owlet.com" 
-    ##API 
+    #API 
     api.identity:  
         image: ${DOCKER_REGISTRY-}apiidentity  
         build:  
@@ -38,10 +38,13 @@ services:
             dockerfile: src/API.Basket/Dockerfile  
         environment:  
             - ASPNETCORE_URLS=http://*:80 
+            - "ConnectionStrings:Redis=redis:6379"
+            - "RabbitMqHost=amqp://quest:guest@rabbitowlet:5672"
         ports: 
             - "5031:80" 
         depends_on: 
             - owletsql 
+            - rabbitowlet
         networks: 
             - owletnet 
     api.web:  
@@ -55,7 +58,7 @@ services:
             - "5021:80" 
         networks: 
             - owletnet 
-    ##sql database 
+    #sql database 
     owletsql: 
         container_name: sqlserver 
         image: mcr.microsoft.com/mssql/server:2019-latest 
@@ -70,7 +73,7 @@ services:
         networks: 
             - owletnet 
 ##3rd services 
-    ##basket's redis 
+    #basket's redis 
     redis:  
         image: redis:6.0.10-alpine
         ports:  
@@ -117,8 +120,20 @@ services:
         restart: always
         ports:
             - 8088:15672
+    #container management
+    portainer:
+        container_name: portainer
+        restart: always
+        ports:
+            - "8080:8000"
+            - "9000:9000"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - portainer_data:/data
+##storage
 volumes: 
     sqldata: 
     redis-data: 
+    portainer_data:
 networks: 
     owletnet: {}

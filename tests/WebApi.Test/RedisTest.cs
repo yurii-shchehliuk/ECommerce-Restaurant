@@ -20,7 +20,7 @@ namespace WebApi.Test
             //act
             var result = await basketContext.GetCachedResponseAsync("test");
             //assert
-            Assert.IsNotType(null, result);
+            Assert.IsNotType<string>(result);
         }
 
         //public void RedisSubscriber()

@@ -1,12 +1,12 @@
 version: '3.4' 
  
 services: 
-    ##nginx proxy
+    #nginx proxy
     reverseproxy: 
         build: 
             context: . 
             dockerfile: src/nginx/nginx.Dockerfile 
-    ##API
+    #API
     api.identity: 
         image: ${DOCKER_REGISTRY-}apiidentity 
     api.basket: 
@@ -16,7 +16,7 @@ services:
     #api.admin: 
     #    image: ${DOCKER_REGISTRY-}apiadmin
 
-    ##sql database
+    #sql database
     owletsql:
         image: mcr.microsoft.com/mssql/server:2019-latest
 
@@ -27,7 +27,7 @@ services:
     #        dockerfile: sql/sql.Dockerfile
 
 ##3rd services
-    ##basket's redis
+    #basket's redis
     redis: 
         image: redis:latest 
     redis-commander: 
@@ -41,8 +41,13 @@ services:
     #message broker
     rabbitowlet:
         image: rabbitmq:3-management
+    #container management
+    portainer:
+        image: portainer/portainer-ce
+##storage
 volumes:
     sqldata:
     redis-data:
+    portainer_data:
 networks:
     owletnet: {}

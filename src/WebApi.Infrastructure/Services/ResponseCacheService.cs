@@ -7,10 +7,7 @@ using WebApi.Domain.Interfaces.Services;
 
 namespace WebApi.Infrastructure.Services
 {
-    /// <summary>Redis data access</summary>
-    /// <remarks>
-    /// It's rather repository but lets remain it
-    /// </remarks>
+    /// <summary>Redis cache</summary>
     public class ResponseCacheService : IResponseCacheService
     {
         private readonly IDatabase _database;

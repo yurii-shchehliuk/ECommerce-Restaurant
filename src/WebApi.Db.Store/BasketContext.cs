@@ -9,9 +9,10 @@ using WebApi.Domain.Interfaces.Repositories;
 namespace WebApi.Db.Store
 {
     /// <summary>
-    /// Redis + docker needed
+    /// Redis database
     /// </summary>
     /// <seealso cref="memurai"/>
+    /// <remarks>Redis + docker needed</remarks>
     public class BasketContext : IBasketRepository
     {
         private readonly IDatabase _database;
