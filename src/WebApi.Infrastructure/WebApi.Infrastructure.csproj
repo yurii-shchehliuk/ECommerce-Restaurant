@@ -7,19 +7,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.5.0" />
-    <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
-    <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.10" />
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.10" />
-    <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />
-    <PackageReference Include="StackExchange.Redis" Version="2.6.90" />
     <PackageReference Include="Stripe.net" Version="41.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EventBus.Messages\EventBus.Messages.csproj" />
     <ProjectReference Include="..\WebApi.Db.Identity\WebApi.Db.Identity.csproj" />
     <ProjectReference Include="..\WebApi.Db.Store\WebApi.Db.Store.csproj" />
     <ProjectReference Include="..\WebApi.Domain\WebApi.Domain.csproj" />
