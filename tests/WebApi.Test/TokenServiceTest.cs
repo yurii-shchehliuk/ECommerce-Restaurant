@@ -19,7 +19,8 @@ namespace WebApi.Test
                 Email = "bob@example.com",
                 DisplayName = "Bob"
             };
-            TokenService tokenService = new TokenService("super secret test key", "issuer");
+            ///<todo>Add a fixture for token service</todo>
+            TokenService tokenService = new TokenService(null);
 
             //act
             var result = tokenService.CreateToken(user);

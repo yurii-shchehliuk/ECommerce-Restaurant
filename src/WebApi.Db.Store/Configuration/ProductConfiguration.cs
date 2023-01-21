@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using WebApi.Domain.Entities.Identity;
 using WebApi.Domain.Entities.Store;
 
 namespace WebApi.DB.Store.Configuration
@@ -26,6 +27,18 @@ namespace WebApi.DB.Store.Configuration
         {
             builder.Property(p => p.Id).IsRequired().ValueGeneratedNever();
             builder.Property(p => p.Name).IsRequired().HasMaxLength(20);
+        }
+    }
+
+    public class CommentsConfiguration : IEntityTypeConfiguration<Comment>
+    {
+        public void Configure(EntityTypeBuilder<Comment> builder)
+        {
+            builder.HasOne(p => p.Product)
+                .WithMany(c => c.Comments)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
         }
     }
 }

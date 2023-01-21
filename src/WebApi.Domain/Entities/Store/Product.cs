@@ -1,3 +1,7 @@
+using System.Collections;
+using System.Collections.Generic;
+using WebApi.Domain.Entities.Identity;
+
 namespace WebApi.Domain.Entities.Store
 {
     public class Product : BaseEntity
@@ -10,5 +14,6 @@ namespace WebApi.Domain.Entities.Store
         public int ProductTypeId { get; set; }
         public ProductBrand ProductBrand { get; set; }
         public int ProductBrandId { get; set; }
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

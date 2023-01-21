@@ -3,37 +3,40 @@ using System.Linq;
 
 namespace WebApi.Domain.Core
 {
-    public class Result
+    public class Result<T> where T : class
     {
-
         private Result(bool isSuccess, string message, IEnumerable<Error> errors)
         {
             IsSuccess = isSuccess;
-            IsFailure = !isSuccess;
             Message = message;
             Errors = errors;
         }
 
-        public string Message { get; }
+        private Result(bool isSuccess, T value)
+        {
+            IsSuccess = isSuccess;
+            Value = value;
+        }
 
-        public bool IsFailure { get; }
+        public string Message { get; }
 
         public bool IsSuccess { get; }
 
+        public T Value { get; set; }
+
         public IEnumerable<Error> Errors { get; }
 
-        public static Result Fail(string message)
-            => new Result(false, message, Enumerable.Empty<Error>());
+        public static Result<T> Success(T value) => new Result<T>(true, value);
 
-        public static Result Fail(FluentValidation.Results.ValidationResult validationResult)
-            => new Result(
+        public static Result<T> Fail(string message)
+            => new Result<T>(false, message, Enumerable.Empty<Error>());
+
+        public static Result<T> Fail(FluentValidation.Results.ValidationResult validationResult)
+            => new Result<T>(
                 false,
                 string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage)),
                 validationResult.Errors.Select(x => new Error(x.PropertyName, x.ErrorMessage))
             );
-
-        public static Result Ok()
-            => new Result(true, "", Enumerable.Empty<Error>());
 
         public class Error
         {

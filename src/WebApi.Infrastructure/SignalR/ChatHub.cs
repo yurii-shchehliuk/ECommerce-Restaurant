@@ -5,9 +5,9 @@ namespace WebApi.Infrastructure.SignalR
 {
     public class ChatHub : Hub
     {
-        public async Task NewMessage(MessageViewModel message)
+        public async Task NewMessage(CommentDTO message)
         {
-            await Clients.All.SendAsync("MessageReceived", message.Message, message.UserName, message.Date);
+            await Clients.All.SendAsync("MessageReceived", message.Body, message.UserName, message.CreatedAt);
         }
     }
 }

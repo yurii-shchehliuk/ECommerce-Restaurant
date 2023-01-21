@@ -16,9 +16,9 @@ namespace API.Web.Controllers
 
         [HttpPost]
         [Route("send")]
-        public async Task NewMessage([FromBody] MessageViewModel msg)
+        public async Task NewMessage([FromBody] CommentDTO msg)
         {
-            await _hubContext.Clients.All.SendAsync("MessageReceived", msg.UserName, msg.Message, msg.Date);
+            await _hubContext.Clients.All.SendAsync("MessageReceived", msg.UserName, msg.Body, msg.CreatedAt);
         }
     }
 }

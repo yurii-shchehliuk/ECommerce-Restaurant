@@ -3,14 +3,16 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="CQRS\QueryHandling\DTOs\**" />
+    <EmbeddedResource Remove="CQRS\QueryHandling\DTOs\**" />
+    <None Remove="CQRS\QueryHandling\DTOs\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Remove="Interfaces\Repositories\IProductRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="System.Text.Json" Version="7.0.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CQRS\QueryHandling\DTOs\" />
   </ItemGroup>
 </Project>

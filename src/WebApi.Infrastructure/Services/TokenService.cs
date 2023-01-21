@@ -21,11 +21,6 @@ namespace WebApi.Infrastructure.Services
             _issuer = config["Token:Issuer"];
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Token:Key"]));
         }
-        public TokenService(string key, string issuer)
-        {
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-            _issuer = issuer;
-        }
 
         public string CreateToken(AppUser user)
         {
