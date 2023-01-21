@@ -22,7 +22,7 @@ using WebApi.Infrastructure.SignalR;
 
 namespace API.Web.Functions.CommentFunc.Commands
 {
-    public class Create
+    public class CommentCreate
     {
         public class Command : IQuery<Result<CommentDTO>>
         {

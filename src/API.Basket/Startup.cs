@@ -26,7 +26,7 @@ namespace API.Basket
 
             services.AddAutoMapper(typeof(MappingProfiles));
 
-            services.AddServicesConfiguration();
+            services.AddCorsConfiguration();
             services.AddControllers();
 
             services.AddApplicationServices(_config);

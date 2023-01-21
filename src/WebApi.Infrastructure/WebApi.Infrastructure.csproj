@@ -3,6 +3,11 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="SignalR\**" />
+    <EmbeddedResource Remove="SignalR\**" />
+    <None Remove="SignalR\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Remove="Repositories\ProductRepository.cs" />
   </ItemGroup>
   <ItemGroup>

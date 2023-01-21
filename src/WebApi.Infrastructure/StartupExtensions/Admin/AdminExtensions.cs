@@ -1,6 +1,3 @@
-using EventBus.Messages.BackgroundTasks;
-using EventBus.Messages.Common;
-using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebApi.Domain.Interfaces.Repositories;
@@ -34,7 +31,6 @@ namespace WebApi.Infrastructure.StartupExtensions.Admin
             //});
             // deprecated
             //services.AddMassTransitHostedService();
-
 
             return services;
         }

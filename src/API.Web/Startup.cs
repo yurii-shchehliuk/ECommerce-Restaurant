@@ -1,3 +1,7 @@
+using API.Web.Functions.CommentFunc.Commands;
+using API.Web.Functions.CommentFunc.Queries;
+using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
@@ -8,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using System.IO;
 using WebApi.Infrastructure.SignalR;
 using WebApi.Infrastructure.StartupExtensions;
+using WebApi.Infrastructure.StartupExtensions.ApiWeb;
 
 namespace API.Web
 {
@@ -28,14 +33,15 @@ namespace API.Web
                 configuration.RootPath = "wwwroot/dist";
             });
 
-            services.AddSignalR(hubOptions =>
-            {
 
-                hubOptions.EnableDetailedErrors = true;
-                hubOptions.KeepAliveInterval = System.TimeSpan.FromMinutes(1);
-            });
+            services.AddMediatR(typeof(Startup));
+            services.AddAutoMapper(typeof(Helpers.MappingProfiles));
+            services.AddValidatorsFromAssemblyContaining<CommentCreate>();
+            services.AddApplicationServices(_config);
 
             services.AddSwaggerDocumentation();
+            ///<todo>add credentials</todo>
+            services.AddCorsConfiguration();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,6 +79,8 @@ namespace API.Web
 
                 }
             });
+
+            app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();

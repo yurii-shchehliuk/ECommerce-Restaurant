@@ -28,7 +28,7 @@ namespace API.Identity
             });
 
             services.AddAutoMapper(typeof(MappingProfiles));
-            services.AddServicesConfiguration();
+            services.AddCorsConfiguration();
             services.AddControllers();
             //services.AddHttpContextAccessor();
 

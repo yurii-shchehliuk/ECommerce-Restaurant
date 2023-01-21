@@ -47,7 +47,7 @@ namespace WebApi.Infrastructure.StartupExtensions
             return services;
         }
 
-        public static void AddServicesConfiguration(this IServiceCollection services)
+        public static void AddCorsConfiguration(this IServiceCollection services)
         {
             services.AddCors(opt =>
             {

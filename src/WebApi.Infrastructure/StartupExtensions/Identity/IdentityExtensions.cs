@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Threading.Tasks;
 using WebApi.Db.Identity;
 using WebApi.Domain.Entities.Identity;
 using WebApi.Domain.Interfaces.Services;
@@ -48,6 +49,22 @@ namespace WebApi.Infrastructure.StartupExtensions.Identity
                     ValidIssuer = config["Token:Issuer"],
                     ValidateIssuer = true,
                     ValidateAudience = false
+                };
+
+                // authenticating to SignalR
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken)&& (path.StartsWithSegments("chatsocket")))
+                        {
+                            context.Token = accessToken;
+                        }
+
+                        return Task.CompletedTask;
+                    }
                 };
             });
         }

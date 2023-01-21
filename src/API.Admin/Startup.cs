@@ -48,6 +48,7 @@ namespace API.Admin
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            ///<todo>add dashboard</todo>
             //services.AddControllersWithViews(config =>
             //{
             //    var policy = new AuthorizationPolicyBuilder()
@@ -58,19 +59,13 @@ namespace API.Admin
 
             services.AddControllers();
             services.AddApplicationServices(_config);
-            services.AddSwaggerDocumentation();
 
             // Add assebply with handlers
             services.AddMediatR(typeof(Startup));
             services.AddAutoMapper(typeof(Helpers.MappingProfiles));
 
-            services.AddCors(opt =>
-            {
-                opt.AddPolicy("CorsPolicy", policy =>
-                {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("*");
-                });
-            });
+            services.AddSwaggerDocumentation();
+            services.AddCorsConfiguration();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
