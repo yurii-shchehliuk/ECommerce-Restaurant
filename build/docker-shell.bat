@@ -1,5 +1,5 @@
 #wsl --shutdown
-echo extract docker folder into folder where .sln is located
+echo extract all the files from the docker folder to the folder where the *.sln file is located.
 cd ..
 docker ps
 docker-compose down

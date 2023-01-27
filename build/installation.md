@@ -1,4 +1,4 @@
-#install packages
+#install packages in src\API.Web\wwwroot
 npm install
 #check angular build
 ng build
@@ -9,3 +9,6 @@ go
 
 #if error ng.ps1 appears 
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+#docker
+Move all the files from the docker folder to the folder where the *.sln file is located.

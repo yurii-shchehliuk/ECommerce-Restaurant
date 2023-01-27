@@ -6,5 +6,5 @@ docker exec -it aspnetrun-redis /bit/bash
 :: redis cli 
 redis-cli
 ping
-set {key} {value}
-
+:: set {key} {value}
+:: get

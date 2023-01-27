@@ -38,8 +38,6 @@ services:
             dockerfile: src/API.Basket/Dockerfile  
         environment:  
             - ASPNETCORE_URLS=http://*:80 
-            - "ConnectionStrings:Redis=redis:6379"
-            - "RabbitMqHost=amqp://quest:guest@rabbitowlet:5672"
         ports: 
             - "5031:80" 
         depends_on: 
