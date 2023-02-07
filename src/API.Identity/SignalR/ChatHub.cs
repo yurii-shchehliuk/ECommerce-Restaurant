@@ -1,4 +1,5 @@
-﻿using API.Identity.Functions.CommentFunc.Commands;
+﻿using API.Identity.Dtos;
+using API.Identity.Functions.CommentFunc.Commands;
 using API.Identity.Functions.CommentFunc.Queries;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
@@ -28,6 +29,12 @@ namespace API.Identity.SignalR
             await Clients.Group(command.ProductId.ToString())
                 .SendAsync("ReceiveComment", comment.Value);
 
+        }
+
+        public async Task RegisterForFeed(string groupName)
+        {
+            await this.Groups.AddToGroupAsync(
+                this.Context.ConnectionId, groupName);
         }
 
         public override async Task OnConnectedAsync()

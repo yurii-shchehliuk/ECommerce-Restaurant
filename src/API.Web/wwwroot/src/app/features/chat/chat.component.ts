@@ -1,6 +1,6 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { SignalRService } from '../../shop/signalr/signal-r.service';
+import { SignalRService } from '../signalr.service';
 import { MessageVM } from './MessageVM';
 
 @Component({
@@ -10,27 +10,29 @@ import { MessageVM } from './MessageVM';
 })
 export class ChatComponent implements OnInit {
   messageList: MessageVM[] = [];
-  message = new MessageVM();
+  message: MessageVM = {
+    date: Date.now().toLocaleString(),
+    messageBody: '',
+    userName: '',
+    groupName: ''
+  };
 
   constructor(
     private signalRService: SignalRService,
-    private fb: FormBuilder
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.subscribeToEvents();
   }
 
-  addToInbox(obj: MessageVM) {
-    const newObj = new MessageVM();
-    newObj.userName = obj.userName;
-    newObj.messageBody = obj.messageBody;
-    newObj.date = Date.now().toString();
-    console.log('addToInbox', newObj);
-
+  private addToInbox(obj: MessageVM) {
+    const newObj = {
+      userName: obj.userName,
+      messageBody: obj.messageBody,
+      date: Date.now().toString(),
+      groupName: ''
+    }
     this.messageList.push(newObj);
-
-    console.log('MESSAGES', this.messageList);
   }
 
   sendMessage(): void {
@@ -50,11 +52,18 @@ export class ChatComponent implements OnInit {
   }
 
   private subscribeToEvents() {
-    this.signalRService
-      .retrieveMappedObject()
-      .subscribe((receivedObj: MessageVM) => {
-        console.log(receivedObj, 'retrieveMappedObject');
-        this.addToInbox(receivedObj);
-      }); // calls the service method to get the new messages sent
+    // start a connection
+    this.signalRService.startConnection().then(() => {
+      console.log("connected");
+
+      // register for ALL relay
+      this.signalRService.listenToAllMessages();
+
+      // subscribe to messages received
+      this.signalRService.allMessagesObject$
+        .subscribe((res: MessageVM) => {
+          this.addToInbox(res);
+        });
+    });
   }
 }

@@ -1,5 +1,6 @@
-export class MessageVM {
+export interface MessageVM {
   userName: string;
   messageBody: string;
   date: string;
+  groupName: string;
 }

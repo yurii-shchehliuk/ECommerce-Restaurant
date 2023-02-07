@@ -11,15 +11,10 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { DataTablesModule } from 'angular-datatables';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { ChatComponent } from './features/chat/chat.component';
 import { FormsModule } from '@angular/forms';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 import { AdminModule } from './admin/admin.module';
-import { GiftsNPointsComponent } from './features/gifts-n-points/gifts-n-points.component';
 import { FeaturesModule } from './features/features.module';
 
 @NgModule({
@@ -33,9 +28,6 @@ import { FeaturesModule } from './features/features.module';
     HttpClientModule,
     FormsModule,
     CoreModule,
-    // MatDatepickerModule,
-    // MatNativeDateModule,
-    // MatDialogModule,
     HomeModule,
     AdminModule,
     FeaturesModule,
@@ -49,4 +41,4 @@ import { FeaturesModule } from './features/features.module';
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

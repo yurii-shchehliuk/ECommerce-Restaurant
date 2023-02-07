@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BasketService } from './basket/basket.service';
 import { AccountService } from './account/account.service';
 import { MessageVM } from './features/chat/MessageVM';
-import { SignalRService } from './shop/signalr/signal-r.service';
+import { SignalRService } from './features/signalr.service';
 
 @Component({
   selector: 'app-root',

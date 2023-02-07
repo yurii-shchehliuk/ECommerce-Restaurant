@@ -1,0 +1,17 @@
+<ng-container *ngIf="groupMessages.length > 0; else feedEmpty">
+    <div *ngFor="let f of groupMessages" class="card rounded-0 my-2">
+        <div class="card-header bg-transparent">
+            <p class="card-text">
+                {{ f.author }} posted in
+                <a [routerLink]="['/groups',f.groupName]">
+                    {{ f.groupName }}</a> on {{ f.created | date:'MM/dd/yyyy' }}
+            </p>
+        </div>
+        <div class="card-body">
+            <p class="card-text">{{ f.postText }}</p>
+        </div>
+    </div>
+</ng-container>
+<ng-template #feedEmpty>
+    <p>No Feed yet.</p>
+</ng-template>

@@ -1,4 +1,4 @@
-﻿using API.Identity.SignalR;
+﻿using API.Identity.Dtos;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;

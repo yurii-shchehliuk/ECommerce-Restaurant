@@ -1,5 +1,4 @@
 using API.Identity.Dtos;
-using API.Identity.SignalR;
 using AutoMapper;
 using WebApi.Domain.DTOs;
 using WebApi.Domain.Entities.Identity;
