@@ -17,7 +17,7 @@
                     {{ msg.messageBody }}
                   </p>
                   <span class="time_date">
-                    {{ msg.date | date: "medium" }}
+                    {{ msg.createdAt | date: "medium" }}
                   </span>
                 </div>
               </div>
@@ -28,7 +28,7 @@
                 <p>
                   {{ msg.messageBody }}
                 </p>
-                <span class="time_date"> {{ msg.date | date: "medium" }}</span>
+                <span class="time_date"> {{ msg.createdAt | date: "medium" }}</span>
               </div>
             </div>
           </div>

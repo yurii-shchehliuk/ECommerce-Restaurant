@@ -12,6 +12,9 @@ import { CommentComponent } from './comments/comment.component';
     CommonModule,
     FeaturesRoutesModule,
     SharedModule
+  ],
+  exports: [
+    CommentComponent
   ]
 })
 export class FeaturesModule { }

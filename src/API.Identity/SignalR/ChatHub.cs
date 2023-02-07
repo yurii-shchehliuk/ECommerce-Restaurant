@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 
 namespace API.Identity.SignalR
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <info>this staff should be invoked</info>
     public class ChatHub : Hub
     {
         private readonly IMediator mediator;
@@ -17,44 +21,42 @@ namespace API.Identity.SignalR
         {
             this.mediator = mediator;
         }
-        public async Task NewMessage(CommentDTO message)
-        {
-            await Clients.All.SendAsync("MessageReceived", message.MessageBody, message.UserName, message.CreatedAt);
-        }
 
-        public async Task NewComment(CommentCreate.Command command)
-        {
-            var comment = await mediator.Send(command);
-
-            await Clients.Group(command.ProductId.ToString())
-                .SendAsync("ReceiveComment", comment.Value);
-
-        }
-
-        public async Task RegisterForFeed(string groupName)
+        public async Task JoinToGroup(string groupName)
         {
             await this.Groups.AddToGroupAsync(
                 this.Context.ConnectionId, groupName);
         }
 
-        public override async Task OnConnectedAsync()
+        public async Task LeaveGroup(string groupName)
         {
-            try
-            {
-                var httpContext = Context.GetHttpContext();
-                //var productId = httpContext.Request.Query["productId"];
-                int productId = 5;
-                await Groups.AddToGroupAsync(Context.ConnectionId, productId.ToString());
-
-                var result = await mediator.Send(new CommentsList.Query { Id = System.Convert.ToInt32(productId) });
-                await Clients.Caller.SendAsync("LoadComments", result.Value);
-
-            }
-            catch (Exception ex)
-            {
-                Log.Error("OnConnectedAsync {0},\n{1}", ex.Message, ex.StackTrace);
-                throw ex;
-            }
+            await Clients.Group(groupName).SendAsync("LeaveGroup", groupName);
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
         }
+
+        //public override async Task OnConnectedAsync()
+        //{
+        //    try
+        //    {
+        //        //var httpContext = Context.GetHttpContext();
+        //        //var productId = httpContext.Request.Query["productId"];
+        //        //if (productId.Count <1)
+        //        //{
+        //        //    productId = httpContext.Request.Query["id"];
+
+        //        //}
+        //        //await JoinToGroup(productId.ToString());
+
+        //        //var result = await mediator.Send(new CommentsList.Query { Id = System.Convert.ToInt32(productId) });
+        //        //await Clients.Caller.SendAsync("GetGroupMessages", result.Value);
+        //        await base.OnConnectedAsync();
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Error("OnConnectedAsync {0},\n{1}", ex.Message, ex.StackTrace);
+        //        throw ex;
+        //    }
+        //}
     }
 }

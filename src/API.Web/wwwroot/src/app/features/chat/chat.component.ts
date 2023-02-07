@@ -11,7 +11,7 @@ import { MessageVM } from './MessageVM';
 export class ChatComponent implements OnInit {
   messageList: MessageVM[] = [];
   message: MessageVM = {
-    date: Date.now().toLocaleString(),
+    createdAt: new Date().toISOString(),
     messageBody: '',
     userName: '',
     groupName: ''
@@ -29,26 +29,31 @@ export class ChatComponent implements OnInit {
     const newObj = {
       userName: obj.userName,
       messageBody: obj.messageBody,
-      date: Date.now().toString(),
-      groupName: ''
+      createdAt: new Date().toISOString(),
+      groupName: obj.groupName
     }
     this.messageList.push(newObj);
   }
 
   sendMessage(): void {
-    if (this.message) {
-      this.message.userName = localStorage.getItem('user_name');
-      if (
-        this.message.userName.length === 0 ||
-        this.message.messageBody.length === 0
-      ) {
-        window.alert('Both fields are required.');
-        return;
-      } else {
-        this.signalRService.broadcastMessage(this.message); // Send the message via a service
-      }
+    this.message.userName = localStorage.getItem('user_name');
+
+    if (this.message.userName.length === 0 ||
+      this.message.messageBody.length === 0) {
+      return;
     }
-    this.message.messageBody = '';
+
+    this.signalRService.sendMessage(this.message).subscribe({
+      next: (data) => {
+        console.log(data);
+      },
+      error: (err) => {
+        console.log('sendMessage', err);
+      },
+      complete: () => {
+        this.message.messageBody = '';
+      }
+    });
   }
 
   private subscribeToEvents() {

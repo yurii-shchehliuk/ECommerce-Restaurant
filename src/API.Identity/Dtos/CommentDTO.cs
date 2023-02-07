@@ -9,6 +9,6 @@ namespace API.Identity.Dtos
         public string MessageBody { get; set; }
         public string UserName { get; set; }
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
-        public string GroupName { get; internal set; }
+        public string GroupName { get; set; }
     }
 }

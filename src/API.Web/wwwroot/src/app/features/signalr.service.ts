@@ -20,40 +20,28 @@ export class SignalRService {
   constructor(private http: HttpClient) {
   }
 
-  sendMessage(message: MessageVM) {
-    this.hubConnection
-      .invoke('NewMessage', message)
-      .catch((err) => console.error(err));
-  }
-
-  // Calls the controller method
-  public broadcastMessage(msgDto: MessageVM) {
-    console.log('msgDto', msgDto);
-
-    this.http.post(this.baseUrl, msgDto, {}).subscribe({
-      next: (data) => {
-        console.log(data);
-      },
-      error: (err) => {
-        console.log('broadcast message', err);
-      }
-    }
-    );
-    // this.sendMessage(msgDto)
-  }
-
   public get allMessagesObject$(): Observable<MessageVM> {
     return this.$allMessages.asObservable();
   }
 
-  public get GroupMsgsObject$(): Observable<MessageVM> {
+  public get groupMsgsObject$(): Observable<MessageVM> {
     return this.$groupMessages.asObservable();
   }
 
+  // Calls the controller method
+  sendMessage(msgDto: MessageVM) {
+    return this.http.post(this.baseUrl, msgDto);
+  }
+
+  // Calls the controller method
+  sendGroupMessage(msgDto: MessageVM) {
+    return this.http.post(environment.identityApi.api + 'Chat/group', msgDto);
+  }
+
   public listenToAllMessages() {
-    this.hubConnection.on('MessageReceived', (user, message, date) => {
+    this.hubConnection.on('AllMessages', (user, message, date) => {
       this.receivedMessage = {
-        date: date,
+        createdAt: date,
         messageBody: message,
         userName: user,
         groupName: ''
@@ -61,21 +49,29 @@ export class SignalRService {
       this.$allMessages.next(this.receivedMessage);
     });
     this.hubConnection.onclose(async () => {
-      await this.startConnection();
+      setTimeout(await this.startConnection(), 5000)
     });
   }
 
-  public listenToGroupFeed() {
-    (this.hubConnection).on("GetGroupMessages", (data: MessageVM) => {
-      console.log(data);
-      this.$groupMessages.next(data);
+  public listenToGroup() {
+    (this.hubConnection).on("GetGroupMessages", (user, message, date, groupName) => {
+      this.receivedMessage = {
+        createdAt: date,
+        messageBody: message,
+        userName: user,
+        groupName: groupName
+      };
+      this.$groupMessages.next(this.receivedMessage);
+    });
+    this.hubConnection.onclose(async () => {
+      setTimeout(await this.startConnection(), 5000)
     });
   }
 
   public joinGroupFeed(groupName: string) {
     return new Promise((resolve, reject) => {
       (this.hubConnection)
-        .invoke("RegisterForFeed", groupName)
+        .invoke("JoinToGroup", groupName)
         .then(() => {
           console.log("added to feed");
           return resolve(true);
@@ -86,16 +82,21 @@ export class SignalRService {
     })
   }
 
-  public startConnection() {
-    return new Promise((resolve, reject) => {
+  public leaveGroup(group: string): void {
+    this.hubConnection.invoke('LeaveGroup', group);
+  }
+
+  public async startConnection(): Promise<any> {
+    return await new Promise(async (resolve, reject) => {
       //build connection
       this.hubConnection = new signalR.HubConnectionBuilder()
-        .withUrl(environment.identityApi.chat).build();
-
+        .withUrl(environment.identityApi.chat)
+        .build();
+      this.hubConnection.serverTimeoutInMilliseconds = 100000; //100sec
       //start
-      this.hubConnection.start()
+      await this.hubConnection.start()
         .then(() => {
-          console.log("connection established");
+          console.log("connection established", new Date().toISOString());
           return resolve(true);
         })
         .catch((err: any) => {

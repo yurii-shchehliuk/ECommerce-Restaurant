@@ -20,7 +20,7 @@ namespace API.Identity.Controllers
         [Route("send")]
         public async Task NewMessage([FromBody] CommentDTO msg)
         {
-            await _hubContext.Clients.All.SendAsync("MessageReceived", msg.UserName, msg.MessageBody, msg.CreatedAt);
+            await _hubContext.Clients.All.SendAsync("AllMessages", msg.UserName, msg.MessageBody, msg.CreatedAt);
         }
 
         /// <summary>

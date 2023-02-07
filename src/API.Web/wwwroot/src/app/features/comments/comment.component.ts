@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { MessageVM } from '../chat/MessageVM';
@@ -11,24 +12,29 @@ import { SignalRService } from '../signalr.service';
 })
 export class CommentComponent implements OnInit {
 
-  $groupFeed: Observable<MessageVM>;
   groupMessages: MessageVM[] = [];
-  $groupFeedSubject: Subscription | undefined;
+  // $groupFeedSubject: Subscription | undefined;
+  message: MessageVM = {
+    createdAt: new Date().toISOString(),
+    messageBody: '',
+    userName: '',
+    groupName: ''
+  };
 
   constructor(
     private route: ActivatedRoute,
     private signalrService: SignalRService) {
-    this.$groupFeed = this.signalrService.GroupMsgsObject$;
   }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((map) => {
-      let groupName: any = map.get('id');
-      if (groupName) {
+      this.message.groupName = map.get('id');
+
+      if (this.message.groupName) {
         this.signalrService.startConnection().then(() => {
-          this.signalrService.joinGroupFeed(groupName).then(() => {
-            this.signalrService.listenToGroupFeed();
-            this.$groupFeedSubject = this.$groupFeed.subscribe((d: MessageVM) => {
+          this.signalrService.joinGroupFeed(this.message.groupName).then(() => {
+            this.signalrService.listenToGroup();
+            this.signalrService.groupMsgsObject$.subscribe((d: MessageVM) => {
               console.log(d);
               this.groupMessages.push(d);
             });
@@ -38,9 +44,31 @@ export class CommentComponent implements OnInit {
         })
       }
     });
+
+  }
+
+  sendMessage(): void {
+    this.message.userName = localStorage.getItem('user_name');
+
+    if (this.message.userName.length === 0
+      || this.message.messageBody.length === 0) {
+      return;
+    }
+
+    this.signalrService.sendGroupMessage(this.message).subscribe({
+      next: (data) => {
+        console.log(data);
+      },
+      error: (err) => {
+        console.log('sendGroupMessage', err);
+      },
+      complete: () => {
+        this.message.messageBody = '';
+      }
+    });
   }
 
   ngOnDestroy(): void {
-    this.$groupFeedSubject?.unsubscribe();
+    // this.$groupFeedSubject?.unsubscribe();
   }
 }

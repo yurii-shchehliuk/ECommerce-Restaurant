@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -12,8 +12,6 @@ import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { DataTablesModule } from 'angular-datatables';
 import { FormsModule } from '@angular/forms';
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 import { AdminModule } from './admin/admin.module';
 import { FeaturesModule } from './features/features.module';
 
@@ -23,8 +21,6 @@ import { FeaturesModule } from './features/features.module';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    BsDatepickerModule.forRoot(),
-    TimepickerModule.forRoot(),
     HttpClientModule,
     FormsModule,
     CoreModule,

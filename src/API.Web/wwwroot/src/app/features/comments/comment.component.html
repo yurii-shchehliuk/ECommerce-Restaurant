@@ -1,17 +1,27 @@
 <ng-container *ngIf="groupMessages.length > 0; else feedEmpty">
-    <div *ngFor="let f of groupMessages" class="card rounded-0 my-2">
+    <div *ngFor="let msg of groupMessages" class="card rounded-0 my-2">
         <div class="card-header bg-transparent">
             <p class="card-text">
-                {{ f.author }} posted in
-                <a [routerLink]="['/groups',f.groupName]">
-                    {{ f.groupName }}</a> on {{ f.created | date:'MM/dd/yyyy' }}
+                {{ msg.userName }} posted in
+                <a [routerLink]="['/groups',msg.GroupName]">
+                    {{ msg.GroupName }}</a> on {{ msg.createdAt | date:'MM/dd/yyyy' }}
             </p>
         </div>
         <div class="card-body">
-            <p class="card-text">{{ f.postText }}</p>
+            <p class="card-text">{{ msg.messageBody }}</p>
         </div>
+        <div>{{msg | json}}</div>
     </div>
 </ng-container>
 <ng-template #feedEmpty>
     <p>No Feed yet.</p>
 </ng-template>
+
+<div class="input_msg_write">
+    <!-- <input type="text" placeholder="Your name" class="name-box"  [(ngModel)]="message.userName" /> -->
+    <input [(ngModel)]="message.messageBody" name="messageBody" type="text" class="write_msg"
+        (keydown.enter)="sendMessage()" placeholder="Type a message" />
+    <button class="msg_send_btn" type="submit" (click)="sendMessage()">
+        <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+    </button>
+</div>

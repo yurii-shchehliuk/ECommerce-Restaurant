@@ -1,6 +1,6 @@
 export interface MessageVM {
   userName: string;
   messageBody: string;
-  date: string;
+  createdAt: string;
   groupName: string;
 }

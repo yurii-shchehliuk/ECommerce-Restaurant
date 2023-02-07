@@ -41,7 +41,7 @@ namespace WebApi.Infrastructure.StartupExtensions.Identity
             {
 
                 hubOptions.EnableDetailedErrors = true;
-                hubOptions.KeepAliveInterval = System.TimeSpan.FromMinutes(1);
+                hubOptions.KeepAliveInterval = System.TimeSpan.FromMinutes(5);
             });
 
             services.AddAuthentication(options =>
@@ -67,7 +67,7 @@ namespace WebApi.Infrastructure.StartupExtensions.Identity
                     {
                         var accessToken = context.Request.Query["access_token"];
                         var path = context.HttpContext.Request.Path;
-                        if (!string.IsNullOrEmpty(accessToken)&& (path.StartsWithSegments("chatsocket")))
+                        if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("chatsocket")))
                         {
                             context.Token = accessToken;
                         }
