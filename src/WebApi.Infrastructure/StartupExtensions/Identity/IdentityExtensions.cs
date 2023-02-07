@@ -8,7 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApi.Db.Identity;
 using WebApi.Domain.Entities.Identity;
+using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Domain.Interfaces.Services;
+using WebApi.Infrastructure.Repositories;
 using WebApi.Infrastructure.Services;
 
 namespace WebApi.Infrastructure.StartupExtensions.Identity
@@ -27,13 +29,20 @@ namespace WebApi.Infrastructure.StartupExtensions.Identity
             var builder = services.AddIdentityCore<AppUser>(c =>
             {
                 c.SignIn.RequireConfirmedAccount = true;
-            })
-            .AddEntityFrameworkStores<AppIdentityDbContext>()
-            .AddTokenProvider<DataProtectorTokenProvider<AppUser>>(TokenOptions.DefaultProvider);
+
+            }).AddEntityFrameworkStores<AppIdentityDbContext>()
+              .AddTokenProvider<DataProtectorTokenProvider<AppUser>>(TokenOptions.DefaultProvider);
 
             builder = new IdentityBuilder(builder.UserType, builder.Services);
             builder.AddEntityFrameworkStores<AppIdentityDbContext>();
             builder.AddSignInManager<SignInManager<AppUser>>();
+
+            services.AddSignalR(hubOptions =>
+            {
+
+                hubOptions.EnableDetailedErrors = true;
+                hubOptions.KeepAliveInterval = System.TimeSpan.FromMinutes(1);
+            });
 
             services.AddAuthentication(options =>
             {

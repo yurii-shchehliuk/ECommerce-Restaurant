@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace WebApi.Infrastructure.SignalR
+namespace API.Identity.SignalR
 {
     public interface IChatHub
     {

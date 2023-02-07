@@ -4,8 +4,8 @@
     <div class="inbox_msg">
       <div class="mesgs">
         <div class="msg_history">
-
           <div *ngFor="let msg of messageList">
+            <!-- income messages -->
             <div class="incoming_msg" *ngIf="msg.userName !== message.userName">
               <div class="incoming_msg_img"></div>
               <div class="received_msg">
@@ -14,7 +14,7 @@
                     {{ msg.userName }}
                   </span>
                   <p>
-                    {{ msg.message }}
+                    {{ msg.messageBody }}
                   </p>
                   <span class="time_date">
                     {{ msg.date | date: "medium" }}
@@ -22,12 +22,11 @@
                 </div>
               </div>
             </div>
-            <div>
-            </div>
+            <!-- outcome messages -->
             <div class="outgoing_msg" *ngIf="msg.userName === message.userName">
               <div class="sent_msg">
                 <p>
-                  {{ msg.message }}
+                  {{ msg.messageBody }}
                 </p>
                 <span class="time_date"> {{ msg.date | date: "medium" }}</span>
               </div>
@@ -36,13 +35,8 @@
         </div>
         <div class="type_msg">
           <div class="input_msg_write">
-            <input
-              type="text"
-              class="write_msg"
-              [(ngModel)]="message.message"
-              (keydown.enter)="sendMessage()"
-              placeholder="Type a message"
-            />
+            <input type="text" class="write_msg" [(ngModel)]="message.messageBody" (keydown.enter)="sendMessage()"
+              placeholder="Type a message" />
             <button class="msg_send_btn" type="button" (click)="sendMessage()">
               <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
             </button>

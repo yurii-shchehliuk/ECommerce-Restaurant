@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using RabbitMQ.Client;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,8 @@ namespace EventBus.Messages.BackgroundTasks
     /// 
     /// </summary>
     /// <todo>move to the particular api library and inject services</todo>
-    public class OrderReceivedConsumer : IConsumer<OrderMessageDTO>
+    /// <see>DefaultBasicConsumer vs IConsumer</see>
+    public class OrderReceivedConsumer : DefaultBasicConsumer
     {
         public OrderReceivedConsumer()
         {

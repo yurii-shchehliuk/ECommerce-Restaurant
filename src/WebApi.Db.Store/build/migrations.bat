@@ -1,0 +1,2 @@
+dotnet ef migrations add comments --verbose --project .\WebApi.Db.Store.csproj --startup-project ..\API.Identity\API.Identity.csproj --context StoreContext
+dotnet ef database update --verbose --project .\WebApi.Db.Store.csproj --startup-project ..\API.Identity\API.Identity.csproj --context StoreContext

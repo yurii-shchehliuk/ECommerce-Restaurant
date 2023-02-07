@@ -24,7 +24,7 @@ namespace API.Basket
                 {
                     Log.ForContext("ConnectionString:", context.Database.GetDbConnection().ConnectionString).Information("Information");
                     await context.Database.EnsureCreatedAsync();
-                    //await context.Database.MigrateAsync();
+                    await context.Database.MigrateAsync();
                     await StoreContextSeed.SeedAsync(context, loggerFactory);
                 }
                 catch (Exception ex)

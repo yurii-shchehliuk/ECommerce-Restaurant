@@ -1,16 +1,14 @@
-using API.Web.Functions.CommentFunc.Commands;
-using API.Web.Functions.CommentFunc.Queries;
-using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using System.IO;
-using WebApi.Infrastructure.SignalR;
+using WebApi.Db.Store;
 using WebApi.Infrastructure.StartupExtensions;
 using WebApi.Infrastructure.StartupExtensions.ApiWeb;
 
@@ -33,10 +31,8 @@ namespace API.Web
                 configuration.RootPath = "wwwroot/dist";
             });
 
-
             services.AddMediatR(typeof(Startup));
-            services.AddAutoMapper(typeof(Helpers.MappingProfiles));
-            services.AddValidatorsFromAssemblyContaining<CommentCreate>();
+
             services.AddApplicationServices(_config);
 
             services.AddSwaggerDocumentation();
@@ -74,8 +70,8 @@ namespace API.Web
 
                 if (env.IsDevelopment())
                 {
-                    spa.UseAngularCliServer(npmScript: "start");
-                    //spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    //spa.UseAngularCliServer(npmScript: "start");
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
 
                 }
             });
@@ -88,8 +84,6 @@ namespace API.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<ChatHub>("/chatsocket");
-                //endpoints.MapFallbackToController("Index", "Fallback");
             });
         }
     }

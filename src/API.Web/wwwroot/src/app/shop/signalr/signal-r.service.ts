@@ -10,7 +10,7 @@ import { environment } from 'src/environment';
 })
 export class SignalRService {
   messageReceived = new EventEmitter<MessageVM>();
-  baseUrl = environment.baseApi + 'Chat/send';
+  baseUrl = environment.identityApi.api + 'Chat/send';
 
   private hubConnection: signalR.HubConnection;
   private receivedMessage: MessageVM = new MessageVM();
@@ -32,11 +32,16 @@ export class SignalRService {
 
   // Calls the controller method
   public broadcastMessage(msgDto: MessageVM) {
-    this.http.post(this.baseUrl, msgDto, {}).subscribe(
-      (data) => console.log(data),
-      (err) => {
+    console.log('msgDto', msgDto);
+
+    this.http.post(this.baseUrl, msgDto, {}).subscribe({
+      next: (data) => {
+        console.log(data);
+      },
+      error: (err) => {
         console.log('broadcast message', err);
       }
+    }
     );
     // this.sendMessage(msgDto)
   }
@@ -47,10 +52,11 @@ export class SignalRService {
 
   private buildConnection() {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(environment.baseApi)
+      .withUrl(environment.identityApi.chat)
       .configureLogging(signalR.LogLevel.Information)
       .build();
   }
+
   private startConnection(): void {
     this.hubConnection
       .start()
@@ -59,11 +65,16 @@ export class SignalRService {
       })
       .catch((err) => {
         console.log('Error while starting connection:' + err);
-        setTimeout(function() {
-          this.startConnection();
+        setTimeout(() => {
+          this.RetryConnection();
         }, 1000);
       });
   }
+
+  private RetryConnection() {
+    // this.startConnection();
+  }
+
   private registerOnServerEvents() {
     this.hubConnection.on('MessageReceived', (user, message, date) => {
       this.mapReceivedMessage(user, message, date);
@@ -73,12 +84,13 @@ export class SignalRService {
       await this.startConnection();
     });
   }
+
   private mapReceivedMessage(user: string, message: string, date: string): void {
     this.receivedMessage.userName = user;
-    this.receivedMessage.message = message;
+    this.receivedMessage.messageBody = message;
     this.receivedMessage.date = date;
-    console.log('asdasd', date);
+    console.log('mapReceivedMessage', date);
 
     this.sharedObj.next(this.receivedMessage);
- }
+  }
 }

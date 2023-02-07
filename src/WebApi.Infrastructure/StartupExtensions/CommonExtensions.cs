@@ -54,6 +54,7 @@ namespace WebApi.Infrastructure.StartupExtensions
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
                     policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("*");
+
                 });
             });
         }

@@ -1,4 +1,5 @@
 using API.Identity.Dtos;
+using API.Identity.SignalR;
 using AutoMapper;
 using WebApi.Domain.DTOs;
 using WebApi.Domain.Entities.Identity;
@@ -9,6 +10,9 @@ namespace API.Identity.Helpers
     {
         public MappingProfiles()
         {
+            CreateMap<Comment, CommentDTO>()
+                 .ForMember(d => d.UserName, o => o.MapFrom(s => s.Author.UserName));
+            
             CreateMap<Address, AddressDto>().ReverseMap();
             CreateMap<AddressDto, WebApi.Domain.Entities.OrderAggregate.Address>();
             CreateMap<AppUser, UserDto>()

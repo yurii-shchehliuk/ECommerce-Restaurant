@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using API.Identity.SignalR;
+using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -18,9 +19,8 @@ using WebApi.Domain.DTOs;
 using WebApi.Domain.Entities.Identity;
 using WebApi.Domain.Entities.Store;
 using WebApi.Domain.Interfaces.Repositories;
-using WebApi.Infrastructure.SignalR;
 
-namespace API.Web.Functions.CommentFunc.Commands
+namespace API.Identity.Functions.CommentFunc.Commands
 {
     public class CommentCreate
     {
@@ -68,7 +68,8 @@ namespace API.Web.Functions.CommentFunc.Commands
                 product.Comments.Add(comment);
 
                 var success = await context.SaveChangesAsync() > 0;
-                if (success) return Result<CommentDTO>.Success(mapper.Map<CommentDTO>(comment));
+                if (success) 
+                    return Result<CommentDTO>.Success(mapper.Map<CommentDTO>(comment));
 
                 return Result<CommentDTO>.Fail("Failed to add comment");
             }

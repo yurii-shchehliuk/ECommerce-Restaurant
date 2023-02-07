@@ -14,12 +14,6 @@ namespace WebApi.Infrastructure.StartupExtensions.ApiWeb
         {
             services.AddHttpContextAccessor();
             services.AddFluentValidationAutoValidation();
-            services.AddSignalR(hubOptions =>
-            {
-
-                hubOptions.EnableDetailedErrors = true;
-                hubOptions.KeepAliveInterval = System.TimeSpan.FromMinutes(1);
-            });
 
             return services;
         }

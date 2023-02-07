@@ -70,11 +70,6 @@ namespace WebApi.Infrastructure.StartupExtensions.Basket
                 };
             });
 
-            services.AddSignalR(hubOptions =>
-            {
-                hubOptions.EnableDetailedErrors = true;
-                hubOptions.KeepAliveInterval = System.TimeSpan.FromMinutes(1);
-            });
         }
         #endregion
     }

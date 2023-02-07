@@ -1,4 +1,8 @@
+using API.Identity.Functions.CommentFunc.Commands;
 using API.Identity.Helpers;
+using API.Identity.SignalR;
+using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebApi.Db.Identity;
+using WebApi.Db.Store;
 using WebApi.Infrastructure.StartupExtensions;
 using WebApi.Infrastructure.StartupExtensions.Identity;
 
@@ -27,8 +32,22 @@ namespace API.Identity
                 x.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
             });
 
-            services.AddAutoMapper(typeof(MappingProfiles));
-            services.AddCorsConfiguration();
+            ///<todo>separate database for comments</todo>
+            services.AddDbContext<StoreContext>(x =>
+                x.UseSqlServer(_config.GetConnectionString("DefaultConnection"))); 
+            
+            services.AddMediatR(typeof(Startup));
+            services.AddAutoMapper(typeof(Helpers.MappingProfiles));
+            services.AddValidatorsFromAssemblyContaining<CommentCreate>();
+            
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5021").AllowCredentials();
+
+                });
+            }); 
             services.AddControllers();
             //services.AddHttpContextAccessor();
 
@@ -63,6 +82,8 @@ namespace API.Identity
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chatsocket");
+                //endpoints.MapFallbackToController("Index", "Fallback");
             });
         }
     }

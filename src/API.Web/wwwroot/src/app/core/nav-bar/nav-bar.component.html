@@ -1,8 +1,8 @@
-<div class="d-flex flex-column flex-md-row align-items-center justify-content-between p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm fixed-top">
+<div
+  class="d-flex flex-column flex-md-row align-items-center justify-content-between p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm fixed-top">
   <img src="/assets/images/logo_main.png" style="max-height: 70px;" alt="logo" class="logo" routerLink="/">
   <nav class="my-2 my-md-0 me-md-3 text-uppercase" style="font-size: larger;">
-    <a class="p-2" [routerLink]="['/']" routerLinkActive="active"
-      [routerLinkActiveOptions]="{exact: true}" >Home</a>
+    <a class="p-2" [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
     <a class="p-2" routerLink="/shop" routerLinkActive="active">Shop</a>
   </nav>
   <div class="d-flex align-items-center">
@@ -30,6 +30,9 @@
           <a routerLink="admin/users" class="dropdown-item d-flex align-items-center py-2">
             <i class="fa fa-superpowers me-3"></i> Manage Users
           </a>
+          <a routerLink="/chat" class="dropdown-item d-flex align-items-center py-2">
+            <i class="fa fa-weixin me-2"></i> Chat
+          </a>
           <div class="dropdown-divider"></div>
           <a (click)="logout()" class="dropdown-item d-flex align-items-center py-2">
             <i class="fa fa-sign-out me-3"></i> Logout
@@ -53,6 +56,9 @@
           </a>
           <a routerLink="features/Gifts-n-Points" class="dropdown-item d-flex align-items-center py-2">
             <i class="fa fa-diamond me-2"></i> Gifts&Points
+          </a>
+          <a routerLink="/chat" class="dropdown-item d-flex align-items-center py-2">
+            <i class="fa fa-weixin me-2"></i> Chat
           </a>
           <div class="dropdown-divider"></div>
           <a (click)="logout()" class="dropdown-item d-flex align-items-center py-2">

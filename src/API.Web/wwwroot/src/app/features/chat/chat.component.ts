@@ -1,6 +1,6 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { SignalRService } from '../../core/services/signal-r.service';
+import { SignalRService } from '../../shop/signalr/signal-r.service';
 import { MessageVM } from './MessageVM';
 
 @Component({
@@ -24,7 +24,7 @@ export class ChatComponent implements OnInit {
   addToInbox(obj: MessageVM) {
     const newObj = new MessageVM();
     newObj.userName = obj.userName;
-    newObj.message = obj.message;
+    newObj.messageBody = obj.messageBody;
     newObj.date = Date.now().toString();
     console.log('addToInbox', newObj);
 
@@ -38,7 +38,7 @@ export class ChatComponent implements OnInit {
       this.message.userName = localStorage.getItem('user_name');
       if (
         this.message.userName.length === 0 ||
-        this.message.message.length === 0
+        this.message.messageBody.length === 0
       ) {
         window.alert('Both fields are required.');
         return;
@@ -46,7 +46,7 @@ export class ChatComponent implements OnInit {
         this.signalRService.broadcastMessage(this.message); // Send the message via a service
       }
     }
-    this.message.message = '';
+    this.message.messageBody = '';
   }
 
   private subscribeToEvents() {

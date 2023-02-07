@@ -1,5 +1,5 @@
 export class MessageVM {
   userName: string;
-  message: string;
+  messageBody: string;
   date: string;
 }

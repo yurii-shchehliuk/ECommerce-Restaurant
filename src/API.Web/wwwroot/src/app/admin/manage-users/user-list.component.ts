@@ -14,7 +14,6 @@ export class UserListComponent implements OnInit {
             .pipe(first())
             .subscribe(users => this.users = users);
             console.log(this.users, 'all users');
-
     }
 
     deleteUser(id: string) {

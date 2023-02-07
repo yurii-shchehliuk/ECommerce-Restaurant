@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using API.Identity.SignalR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
-using WebApi.Infrastructure.SignalR;
 
-namespace API.Web.Controllers
+namespace API.Identity.Controllers
 {
     public class ChatController : BaseApiController
     {
@@ -18,7 +18,7 @@ namespace API.Web.Controllers
         [Route("send")]
         public async Task NewMessage([FromBody] CommentDTO msg)
         {
-            await _hubContext.Clients.All.SendAsync("MessageReceived", msg.UserName, msg.Body, msg.CreatedAt);
+            await _hubContext.Clients.All.SendAsync("MessageReceived", msg.UserName, msg.MessageBody, msg.CreatedAt);
         }
     }
 }
