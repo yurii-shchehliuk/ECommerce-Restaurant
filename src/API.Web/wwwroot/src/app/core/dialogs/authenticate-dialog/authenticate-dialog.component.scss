@@ -1,0 +1,18 @@
+.close-button {
+    position: relative;
+    top: -17px;
+    right: -248px;
+    background: white;
+}
+
+.cdk-dialog-container {
+    overflow: hidden !important;
+}
+
+.container {
+    background-color: transparent;
+
+    &.colorfull {
+        background-color: white;
+    }
+}

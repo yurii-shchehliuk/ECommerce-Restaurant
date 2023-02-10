@@ -1,22 +1,21 @@
 <div
-  class="d-flex flex-column flex-md-row align-items-center justify-content-between p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm fixed-top">
-  <img src="/assets/images/logo_main.png" style="max-height: 70px;" alt="logo" class="logo" routerLink="/">
+  class="d-flex flex-column flex-md-row align-items-center justify-content-between px-md-4 bg-white border-bottom shadow-sm sticky">
+  <img src="/assets/images/logo_main.png" style="max-height: 70px;" alt="logo" class="logo me-5" routerLink="/">
   <nav class="my-2 my-md-0 me-md-3 text-uppercase" style="font-size: larger;">
     <a class="p-2" [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
     <a class="p-2" routerLink="/shop" routerLinkActive="active">Shop</a>
   </nav>
   <div class="d-flex align-items-center">
     <a routerLink="/basket" class="position-relative">
-      <i class="fa fa-shopping-cart fa-2x me-5 text-dark"></i>
+      <button mat-button><i class="fa fa-shopping-cart fa-2x text-dark"></i></button>
       <div *ngIf="(basket$ | async)" class="cart-no">{{(basket$ | async).items.length}}</div>
     </a>
     <ng-container *ngIf="(currentUser$ | async) === null">
-      <a routerLink="/account/login" class="btn btn-outline-secondary me-2">Login</a>
-      <a routerLink="/account/register" class="btn btn-outline-secondary me-3">Sign up</a>
+      <button mat-button class="me-5 "><i class="fa fa-user-o fa-2x" (click)="authenticateDropDown()"></i></button>
     </ng-container>
 
     <ng-container *ngIf="(currentUser$ | async) && (currentUser$ | async).isAdmin">
-      <div class="dropdown ms-3 me-5" dropdown (click)="ddl()">
+      <div class="dropdown ms-3 me-5" dropdown>
         <a class="dropdown-toggle" style="cursor: pointer" dropdownToggle>
           <strong>Welcome {{(currentUser$ | async).displayName}}</strong>
         </a>
@@ -70,5 +69,4 @@
     </ng-container>
 
   </div>
-
 </div>

@@ -9,11 +9,12 @@ import {ToastrModule} from 'ngx-toastr';
 import {BreadcrumbModule} from 'xng-breadcrumb';
 import { SectionHeaderComponent } from './section-header/section-header.component';
 import { SharedModule } from '../shared/shared.module';
+import { AuthenticateDialogComponent } from './dialogs/authenticate-dialog/authenticate-dialog.component';
 
 
 
 @NgModule({
-  declarations: [NavBarComponent, TestErrorComponent, NotFoundComponent, ServerErrorComponent, SectionHeaderComponent],
+  declarations: [NavBarComponent, TestErrorComponent, NotFoundComponent, ServerErrorComponent, SectionHeaderComponent, AuthenticateDialogComponent],
   imports: [
     CommonModule,
     RouterModule,
