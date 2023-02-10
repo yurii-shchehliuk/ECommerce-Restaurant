@@ -12,15 +12,15 @@ namespace API.Admin.Controllers
     [Route("api/[controller]")]
     public class BaseApiController : ControllerBase
     {
-        private IMediator _mediator;
+        private IMediator mediator;
 
         public BaseApiController() { }
 
         protected BaseApiController(IMediator mediator)
         {
-            _mediator = mediator;
+            this.mediator = mediator;
         }
-        protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>()!;
+        protected IMediator Mediator => mediator ??= HttpContext.RequestServices.GetService<IMediator>()!;
 
 
         protected async new Task<IActionResult> Response<TResult>(IQuery<TResult> query)
@@ -32,7 +32,7 @@ namespace API.Admin.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest();
 
-                result = await _mediator.Send(query);
+                result = await mediator.Send(query);
             }
             catch (Exception e)
             {
@@ -53,7 +53,7 @@ namespace API.Admin.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest();
 
-                await _mediator.Send(command);
+                await mediator.Send(command);
             }
             catch (Exception e)
             {

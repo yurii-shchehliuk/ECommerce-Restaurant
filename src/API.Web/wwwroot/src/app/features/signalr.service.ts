@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { EventEmitter, Injectable } from '@angular/core';
 import * as signalR from '@aspnet/signalr';
+import { DefaultHttpClient, HttpRequest, HttpResponse, HubConnection, HubConnectionBuilder, IHttpConnectionOptions } from '@aspnet/signalr';
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
-import { MessageVM } from 'src/app/features/chat/MessageVM';
+import { MessageVM } from 'src/app/features/models/MessageVM';
 import { environment } from 'src/environment';
 
 @Injectable({
@@ -17,7 +18,7 @@ export class SignalRService {
   private $allMessages = new Subject<MessageVM>();
   private $groupMessages: Subject<MessageVM> = new Subject<MessageVM>();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, asd: HttpClient) {
   }
 
   public get allMessagesObject$(): Observable<MessageVM> {
@@ -38,14 +39,22 @@ export class SignalRService {
     return this.http.post(environment.identityApi.api + 'Chat/group', msgDto);
   }
 
+  getMessages(groupId: string) {
+    return this.http.get(environment.identityApi.api + 'Chat/groupId/',
+      { params: new HttpParams().append("groupId", groupId) })
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+        },
+        error: (err) => {
+          console.log('getMessages', err);
+        }
+      });
+  }
+
   public listenToAllMessages() {
-    this.hubConnection.on('AllMessages', (user, message, date) => {
-      this.receivedMessage = {
-        createdAt: date,
-        messageBody: message,
-        userName: user,
-        groupName: ''
-      };
+    this.hubConnection.on('AllMessages', (msg: MessageVM,) => {
+      this.receivedMessage = msg;
       this.$allMessages.next(this.receivedMessage);
     });
     this.hubConnection.onclose(async () => {
@@ -54,14 +63,10 @@ export class SignalRService {
   }
 
   public listenToGroup() {
-    (this.hubConnection).on("GetGroupMessages", (user, message, date, groupName) => {
-      this.receivedMessage = {
-        createdAt: date,
-        messageBody: message,
-        userName: user,
-        groupName: groupName
-      };
-      this.$groupMessages.next(this.receivedMessage);
+    (this.hubConnection).on("GetGroupMessages", (msg: MessageVM[]) => {
+      msg.map((msg: MessageVM) => {
+        this.$groupMessages.next(msg);
+      })
     });
     this.hubConnection.onclose(async () => {
       setTimeout(await this.startConnection(), 5000)
@@ -86,13 +91,17 @@ export class SignalRService {
     this.hubConnection.invoke('LeaveGroup', group);
   }
 
-  public async startConnection(): Promise<any> {
+  public async startConnection(productId: string = ''): Promise<any> {
     return await new Promise(async (resolve, reject) => {
       //build connection
-      this.hubConnection = new signalR.HubConnectionBuilder()
-        .withUrl(environment.identityApi.chat)
+      this.hubConnection = new signalR.HubConnectionBuilder() //+ `&productId=${productId}`
+        .withUrl(environment.identityApi.chat + `?productId=${productId}`, <IHttpConnectionOptions>{
+          headers: new HttpHeaders().set('productId', productId),
+          logging: signalR.LogLevel.Trace,
+        })
         .build();
       this.hubConnection.serverTimeoutInMilliseconds = 100000; //100sec
+
       //start
       await this.hubConnection.start()
         .then(() => {

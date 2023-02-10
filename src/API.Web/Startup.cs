@@ -55,13 +55,13 @@ namespace API.Web
 
             app.UseRouting();
 
-            //app.UseStaticFiles(new StaticFileOptions
-            //{
-            //    FileProvider = new PhysicalFileProvider(
-            //        Path.Combine(Directory.GetCurrentDirectory(), "Content")
-            //    ),
-            //    RequestPath = "/content"
-            //});
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")
+                ),
+                RequestPath = "/Content"
+            });
 
             app.UseSpa(spa =>
             {

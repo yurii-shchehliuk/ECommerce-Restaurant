@@ -26,14 +26,14 @@ namespace API.Identity.Functions.CommentFunc.Commands
     {
         public class Command : IQuery<Result<CommentDTO>>
         {
-            public string Body { get; set; }
+            public CommentDTO Comment { get; set; }
             public int ProductId { get; set; }
         }
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator()
             {
-                RuleFor(x => x.Body).NotEmpty();
+                RuleFor(x => x.Comment.MessageBody).NotEmpty();
             }
         }
 
@@ -51,24 +51,29 @@ namespace API.Identity.Functions.CommentFunc.Commands
                 this.accessor = accessor;
                 this.identityDbContext = identityDbContext;
             }
+
             public async Task<Result<CommentDTO>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var product = await context.Products.FindAsync(request.ProductId);
                 if (product == null) { return null; }
 
                 var user = await identityDbContext.Users.SingleOrDefaultAsync(c => c.UserName == accessor.HttpContext.User.FindFirstValue(ClaimTypes.Name));
-
+                if (user == null)
+                {
+                    user = await identityDbContext.Users.SingleOrDefaultAsync(c => c.Email == request.Comment.UserName);
+                }
                 var comment = new Comment
                 {
+                    Body = request.Comment.MessageBody,
                     Author = user,
                     Product = product,
-                    Body = request.Body,
+                    CreatedAt = DateTime.UtcNow,
                 };
 
                 product.Comments.Add(comment);
 
                 var success = await context.SaveChangesAsync() > 0;
-                if (success) 
+                if (success)
                     return Result<CommentDTO>.Success(mapper.Map<CommentDTO>(comment));
 
                 return Result<CommentDTO>.Fail("Failed to add comment");

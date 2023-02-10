@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
-import { MessageVM } from '../chat/MessageVM';
+import { MessageVM } from '../models/MessageVM';
 import { SignalRService } from '../signalr.service';
+import { MatDialog } from '@angular/material/dialog';
+import { RegistrationDialogComponent } from '../dialogs/registration-dialog/registration-dialog.component';
 
 @Component({
   selector: 'app-comment',
@@ -13,47 +14,56 @@ import { SignalRService } from '../signalr.service';
 export class CommentComponent implements OnInit {
 
   groupMessages: MessageVM[] = [];
-  // $groupFeedSubject: Subscription | undefined;
   message: MessageVM = {
     createdAt: new Date().toISOString(),
     messageBody: '',
     userName: '',
-    groupName: ''
+    groupName: '',
+    id: ''
   };
 
   constructor(
     private route: ActivatedRoute,
+    public dialog: MatDialog,
     private signalrService: SignalRService) {
   }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((map) => {
       this.message.groupName = map.get('id');
-
       if (this.message.groupName) {
-        this.signalrService.startConnection().then(() => {
+        this.signalrService.startConnection(this.message.groupName).then(() => {
           this.signalrService.joinGroupFeed(this.message.groupName).then(() => {
             this.signalrService.listenToGroup();
+            // add messages to display
             this.signalrService.groupMsgsObject$.subscribe((d: MessageVM) => {
-              console.log(d);
               this.groupMessages.push(d);
             });
+
+            this.signalrService.getMessages(this.message.groupName);
           }, (err) => {
             console.log(err);
           })
         })
       }
     });
-
+    this.openDialog();
   }
 
   sendMessage(): void {
     this.message.userName = localStorage.getItem('user_name');
+    console.log(this.message);
+    this.openDialog();
 
-    if (this.message.userName.length === 0
-      || this.message.messageBody.length === 0) {
+    if (!this.message || this.message.messageBody.length === 0)
+      return;
+    if (this.message.userName.length !== 0) {
       return;
     }
+    ///<todo>push to array only last comment.
+    /// because currently array assigns with new comment the whole list
+    ///</todo>
+    this.groupMessages = [];
 
     this.signalrService.sendGroupMessage(this.message).subscribe({
       next: (data) => {
@@ -68,7 +78,11 @@ export class CommentComponent implements OnInit {
     });
   }
 
-  ngOnDestroy(): void {
-    // this.$groupFeedSubject?.unsubscribe();
+  private openDialog() {
+    const dialogRef = this.dialog.open(RegistrationDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
   }
 }

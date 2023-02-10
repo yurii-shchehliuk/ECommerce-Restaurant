@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebApi.Db.Identity;
 using WebApi.Db.Store;
+using WebApi.Domain.Interfaces.Services;
 using WebApi.Infrastructure.StartupExtensions;
 using WebApi.Infrastructure.StartupExtensions.Identity;
 
@@ -44,7 +45,7 @@ namespace API.Identity
             {
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5021").AllowCredentials();
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5021", "http://localhost:4200").AllowCredentials();
 
                 });
             }); 

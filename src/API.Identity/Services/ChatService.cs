@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WebApi.Domain.Interfaces.Services;
 
-namespace WebApi.Infrastructure.Services
+namespace API.Identity.Services
 {
     public class ChatService : IChatService
     {
@@ -27,13 +27,13 @@ namespace WebApi.Infrastructure.Services
         {
             _MessageHubContext = MessageHubContext;
             _logger = logger;
-            _timer = new System.Timers.Timer(5000);
+            _timer = new System.Timers.Timer(500);
             _timer.Elapsed += GenerateAndSendMessage;
             _randomGroup = new Random(0);
         }
 
         private void GenerateAndSendMessage(
-            object? sender, System.Timers.ElapsedEventArgs e)
+            object sender, System.Timers.ElapsedEventArgs e)
         {
             // generate random Message object
             // groupName, postText, timestamp
@@ -52,10 +52,10 @@ namespace WebApi.Infrastructure.Services
             var nextAuthorIndex = _randomGroup.Next(_authors.Length - 1);
 
             var author =
-              (nextAuthorIndex < _authors.Length ? _authors[nextAuthorIndex] : _authors[0]);
+              nextAuthorIndex < _authors.Length ? _authors[nextAuthorIndex] : _authors[0];
 
             var group =
-              (nextGroupIndex < _groups.Length ? _groups[nextGroupIndex] : _groups[0]);
+              nextGroupIndex < _groups.Length ? _groups[nextGroupIndex] : _groups[0];
 
             return new CommentDTO
             {
@@ -84,7 +84,7 @@ namespace WebApi.Infrastructure.Services
     }
     internal class Data
     {
-        public static string[] Groups { get; internal set; }
-        public static string[] Authors { get; internal set; }
+        public static string[] Groups = { "12", "13", "14", "15" };
+        public static string[] Authors = { "andrew", "tom", "jerry" };
     }
 }

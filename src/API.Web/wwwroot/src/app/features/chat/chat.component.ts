@@ -1,7 +1,7 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SignalRService } from '../signalr.service';
-import { MessageVM } from './MessageVM';
+import { MessageVM } from '../models/MessageVM';
 
 @Component({
   selector: 'app-chat',
@@ -14,7 +14,8 @@ export class ChatComponent implements OnInit {
     createdAt: new Date().toISOString(),
     messageBody: '',
     userName: '',
-    groupName: ''
+    groupName: '',
+    id: ''
   };
 
   constructor(
@@ -30,7 +31,8 @@ export class ChatComponent implements OnInit {
       userName: obj.userName,
       messageBody: obj.messageBody,
       createdAt: new Date().toISOString(),
-      groupName: obj.groupName
+      groupName: obj.groupName,
+      id: obj.id
     }
     this.messageList.push(newObj);
   }

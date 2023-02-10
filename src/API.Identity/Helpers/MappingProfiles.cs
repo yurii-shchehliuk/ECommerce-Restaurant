@@ -10,8 +10,12 @@ namespace API.Identity.Helpers
         public MappingProfiles()
         {
             CreateMap<Comment, CommentDTO>()
-                 .ForMember(d => d.UserName, o => o.MapFrom(s => s.Author.UserName));
-            
+                 .ForMember(d => d.UserName, o => o.MapFrom(s => s.Author.UserName))
+                 .ForMember(d => d.MessageBody, o => o.MapFrom(s => s.Body))
+                 .ForMember(d => d.CreatedAt, o => o.MapFrom(s => s.CreatedAt))
+                 .ForMember(d => d.GroupName, o => o.MapFrom(s => s.Product.Id))
+                 .ForMember(d => d.Id, o => o.MapFrom(s => s.Id));
+
             CreateMap<Address, AddressDto>().ReverseMap();
             CreateMap<AddressDto, WebApi.Domain.Entities.OrderAggregate.Address>();
             CreateMap<AppUser, UserDto>()

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { IPagination, Pagination } from '../shared/models/pagination';
 import { IBrand } from '../shared/models/brand';
 import { IType } from '../shared/models/productType';
@@ -82,8 +82,9 @@ export class ShopService {
     if (product) {
       return of(product);
     }
-
-    return this.http.get<IProduct>(this.baseUrl + 'products/' + id);
+    let head = new HttpHeaders();
+    head.set('productId', id.toString());
+    return this.http.get<IProduct>(this.baseUrl + 'products/' + id, { headers: head });
   }
 
   getBrands() {

@@ -1,27 +1,45 @@
 <ng-container *ngIf="groupMessages.length > 0; else feedEmpty">
+    <div class="w-100 flex justify-content-center align-items-center">
+        <mat-form-field class="w-100 d-inline pb-0">
+            <div class="textarea-container">
+                <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5" class="d-inline"
+                    placeholder="Type a message" [(ngModel)]="message.messageBody"
+                    name="messageBody">{{message.messageBody}}</textarea>
+                <button mat-button type="submit" class="d-inline" style="float: right" (click)="sendMessage()">
+                    <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+                </button>
+            </div>
+        </mat-form-field>
+    </div>
     <div *ngFor="let msg of groupMessages" class="card rounded-0 my-2">
-        <div class="card-header bg-transparent">
-            <p class="card-text">
-                {{ msg.userName }} posted in
-                <a [routerLink]="['/groups',msg.GroupName]">
-                    {{ msg.GroupName }}</a> on {{ msg.createdAt | date:'MM/dd/yyyy' }}
-            </p>
-        </div>
-        <div class="card-body">
-            <p class="card-text">{{ msg.messageBody }}</p>
-        </div>
-        <div>{{msg | json}}</div>
+        <mat-card class="w-100">
+            <img mat-card-sm-image src="https://material.angular.io/assets/img/examples/shiba2.jpg"
+                class="msg-img col-sm-1 m-0" style="float: left;">
+            <div class="col-sm-11" style="float: right;">
+                <mat-card-header>
+                    <mat-card-title-group>
+                        <mat-card-subtitle>{{ msg.createdAt | date:'MM/dd/yyyy' }}</mat-card-subtitle>
+                        <!-- <mat-card-subtitle align="end" class="d-inline" style="display: inline;">Edit</mat-card-subtitle> -->
+                        <mat-card-title>{{ msg.userName }}</mat-card-title>
+                        <!-- <mat-card-subtitle>{{ msg | json}}</mat-card-subtitle> -->
+                    </mat-card-title-group>
+                </mat-card-header>
+                <mat-card-content>
+                    <p>
+                        {{ msg.messageBody }}
+                    </p>
+                </mat-card-content>
+                <mat-card-actions class="d-flex justify-content-between">
+                    <button class="d-inline " mat-button>Reply</button>
+                    <div class=" d-inline ">
+                        <button mat-button>Like</button>
+                        <button mat-button>Share</button>
+                    </div>
+                </mat-card-actions>
+            </div>
+        </mat-card>
     </div>
 </ng-container>
 <ng-template #feedEmpty>
     <p>No Feed yet.</p>
 </ng-template>
-
-<div class="input_msg_write">
-    <!-- <input type="text" placeholder="Your name" class="name-box"  [(ngModel)]="message.userName" /> -->
-    <input [(ngModel)]="message.messageBody" name="messageBody" type="text" class="write_msg"
-        (keydown.enter)="sendMessage()" placeholder="Type a message" />
-    <button class="msg_send_btn" type="submit" (click)="sendMessage()">
-        <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
-    </button>
-</div>

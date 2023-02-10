@@ -2,7 +2,9 @@
 using API.Identity.Functions.CommentFunc.Commands;
 using API.Identity.Functions.CommentFunc.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System;
 using System.Threading.Tasks;
@@ -33,30 +35,20 @@ namespace API.Identity.SignalR
             await Clients.Group(groupName).SendAsync("LeaveGroup", groupName);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
         }
+        public override async Task OnConnectedAsync()
+        {
+            try
+            {
+                var httpContext = Context.GetHttpContext();
+                var productId = httpContext.Request.Query["productId"];
 
-        //public override async Task OnConnectedAsync()
-        //{
-        //    try
-        //    {
-        //        //var httpContext = Context.GetHttpContext();
-        //        //var productId = httpContext.Request.Query["productId"];
-        //        //if (productId.Count <1)
-        //        //{
-        //        //    productId = httpContext.Request.Query["id"];
-
-        //        //}
-        //        //await JoinToGroup(productId.ToString());
-
-        //        //var result = await mediator.Send(new CommentsList.Query { Id = System.Convert.ToInt32(productId) });
-        //        //await Clients.Caller.SendAsync("GetGroupMessages", result.Value);
-        //        await base.OnConnectedAsync();
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error("OnConnectedAsync {0},\n{1}", ex.Message, ex.StackTrace);
-        //        throw ex;
-        //    }
-        //}
+                await JoinToGroup(productId);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("OnConnectedAsync {0},\n{1}", ex.Message, ex.StackTrace);
+                throw;
+            }
+        }
     }
 }

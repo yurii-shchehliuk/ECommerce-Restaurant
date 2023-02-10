@@ -11,7 +11,7 @@ namespace WebApi.Domain.Entities.Identity
     {
         public int Id { get; set; }
         public string Body{ get; set; }
-        public AppUser Author{ get; set; }
+        public AppUser? Author{ get; set; }
         public Product Product { get; set; }
         public DateTimeOffset CreatedAt { get; set; } = DateTime.UtcNow;
     }

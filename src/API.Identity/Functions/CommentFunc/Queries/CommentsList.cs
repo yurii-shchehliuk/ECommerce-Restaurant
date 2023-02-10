@@ -17,7 +17,7 @@ namespace API.Identity.Functions.CommentFunc.Queries
     {
         public class Query : IQuery<Result<List<CommentDTO>>>
         {
-            public int Id { get; set; }
+            public int ProductId { get; set; }
         }
 
         public class Handler : IQueryHandler<Query, Result<List<CommentDTO>>>
@@ -33,12 +33,11 @@ namespace API.Identity.Functions.CommentFunc.Queries
             public async Task<Result<List<CommentDTO>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var comments = await context.Comments
-                    .Where(c => c.Product.Id == request.Id)
+                    .Where(c => c.Product.Id == request.ProductId)
                     .OrderBy(c => c.CreatedAt)
-                    .ProjectTo<CommentDTO>(mapper.ConfigurationProvider)
                     .ToListAsync();
-
-                return Result<List<CommentDTO>>.Success(comments);
+                var commentsDTO = mapper.Map<List<CommentDTO>>(comments);
+                return Result<List<CommentDTO>>.Success(commentsDTO);
             }
         }
     }

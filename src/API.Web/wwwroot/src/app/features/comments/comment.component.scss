@@ -1,0 +1,30 @@
+::ng-deep .mat-card-header-text {
+    margin: 0 !important;
+}
+
+.msg-img {
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.msg-input {
+    white-space: pre-wrap;
+}
+
+.textarea-container {
+    position: relative;
+}
+
+.textarea-container textarea {
+    width: calc(100% - 65px);
+    ;
+    height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.textarea-container button {
+    position: absolute;
+    bottom:-3px;
+    right: 0;
+}

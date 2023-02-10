@@ -3,4 +3,5 @@ export interface MessageVM {
   messageBody: string;
   createdAt: string;
   groupName: string;
+  id: string;
 }
