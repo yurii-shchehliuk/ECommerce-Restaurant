@@ -53,7 +53,7 @@
     "@angular-eslint/eslint-plugin-template": "14.1.2",
     "@angular-eslint/schematics": "14.1.2",
     "@angular-eslint/template-parser": "14.1.2",
-    "@angular/cli": "~14.2.8",
+    "@angular/cli": "^14.2.10",
     "@angular/compiler-cli": "~14.2.8",
     "@angular/language-service": "~14.2.8",
     "@types/datatables.net": "^1.10.22",

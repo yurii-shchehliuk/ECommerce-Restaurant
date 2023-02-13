@@ -40,9 +40,10 @@ export class ChatComponent implements OnInit {
   sendMessage(): void {
     this.message.userName = localStorage.getItem('user_name');
 
-    if (this.message.userName.length === 0 ||
-      this.message.messageBody.length === 0) {
+    if (this.message.messageBody.length === 0)
       return;
+    if (this.message.userName?.length !== 0) {
+      // var result = this.openDialog();
     }
 
     this.signalRService.sendMessage(this.message).subscribe({

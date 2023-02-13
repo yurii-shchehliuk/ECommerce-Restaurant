@@ -28,34 +28,21 @@ namespace API.Identity
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AppIdentityDbContext>(x =>
-            {
-                x.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
-            });
-
             ///<todo>separate database for comments</todo>
-            services.AddDbContext<StoreContext>(x =>
-                x.UseSqlServer(_config.GetConnectionString("DefaultConnection"))); 
-            
+            services.AddIdentityDb(_config);
+            services.AddStoreDb(_config);
+
             services.AddMediatR(typeof(Startup));
             services.AddAutoMapper(typeof(Helpers.MappingProfiles));
             services.AddValidatorsFromAssemblyContaining<CommentCreate>();
             
-            services.AddCors(opt =>
-            {
-                opt.AddPolicy("CorsPolicy", policy =>
-                {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5021", "http://localhost:4200").AllowCredentials();
-
-                });
-            }); 
             services.AddControllers();
             //services.AddHttpContextAccessor();
 
             services.AddApplicationServices(_config);
-            services.AddIdentityServices(_config);
-            services.AddSwaggerDocumentation();
 
+            services.AddSwaggerDocumentation();
+            services.AddCorsConfiguration();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,7 +62,7 @@ namespace API.Identity
 
             app.UseRouting();
 
-            app.UseCors("CorsPolicy");
+            app.UserCorsConfiguration();
 
             app.UseAuthentication();
             app.UseAuthorization();

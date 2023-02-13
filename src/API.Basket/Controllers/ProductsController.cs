@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WebApi.Domain.Core.Errors;
 using WebApi.Domain.Entities.Store;
-using WebApi.Domain.Errors;
 using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Domain.Specifications;
 

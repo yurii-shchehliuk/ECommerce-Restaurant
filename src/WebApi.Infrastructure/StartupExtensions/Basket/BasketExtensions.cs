@@ -17,6 +17,14 @@ namespace WebApi.Infrastructure.StartupExtensions.Basket
         #region service
         public static void AddApplicationServices(this IServiceCollection services, IConfiguration _config)
         {
+            /// services
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IPaymentService, PaymentService>();
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+            //services.AddSingleton<IOrderProcessingNotification, MessageNotification>();
             /// Redis
             services.AddSingleton<IResponseCacheService, ResponseCacheService>();
             services.AddSingleton<IConnectionMultiplexer>(c =>
@@ -27,6 +35,7 @@ namespace WebApi.Infrastructure.StartupExtensions.Basket
                 return ConnectionMultiplexer.Connect(configuration);
             });
             services.AddScoped<IBasketRepository, BasketContext>();
+
             // IDistributedCache
             //services.AddStackExchangeRedisCache(o =>
             //    o.Configuration = _config.GetConnectionString("Redis")
@@ -45,13 +54,7 @@ namespace WebApi.Infrastructure.StartupExtensions.Basket
             //services.AddMassTransitHostedService();
 
             //services.AddHostedService<MessageWorker>();
-            //services.AddSingleton<IOrderProcessingNotification, MessageNotification>();
-            //
-            services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<IPaymentService, PaymentService>();
-            //
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+           
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.InvalidModelStateResponseFactory = actionContext =>
@@ -69,7 +72,6 @@ namespace WebApi.Infrastructure.StartupExtensions.Basket
                     return new BadRequestObjectResult(errorResponse);
                 };
             });
-
         }
         #endregion
     }

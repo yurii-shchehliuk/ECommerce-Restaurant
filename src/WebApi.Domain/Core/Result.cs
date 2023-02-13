@@ -5,17 +5,17 @@ namespace WebApi.Domain.Core
 {
     public class Result<T> where T : class
     {
-        private Result(bool isSuccess, string message, IEnumerable<Error> errors)
+        private Result(T value)
+        {
+            IsSuccess = true;
+            Value = value;
+        }
+
+        private Result(bool isSuccess, string message, IEnumerable<T> errors = null)
         {
             IsSuccess = isSuccess;
             Message = message;
-            Errors = errors;
-        }
-
-        private Result(bool isSuccess, T value)
-        {
-            IsSuccess = isSuccess;
-            Value = value;
+            Errors = errors ?? Enumerable.Empty<T>();
         }
 
         public string Message { get; }
@@ -24,15 +24,15 @@ namespace WebApi.Domain.Core
 
         public T Value { get; set; }
 
-        public IEnumerable<Error> Errors { get; }
+        public IEnumerable<T> Errors { get; }
 
-        public static Result<T> Success(T value) => new Result<T>(true, value);
+        public static Result<T> Success(T value) => new(value);
 
-        public static Result<T> Fail(string message)
-            => new Result<T>(false, message, Enumerable.Empty<Error>());
+        public static Result<T> Fail(string message, IEnumerable<T> errors = null)
+            => new(false, message, errors);
 
-        public static Result<T> Fail(FluentValidation.Results.ValidationResult validationResult)
-            => new Result<T>(
+        public static Result<Error> Fail(FluentValidation.Results.ValidationResult validationResult)
+            => new(
                 false,
                 string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage)),
                 validationResult.Errors.Select(x => new Error(x.PropertyName, x.ErrorMessage))

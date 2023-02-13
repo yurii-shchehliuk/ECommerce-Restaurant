@@ -21,26 +21,16 @@ namespace API.Admin
         }
         public void ConfigureDevelopmentServices(IServiceCollection services)
         {
-            services.AddDbContext<StoreContext>(x =>
-                x.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
-
-            services.AddDbContext<AppIdentityDbContext>(x =>
-            {
-                x.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
-            });
+            services.AddStoreDb(_config);
+            services.AddIdentityDb(_config);
 
             ConfigureServices(services);
         }
 
         public void ConfigureProductionServices(IServiceCollection services)
         {
-            services.AddDbContext<StoreContext>(x =>
-                x.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
-
-            services.AddDbContext<AppIdentityDbContext>(x =>
-            {
-                x.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
-            });
+            services.AddStoreDb(_config);
+            services.AddIdentityDb(_config);
 
             ConfigureServices(services);
         }
@@ -65,7 +55,7 @@ namespace API.Admin
             services.AddAutoMapper(typeof(Helpers.MappingProfiles));
 
             services.AddSwaggerDocumentation();
-            services.AddCorsConfiguration();
+            services.AddAllCorsConfiguration();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,7 +83,7 @@ namespace API.Admin
             //    RequestPath = "/content"
             //});
 
-            app.UseCors("CorsPolicy");
+            app.UserAllCorsConfiguration();
 
             app.UseAuthentication();
             app.UseAuthorization();

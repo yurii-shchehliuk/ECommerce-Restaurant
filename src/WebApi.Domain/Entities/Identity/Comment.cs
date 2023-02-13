@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace WebApi.Domain.Entities.Identity
     {
         public int Id { get; set; }
         public string Body{ get; set; }
+        [NotMapped]
         public AppUser? Author{ get; set; }
         public Product Product { get; set; }
         public DateTimeOffset CreatedAt { get; set; } = DateTime.UtcNow;

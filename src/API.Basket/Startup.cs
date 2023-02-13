@@ -21,16 +21,15 @@ namespace API.Basket
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<StoreContext>(x =>
-                x.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
+            services.AddStoreDb(_config);
 
             services.AddAutoMapper(typeof(MappingProfiles));
 
-            services.AddCorsConfiguration();
             services.AddControllers();
 
             services.AddApplicationServices(_config);
             services.AddSwaggerDocumentation();
+            services.AddAllCorsConfiguration();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,7 +52,7 @@ namespace API.Basket
 
             app.UseRouting();
 
-            app.UseCors("CorsPolicy");
+            app.UserAllCorsConfiguration();
 
             app.UseAuthentication();
             app.UseAuthorization();

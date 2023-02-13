@@ -1,0 +1,1 @@
+user store & role store [DAL] -> user manager & role manager -> sign in manager and other helper

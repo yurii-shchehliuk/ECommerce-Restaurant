@@ -16,6 +16,5 @@ namespace WebApi.Db.Identity
 
             //builder.ApplyConfiguration(new AppUserConfiguration());
         }
-        //add-migration add IdentityInitial -p WebApi.Db.Identity -s IdentityAPI -c AppIdentityDbContext -o Identity/Migrations
     }
 }

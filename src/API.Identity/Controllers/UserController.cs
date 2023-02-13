@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WebApi.Domain.Core;
 using WebApi.Domain.DTOs;
 using WebApi.Domain.Entities.Identity;
-using WebApi.Domain.Errors;
 using WebApi.Domain.Interfaces.Services;
 
 namespace API.Identity.Controllers
@@ -22,10 +22,10 @@ namespace API.Identity.Controllers
         private readonly IMapper _mapper;
         public UserController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService, IMapper mapper)
         {
-            _mapper = mapper;
-            _tokenService = tokenService;
-            _signInManager = signInManager;
             _userManager = userManager;
+            _signInManager = signInManager;
+            _tokenService = tokenService;
+            _mapper = mapper;
         }
 
         [Authorize]
@@ -79,19 +79,19 @@ namespace API.Identity.Controllers
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
-            if (user == null) return NotFound(new ApiResponse(400, "INVALID_CREDENTIALS"));
+            if (user == null) return NotFound(Result<LoginDto>.Fail("Invalid credentials"));
             if (!await _userManager.IsEmailConfirmedAsync(user))
             {
                 var confirmation = await _userManager.ConfirmEmailAsync(user, _userManager.GenerateEmailConfirmationTokenAsync(user).Result);
                 if (!confirmation.Succeeded)
                 {
-                    return Unauthorized(new ApiResponse(401, " User cannot sign in without a confirmed account"));
+                    return Unauthorized(Result<LoginDto>.Fail("User cannot sign in without a confirmed account"));
                 }
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
-            if (!result.Succeeded) return Unauthorized(new ApiResponse(401, " Invalid login attempt"));
+            if (!result.Succeeded) return Unauthorized(Result<LoginDto>.Fail("Invalid login attempt"));
 
             return new UserDto
             {
@@ -103,11 +103,12 @@ namespace API.Identity.Controllers
         }
 
         [HttpPost("register")]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
             if (CheckEmailExistsAsync(registerDto.Email).Result.Value)
             {
-                return new BadRequestObjectResult(new ApiValidationErrorResponse { Errors = new[] { "Email address is in use" } });
+                return new BadRequestObjectResult(Result<LoginDto>.Fail("Email address is in use"));
             }
 
             var user = new AppUser
@@ -119,8 +120,9 @@ namespace API.Identity.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
-            if (!result.Succeeded) return BadRequest(new ApiResponse(400));
 
+            if (!result.Succeeded) return BadRequest(Result<LoginDto>.Fail("Error appeared on creating"));
+            
             return new UserDto
             {
                 DisplayName = user.DisplayName,

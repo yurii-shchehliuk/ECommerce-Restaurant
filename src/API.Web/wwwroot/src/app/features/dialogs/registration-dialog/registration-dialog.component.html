@@ -1,13 +1,13 @@
 <h1 mat-dialog-title>Complete to send</h1>
-<button class="close" mat-button>X</button>
+<button class="close" mat-button mat-dialog-close>X</button>
 <div mat-dialog-content>
     <mat-form-field class="w-100">
         <input matInput placeholder="Email" type="email"/>
     </mat-form-field>
 </div>
 <div mat-dialog-actions class="d-inline">
-    <a class="d-block">Provide password and complete registration?</a>
+    <a class="d-block" (click)="registraion()">Provide password and complete registration?</a>
     <div class="d-flex justify-content-end">
-        <button mat-button mat-dialog-close>Ok</button>
+        <button mat-button (click)="submitted()">Ok</button>
     </div>
 </div>

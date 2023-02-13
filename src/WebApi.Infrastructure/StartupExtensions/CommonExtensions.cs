@@ -1,13 +1,19 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using WebApi.Domain.Integration;
+using WebApi.Db.Identity;
+using WebApi.Db.Store;
+using WebApi.Infrastructure.Helpers;
 
 namespace WebApi.Infrastructure.StartupExtensions
 {
     public static class CommonExtensions
     {
+        private static string AllCorsPolicy;
+        private static string CustomCorsPolicy;
         public static IConfiguration SeedConfiguration(Microsoft.AspNetCore.Hosting.IWebHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -47,16 +53,40 @@ namespace WebApi.Infrastructure.StartupExtensions
             return services;
         }
 
-        public static void AddCorsConfiguration(this IServiceCollection services)
+
+        public static void AddAllCorsConfiguration(this IServiceCollection services)
         {
             services.AddCors(opt =>
             {
-                opt.AddPolicy("CorsPolicy", policy =>
+                opt.AddPolicy(nameof(AllCorsPolicy), policy =>
                 {
                     policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("*");
 
                 });
             });
+        }
+        public static void AddCorsConfiguration(this IServiceCollection services)
+        {
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy(nameof(CustomCorsPolicy), policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5021", "http://localhost:4200").AllowCredentials();
+
+                });
+            });
+        }
+
+
+        public static void AddStoreDb(this IServiceCollection services, IConfiguration config)
+        {
+            services.AddDbContext<StoreContext>(x =>
+               x.UseSqlServer(config.GetConnectionString("DefaultConnection")));
+        }
+        public static void AddIdentityDb(this IServiceCollection services, IConfiguration config)
+        {
+            services.AddDbContext<AppIdentityDbContext>(x =>
+               x.UseSqlServer(config.GetConnectionString("IdentityConnection")));
         }
         #endregion
 
@@ -86,7 +116,8 @@ namespace WebApi.Infrastructure.StartupExtensions
             app.UseMiddleware<ExceptionMiddleware>();
         }
 
-
+        public static void UserAllCorsConfiguration(this IApplicationBuilder app) => app.UseCors(nameof(AllCorsPolicy));
+        public static void UserCorsConfiguration(this IApplicationBuilder app) => app.UseCors(nameof(CustomCorsPolicy));
         #endregion
     }
 }

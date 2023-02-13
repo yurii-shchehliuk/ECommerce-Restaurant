@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -22,9 +23,15 @@ namespace WebApi.Infrastructure.StartupExtensions.Identity
         {
             services.AddScoped<ITokenService, TokenService>();
             services.AddTransient<IEmailSender>(s => new EmailSender(config));
+            services.AddIdentityServices(config);
         }
 
-        public static void AddIdentityServices(this IServiceCollection services, IConfiguration config)
+        private static void AddIdentityServices2(this IServiceCollection services, IConfiguration config)
+        {
+            services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<AppIdentityDbContext>();
+        }
+
+        private static void AddIdentityServices(this IServiceCollection services, IConfiguration config)
         {
             var builder = services.AddIdentityCore<AppUser>(c =>
             {
@@ -39,7 +46,6 @@ namespace WebApi.Infrastructure.StartupExtensions.Identity
 
             services.AddSignalR(hubOptions =>
             {
-
                 hubOptions.EnableDetailedErrors = true;
                 hubOptions.KeepAliveInterval = System.TimeSpan.FromMinutes(5);
             });
@@ -77,6 +83,7 @@ namespace WebApi.Infrastructure.StartupExtensions.Identity
                 };
             });
         }
+
         #endregion
     }
 }

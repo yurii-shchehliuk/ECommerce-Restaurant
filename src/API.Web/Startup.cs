@@ -34,10 +34,8 @@ namespace API.Web
             services.AddMediatR(typeof(Startup));
 
             services.AddApplicationServices(_config);
-
             services.AddSwaggerDocumentation();
-            ///<todo>add credentials</todo>
-            services.AddCorsConfiguration();
+            services.AddAllCorsConfiguration();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,13 +68,13 @@ namespace API.Web
 
                 if (env.IsDevelopment())
                 {
-                    //spa.UseAngularCliServer(npmScript: "start");
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    spa.UseAngularCliServer(npmScript: "start");
+                    //spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
 
                 }
             });
 
-            app.UseCors("CorsPolicy");
+            app.UserAllCorsConfiguration();
 
             app.UseAuthentication();
             app.UseAuthorization();
