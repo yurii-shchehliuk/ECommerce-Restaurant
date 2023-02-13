@@ -82,7 +82,7 @@ export class ShopService {
     if (product) {
       return of(product);
     }
-    let head = new HttpHeaders();
+    const head = new HttpHeaders();
     head.set('productId', id.toString());
     return this.http.get<IProduct>(this.baseUrl + 'products/' + id, { headers: head });
   }

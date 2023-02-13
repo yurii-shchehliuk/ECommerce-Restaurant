@@ -1,5 +1,6 @@
 using API.Identity.Dtos;
 using API.Identity.Helpers;
+using API.Identity.ViewModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -75,23 +76,23 @@ namespace API.Identity.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
+        public async Task<ActionResult<UserDto>> Login(LoginVM loginVM)
         {
-            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            var user = await _userManager.FindByEmailAsync(loginVM.Email);
 
-            if (user == null) return NotFound(Result<LoginDto>.Fail("Invalid credentials"));
+            if (user == null) return NotFound(Result<LoginVM>.Fail("Invalid credentials"));
             if (!await _userManager.IsEmailConfirmedAsync(user))
             {
                 var confirmation = await _userManager.ConfirmEmailAsync(user, _userManager.GenerateEmailConfirmationTokenAsync(user).Result);
                 if (!confirmation.Succeeded)
                 {
-                    return Unauthorized(Result<LoginDto>.Fail("User cannot sign in without a confirmed account"));
+                    return Unauthorized(Result<LoginVM>.Fail("User cannot sign in without a confirmed account"));
                 }
             }
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginVM.Password, false);
 
-            if (!result.Succeeded) return Unauthorized(Result<LoginDto>.Fail("Invalid login attempt"));
+            if (!result.Succeeded) return Unauthorized(Result<LoginVM>.Fail("Invalid login attempt"));
 
             return new UserDto
             {
@@ -104,24 +105,25 @@ namespace API.Identity.Controllers
 
         [HttpPost("register")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        [AllowAnonymous]
+        public async Task<ActionResult<UserDto>> Register(RegisterVM registerDTO)
         {
-            if (CheckEmailExistsAsync(registerDto.Email).Result.Value)
+            if (CheckEmailExistsAsync(registerDTO.Email).Result.Value)
             {
-                return new BadRequestObjectResult(Result<LoginDto>.Fail("Email address is in use"));
+                return new BadRequestObjectResult(Result<RegisterVM>.Fail("Email address is in use"));
             }
 
             var user = new AppUser
             {
-                DisplayName = registerDto.DisplayName,
-                Email = registerDto.Email,
-                UserName = registerDto.Email,
+                DisplayName = registerDTO.DisplayName,
+                Email = registerDTO.Email,
+                UserName = registerDTO.Email,
                 IsAdmin = false
             };
 
-            var result = await _userManager.CreateAsync(user, registerDto.Password);
+            var result = await _userManager.CreateAsync(user, registerDTO.Password);
 
-            if (!result.Succeeded) return BadRequest(Result<LoginDto>.Fail("Error appeared on creating"));
+            if (!result.Succeeded) return BadRequest(Result<UserDto>.Fail("Error appeared on creating"));
             
             return new UserDto
             {
@@ -129,15 +131,6 @@ namespace API.Identity.Controllers
                 Token = _tokenService.CreateToken(user),
                 Email = user.Email
             };
-        }
-
-        //[Authorize]
-        [HttpGet("allUsers")]
-        public async Task<ActionResult<List<UserDto>>> GetUsers()
-        {
-            var user = await _userManager.Users.ToListAsync();
-            var s = _mapper.Map<List<AppUser>, List<UserDto>>(user);
-            return s;
         }
     }
 }

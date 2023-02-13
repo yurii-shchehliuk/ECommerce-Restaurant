@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace API.Identity.Dtos
+namespace API.Identity.ViewModels
 {
-    public class RegisterDto
+    public class RegisterVM
     {
         [Required]
         public string DisplayName { get; set; }

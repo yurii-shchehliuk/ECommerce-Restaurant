@@ -34,10 +34,10 @@ export class AccountService {
           this.currentUserSource.next(user);
         }
       })
-    );  
+    );
   }
 
-  login(values: any) {
+  login(values: IUser) {
     return this.http.post(this.baseUrl + 'user/login', values).pipe(
       map((user: IUser) => {
         if (user) {
@@ -50,7 +50,7 @@ export class AccountService {
     );
   }
 
-  register(values: any) {
+  register(values: IUser) {
     return this.http.post(this.baseUrl + 'user/register', values).pipe(
       map((user: IUser) => {
         if (user) {

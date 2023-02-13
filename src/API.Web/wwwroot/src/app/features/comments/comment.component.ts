@@ -43,8 +43,8 @@ export class CommentComponent implements OnInit {
             this.signalrService.getMessages(this.message.groupName);
           }, (err) => {
             console.log(err);
-          })
-        })
+          });
+        });
       }
     });
     // this.openDialog();
@@ -54,9 +54,9 @@ export class CommentComponent implements OnInit {
     this.message.userName = localStorage.getItem('user_name');
 
     if (this.message.messageBody.length === 0)
-      return;
+      {return;}
     if (this.message.userName?.length !== 0) {
-      var result = this.openDialog();
+      const result = this.openDialog();
     }
     console.log(this.message);
   }

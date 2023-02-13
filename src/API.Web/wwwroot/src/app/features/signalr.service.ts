@@ -41,7 +41,7 @@ export class SignalRService {
 
   getMessages(groupId: string) {
     return this.http.get(environment.identityApi.api + 'Chat/groupId/',
-      { params: new HttpParams().append("groupId", groupId) })
+      { params: new HttpParams().append('groupId', groupId) })
       .subscribe({
         next: (data) => {
           console.log(data);
@@ -58,33 +58,33 @@ export class SignalRService {
       this.$allMessages.next(this.receivedMessage);
     });
     this.hubConnection.onclose(async () => {
-      setTimeout(await this.startConnection(), 5000)
+      setTimeout(await this.startConnection(), 5000);
     });
   }
 
   public listenToGroup() {
-    (this.hubConnection).on("GetGroupMessages", (msg: MessageVM[]) => {
-      msg.map((msg: MessageVM) => {
+    (this.hubConnection).on('GetGroupMessages', (msgArr: MessageVM[]) => {
+      msgArr.map((msg: MessageVM) => {
         this.$groupMessages.next(msg);
-      })
+      });
     });
     this.hubConnection.onclose(async () => {
-      setTimeout(await this.startConnection(), 5000)
+      setTimeout(await this.startConnection(), 5000);
     });
   }
 
   public joinGroupFeed(groupName: string) {
     return new Promise((resolve, reject) => {
       (this.hubConnection)
-        .invoke("JoinToGroup", groupName)
+        .invoke('JoinToGroup', groupName)
         .then(() => {
-          console.log("added to feed");
+          console.log('added to feed');
           return resolve(true);
         }, (err: any) => {
           console.log(err);
           return reject(err);
         });
-    })
+    });
   }
 
   public leaveGroup(group: string): void {
@@ -95,21 +95,21 @@ export class SignalRService {
     return await new Promise(async (resolve, reject) => {
       //build connection
       this.hubConnection = new signalR.HubConnectionBuilder() //+ `&productId=${productId}`
-        .withUrl(environment.identityApi.chat + `?productId=${productId}`, <IHttpConnectionOptions>{
+        .withUrl(environment.identityApi.chat + `?productId=${productId}`, {
           headers: new HttpHeaders().set('productId', productId),
           logging: signalR.LogLevel.Trace,
-        })
+        } as IHttpConnectionOptions)
         .build();
       this.hubConnection.serverTimeoutInMilliseconds = 100000; //100sec
 
       //start
       await this.hubConnection.start()
         .then(() => {
-          console.log("connection established", new Date().toISOString());
+          console.log('connection established', new Date().toISOString());
           return resolve(true);
         })
         .catch((err: any) => {
-          console.log("error occured" + err);
+          console.log('error occured' + err);
           reject(err);
         });
     });

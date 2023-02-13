@@ -26,22 +26,11 @@ export class ChatComponent implements OnInit {
     this.subscribeToEvents();
   }
 
-  private addToInbox(obj: MessageVM) {
-    const newObj = {
-      userName: obj.userName,
-      messageBody: obj.messageBody,
-      createdAt: new Date().toISOString(),
-      groupName: obj.groupName,
-      id: obj.id
-    }
-    this.messageList.push(newObj);
-  }
-
   sendMessage(): void {
     this.message.userName = localStorage.getItem('user_name');
 
     if (this.message.messageBody.length === 0)
-      return;
+      {return;}
     if (this.message.userName?.length !== 0) {
       // var result = this.openDialog();
     }
@@ -59,10 +48,21 @@ export class ChatComponent implements OnInit {
     });
   }
 
+  private addToInbox(obj: MessageVM) {
+    const newObj = {
+      userName: obj.userName,
+      messageBody: obj.messageBody,
+      createdAt: new Date().toISOString(),
+      groupName: obj.groupName,
+      id: obj.id
+    };
+    this.messageList.push(newObj);
+  }
+
   private subscribeToEvents() {
     // start a connection
     this.signalRService.startConnection().then(() => {
-      console.log("connected");
+      console.log('connected');
 
       // register for ALL relay
       this.signalRService.listenToAllMessages();

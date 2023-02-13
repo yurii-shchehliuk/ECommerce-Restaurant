@@ -5,8 +5,8 @@ import { RouterModule } from '@angular/router';
 import { TestErrorComponent } from './test-error/test-error.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { ServerErrorComponent } from './server-error/server-error.component';
-import {ToastrModule} from 'ngx-toastr';
-import {BreadcrumbModule} from 'xng-breadcrumb';
+import { ToastrModule } from 'ngx-toastr';
+import { BreadcrumbModule } from 'xng-breadcrumb';
 import { SectionHeaderComponent } from './section-header/section-header.component';
 import { SharedModule } from '../shared/shared.module';
 import { AuthenticateDialogComponent } from './dialogs/authenticate-dialog/authenticate-dialog.component';
@@ -14,7 +14,9 @@ import { AuthenticateDialogComponent } from './dialogs/authenticate-dialog/authe
 
 
 @NgModule({
-  declarations: [NavBarComponent, TestErrorComponent, NotFoundComponent, ServerErrorComponent, SectionHeaderComponent, AuthenticateDialogComponent],
+  declarations: [NavBarComponent, TestErrorComponent,
+    NotFoundComponent, ServerErrorComponent,
+    SectionHeaderComponent, AuthenticateDialogComponent],
   imports: [
     CommonModule,
     RouterModule,
