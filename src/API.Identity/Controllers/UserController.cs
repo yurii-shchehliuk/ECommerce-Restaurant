@@ -4,8 +4,9 @@ using API.Identity.ViewModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApi.Domain.Core;
@@ -15,17 +16,22 @@ using WebApi.Domain.Interfaces.Services;
 
 namespace API.Identity.Controllers
 {
+    [AllowAnonymous]
     public class UserController : BaseApiController
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ITokenService _tokenService;
+        private readonly IEmailSender _emailSender;
         private readonly IMapper _mapper;
-        public UserController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService, IMapper mapper)
+        public UserController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, RoleManager<IdentityRole> roleManager, ITokenService tokenService, IEmailSender emailSender, IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _tokenService = tokenService;
+            _emailSender = emailSender;
             _mapper = mapper;
         }
 
@@ -91,6 +97,8 @@ namespace API.Identity.Controllers
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginVM.Password, false);
+            if (result.IsLockedOut)
+                return Unauthorized(Result<LoginVM>.Fail("Account temporarily locked"));
 
             if (!result.Succeeded) return Unauthorized(Result<LoginVM>.Fail("Invalid login attempt"));
 
@@ -123,8 +131,10 @@ namespace API.Identity.Controllers
 
             var result = await _userManager.CreateAsync(user, registerDTO.Password);
 
-            if (!result.Succeeded) return BadRequest(Result<UserDto>.Fail("Error appeared on creating"));
-            
+            if (!result.Succeeded) return BadRequest(Result<IdentityError>.Fail("Error appeared on creating", result.Errors));
+            var emailConfirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            //_emailSender.SendEmailAsync(user.Email, "Register account", $"<a href=\"{emailConfirmToken}\">Click to confirm account</a>");
+
             return new UserDto
             {
                 DisplayName = user.DisplayName,
@@ -132,5 +142,90 @@ namespace API.Identity.Controllers
                 Email = user.Email
             };
         }
+
+        [HttpPost("RegisterAdmin")]
+        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
+        public async Task<ActionResult<UserDto>> RegisterAdmin(RegisterVM registerDTO)
+        {
+            if (CheckEmailExistsAsync(registerDTO.Email).Result.Value)
+            {
+                return new BadRequestObjectResult(Result<object>.Fail("Email address is in use"));
+            }
+
+            var user = new AppUser
+            {
+                DisplayName = registerDTO.DisplayName,
+                Email = registerDTO.Email,
+                UserName = registerDTO.Email,
+                IsAdmin = false
+            };
+
+            var result = await _userManager.CreateAsync(user, registerDTO.Password);
+
+            if (!result.Succeeded) 
+                return BadRequest(Result<IdentityError>.Fail(400, result.Errors));
+
+            if (!await _roleManager.RoleExistsAsync(registerDTO.UserRole.ToString()))
+                return BadRequest(Result<string>.Fail(400, new string[] { "Selected role doesnt exists" }));
+
+            await _userManager.AddToRoleAsync(user, registerDTO.UserRole.ToString());
+
+            return new UserDto
+            {
+                DisplayName = user.DisplayName,
+                Token = _tokenService.CreateToken(user),
+                Email = user.Email
+            };
+        }
+
+
+        [HttpPost()]
+        [AllowAnonymous]
+        public async Task<ActionResult<UserDto>> ForgotPassword(ForgotPasswordVM forgotPwd)
+        {
+            var user = await _userManager.FindByEmailAsync(forgotPwd.Email);
+            if (user == null)
+                return NotFound(Result<LoginVM>.Fail("Invalid credentials"));
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            ///<todo>email sender i.e.smtp4dev or MailJet+Protonmail</todo>
+            //_emailSender.SendEmailAsync(user.Email, "Reset password", $"<a href=\"{token}\">Click to reset password</a>");
+            return Ok();
+        }
+
+        [HttpPost()]
+        [AllowAnonymous]
+        public async Task<ActionResult<UserDto>> ResetPassword(ResetPasswordVM resetPwd)
+        {
+            var user = await _userManager.FindByEmailAsync(resetPwd.Email);
+            if (user == null)
+                return NotFound(Result<LoginVM>.Fail("Invalid credentials"));
+
+            var result = await _userManager.ResetPasswordAsync(user, resetPwd.Token, resetPwd.Password);
+            if (!result.Succeeded) return BadRequest(Result<IdentityError>.Fail("Cannot reset password", result.Errors));
+            return Ok();
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<ActionResult<UserDto>> ConfirmEmail(string userEmail, string token)
+        {
+            if (string.IsNullOrEmpty(userEmail) || string.IsNullOrEmpty(token))
+            {
+                return BadRequest(Result<IdentityError>.Fail("Parameter is empty"));
+            }
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+                return NotFound(Result<LoginVM>.Fail("Invalid credentials"));
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (!result.Succeeded) return BadRequest(Result<IdentityError>.Fail("Cannot reset password", result.Errors));
+            return Ok();
+        }
+
+        ///<todo>External logins, e.g. google/facebook</todo>
+        ///<todo>Two factor authentication</todo>
+
     }
 }

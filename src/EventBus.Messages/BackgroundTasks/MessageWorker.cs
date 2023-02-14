@@ -5,8 +5,6 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Serilog;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using WebApi.Domain.Integration;
 
 namespace EventBus.Messages.BackgroundTasks

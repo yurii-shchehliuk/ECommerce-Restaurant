@@ -1,15 +1,18 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
 using WebApi.Domain.CQRS.CommandHandling;
 using WebApi.Domain.CQRS.QueryHandling;
+using WebApi.Domain.Enums;
 
 namespace API.Admin.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Administrator")]
     public class BaseApiController : ControllerBase
     {
         private IMediator mediator;

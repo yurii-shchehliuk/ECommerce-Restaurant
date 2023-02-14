@@ -1,13 +1,25 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Domain.Entities.Identity;
+using WebApi.Domain.Enums;
 
 namespace WebApi.Db.Identity
 {
     public class AppIdentityDbContextSeed
     {
-        public static async Task SeedUsersAsync(UserManager<AppUser> userManager)
+        public static async Task SeedIdentityAsync(IServiceProvider services)
+        {
+            var context = services.GetRequiredService<AppIdentityDbContext>();
+            await context.Database.EnsureCreatedAsync();
+
+            await SeedUsersAsync(services.GetRequiredService<UserManager<AppUser>>());
+            await SeedRoles(services.GetRequiredService<RoleManager<IdentityRole>>());
+        }
+
+        private static async Task SeedUsersAsync(UserManager<AppUser> userManager)
         {
             if (!userManager.Users.Any())
             {
@@ -48,6 +60,15 @@ namespace WebApi.Db.Identity
                 };
 
                 await userManager.CreateAsync(user, "Pa$$w0rd");
+            }
+        }
+
+        private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
+        {
+            if (!await roleManager.RoleExistsAsync(UserRoles.Administrator.ToString()))
+            {
+                await roleManager.CreateAsync(new IdentityRole(UserRoles.Administrator.ToString()));
+                await roleManager.CreateAsync(new IdentityRole(UserRoles.RegularUser.ToString()));
             }
         }
     }

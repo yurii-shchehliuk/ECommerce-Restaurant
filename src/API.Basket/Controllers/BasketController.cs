@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using WebApi.Domain.Entities.Store;
-using WebApi.Domain.Integration;
 using WebApi.Domain.Interfaces.Repositories;
 
 namespace API.Basket.Controllers

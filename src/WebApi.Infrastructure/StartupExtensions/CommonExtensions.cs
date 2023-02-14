@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,8 +11,8 @@ namespace WebApi.Infrastructure.StartupExtensions
 {
     public static class CommonExtensions
     {
-        private static string AllCorsPolicy;
-        private static string CustomCorsPolicy;
+        private static readonly string AllCorsPolicy = string.Empty;
+        private static readonly string CustomCorsPolicy = string.Empty;
         public static IConfiguration SeedConfiguration(Microsoft.AspNetCore.Hosting.IWebHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()

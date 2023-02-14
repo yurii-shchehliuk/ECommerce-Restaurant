@@ -1,9 +1,6 @@
 using FluentValidation.AspNetCore;
-using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using WebApi.Domain.Interfaces.Repositories;
-using WebApi.Infrastructure.Repositories;
 
 namespace WebApi.Infrastructure.StartupExtensions.ApiWeb
 {

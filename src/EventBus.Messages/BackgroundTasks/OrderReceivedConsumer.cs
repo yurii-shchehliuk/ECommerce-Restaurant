@@ -1,13 +1,6 @@
 ﻿using MassTransit;
 using RabbitMQ.Client;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Tracing;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 using WebApi.Domain.Integration;
 
 namespace EventBus.Messages.BackgroundTasks
@@ -27,7 +20,7 @@ namespace EventBus.Messages.BackgroundTasks
         {
             Log.ForContext("Order received", context.Message, true)
                 .Information("Received a message from queue for processing");
-            
+
             await Task.CompletedTask;
         }
     }

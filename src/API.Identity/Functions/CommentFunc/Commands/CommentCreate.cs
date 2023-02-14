@@ -1,24 +1,17 @@
 ﻿using API.Identity.Dtos;
 using AutoMapper;
 using FluentValidation;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
 using System;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using WebApi.Db.Identity;
 using WebApi.Db.Store;
 using WebApi.Domain.Core;
-using WebApi.Domain.CQRS.CommandHandling;
 using WebApi.Domain.CQRS.QueryHandling;
-using WebApi.Domain.DTOs;
 using WebApi.Domain.Entities.Identity;
-using WebApi.Domain.Entities.Store;
-using WebApi.Domain.Interfaces.Repositories;
 
 namespace API.Identity.Functions.CommentFunc.Commands
 {

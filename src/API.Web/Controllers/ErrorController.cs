@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Domain.Errors;
+using WebApi.Domain.Core;
 
 namespace API.Web.Controllers
 {
@@ -9,7 +9,7 @@ namespace API.Web.Controllers
     {
         public IActionResult Error(int code)
         {
-            return new ObjectResult(new ApiResponse(code));
+            return new ObjectResult(Result<object>.Fail(code));
         }
     }
 }

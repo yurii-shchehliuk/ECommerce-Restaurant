@@ -22,10 +22,8 @@ namespace API.Identity
                 var loggerFactory = services.GetRequiredService<ILoggerFactory>();
                 try
                 {
-                    var userManager = services.GetRequiredService<UserManager<AppUser>>();
-                    var context = services.GetRequiredService<AppIdentityDbContext>();
-                    await context.Database.EnsureCreatedAsync();
-                    await AppIdentityDbContextSeed.SeedUsersAsync(userManager);
+
+                    await AppIdentityDbContextSeed.SeedIdentityAsync(services);
                 }
                 catch (Exception ex)
                 {

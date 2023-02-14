@@ -1,12 +1,10 @@
 using API.Basket.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.IO;
-using WebApi.Db.Store;using WebApi.Infrastructure.StartupExtensions;
+using WebApi.Infrastructure.StartupExtensions;
 using WebApi.Infrastructure.StartupExtensions.Basket;
 
 namespace API.Basket

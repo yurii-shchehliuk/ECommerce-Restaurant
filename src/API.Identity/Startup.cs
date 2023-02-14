@@ -1,17 +1,12 @@
 using API.Identity.Functions.CommentFunc.Commands;
-using API.Identity.Helpers;
 using API.Identity.SignalR;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WebApi.Db.Identity;
-using WebApi.Db.Store;
-using WebApi.Domain.Interfaces.Services;
 using WebApi.Infrastructure.StartupExtensions;
 using WebApi.Infrastructure.StartupExtensions.Identity;
 
@@ -35,7 +30,7 @@ namespace API.Identity
             services.AddMediatR(typeof(Startup));
             services.AddAutoMapper(typeof(Helpers.MappingProfiles));
             services.AddValidatorsFromAssemblyContaining<CommentCreate>();
-            
+
             services.AddControllers();
             //services.AddHttpContextAccessor();
 

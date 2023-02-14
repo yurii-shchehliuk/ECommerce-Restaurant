@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Db.Store;
-using WebApi.Domain.Errors;
+using WebApi.Domain.Core;
 
 namespace API.Web.Controllers
 {
@@ -22,7 +22,7 @@ namespace API.Web.Controllers
         [HttpGet("notfound")]
         public ActionResult GetNotFoundRequest()
         {
-            return NotFound(new ApiResponse(404));
+            return NotFound(Result<object>.Fail("Not found"));
         }
 
         [HttpGet("servererror")]
@@ -34,7 +34,7 @@ namespace API.Web.Controllers
         [HttpGet("badrequest")]
         public ActionResult GetBadRequest()
         {
-            return BadRequest(new ApiResponse(400));
+            return BadRequest(Result<object>.Fail("Bad request"));
         }
 
         [HttpGet("badrequest/{id}")]

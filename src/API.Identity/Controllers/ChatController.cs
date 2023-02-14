@@ -5,10 +5,7 @@ using API.Identity.SignalR;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using System.Threading;
 using System.Threading.Tasks;
-using WebApi.Domain.Interfaces.Services;
-using WebApi.Infrastructure.Services;
 
 namespace API.Identity.Controllers
 {

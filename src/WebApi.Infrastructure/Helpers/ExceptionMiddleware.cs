@@ -5,7 +5,7 @@ using System;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
-using WebApi.Domain.Errors;
+using WebApi.Domain.Core;
 
 namespace WebApi.Infrastructure.Helpers
 {
@@ -34,9 +34,7 @@ namespace WebApi.Infrastructure.Helpers
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                var response = _env.IsDevelopment()
-                    ? new ApiException((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace.ToString())
-                    : new ApiException((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace.ToString());
+                var response = Result<string>.Fail((int)HttpStatusCode.InternalServerError, new string[] { ex.Message, ex.StackTrace });
 
                 var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 

@@ -1,10 +1,9 @@
 ﻿using API.Admin.Functions.ProductFunc.Commands;
 using MediatR;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 using WebApi.Domain.CQRS.CommandHandling;
 using WebApi.Domain.Interfaces.Repositories;
-using WebApi.Domain.Entities.Identity;
 
 namespace API.Admin.Functions.UserFunc.Commands
 {

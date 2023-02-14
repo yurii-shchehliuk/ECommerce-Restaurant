@@ -1,17 +1,15 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Text;
 using System.Threading.Tasks;
 using WebApi.Db.Identity;
 using WebApi.Domain.Entities.Identity;
-using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Domain.Interfaces.Services;
-using WebApi.Infrastructure.Repositories;
 using WebApi.Infrastructure.Services;
 
 namespace WebApi.Infrastructure.StartupExtensions.Identity
@@ -28,7 +26,18 @@ namespace WebApi.Infrastructure.StartupExtensions.Identity
 
         private static void AddIdentityServices2(this IServiceCollection services, IConfiguration config)
         {
-            services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<AppIdentityDbContext>();
+            services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppIdentityDbContext>().AddDefaultTokenProviders();
+            services.Configure<IdentityOptions>(o =>
+            {
+                o.Password = new PasswordOptions { RequireDigit = false, RequiredLength = 8 };
+                o.Lockout = new LockoutOptions { DefaultLockoutTimeSpan = TimeSpan.FromSeconds(30), MaxFailedAccessAttempts = 5 };
+            });
+
+            services.ConfigureApplicationCookie(o =>
+            {
+                o.AccessDeniedPath= "/";
+            });
+
         }
 
         private static void AddIdentityServices(this IServiceCollection services, IConfiguration config)
@@ -82,6 +91,7 @@ namespace WebApi.Infrastructure.StartupExtensions.Identity
                     }
                 };
             });
+            //.AddFacebook(o=>o{});
         }
 
         #endregion

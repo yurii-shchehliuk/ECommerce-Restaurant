@@ -31,7 +31,7 @@ namespace API.Admin.Functions.ProductFunc.Commands
                     var product = _mapper.Map<Product>(request.Product);
                     _unitOfWork.Repository<Product>().Add(product);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Log.Error(ex, ex.Message);
                 }

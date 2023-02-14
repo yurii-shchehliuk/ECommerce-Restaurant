@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using WebApi.Domain.Core.Errors;
+using WebApi.Domain.Core;
 using WebApi.Domain.Entities.Store;
 using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Domain.Specifications;
@@ -50,14 +50,14 @@ namespace API.Basket.Controllers
         [Cached(600)]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Result<>), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
         {
             var spec = new ProductsWithTypesAndBrandsSpecification(id);
 
             var product = await _productsRepo.GetEntityWithSpec(spec);
 
-            if (product == null) return NotFound(new ApiResponse(404));
+            if (product == null) return NotFound(Result<object>.Fail("Not found"));
 
             return _mapper.Map<Product, ProductToReturnDto>(product);
         }

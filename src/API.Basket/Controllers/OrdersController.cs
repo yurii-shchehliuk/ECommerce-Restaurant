@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WebApi.Domain.Core;
 using WebApi.Domain.DTOs;
 using WebApi.Domain.Entities.OrderAggregate;
-using WebApi.Domain.Errors;
 using WebApi.Domain.Interfaces.Services;
 
 namespace API.Basket.Controllers
@@ -32,7 +32,7 @@ namespace API.Basket.Controllers
 
             var order = await _orderService.CreateOrderAsync(email, orderDto.DeliveryMethodId, orderDto.BasketId, address);
 
-            if (order == null) return BadRequest(new ApiResponse(400, "Problem creating order"));
+            if (order == null) return BadRequest(Result<OrderDto>.Fail("Problem creating order"));
 
             return Ok(order);
         }
@@ -54,7 +54,7 @@ namespace API.Basket.Controllers
 
             var order = await _orderService.GetOrderByIdAsync(id, email);
 
-            if (order == null) return NotFound(new ApiResponse(404));
+            if (order == null) return NotFound(Result<OrderToReturnDto>.Fail("Not found"));
 
             return _mapper.Map<Order, OrderToReturnDto>(order);
         }

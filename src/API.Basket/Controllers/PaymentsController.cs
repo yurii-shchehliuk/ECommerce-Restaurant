@@ -5,8 +5,8 @@ using Microsoft.Extensions.Logging;
 using Stripe;
 using System.IO;
 using System.Threading.Tasks;
+using WebApi.Domain.Core;
 using WebApi.Domain.Entities.Store;
-using WebApi.Domain.Errors;
 using WebApi.Domain.Interfaces.Services;
 using Order = WebApi.Domain.Entities.OrderAggregate.Order;
 
@@ -30,7 +30,7 @@ namespace API.Basket.Controllers
         {
             var basket = await _paymentService.CreateOrUpdatePaymentIntent(basketId);
 
-            if (basket == null) return BadRequest(new ApiResponse(400, "Problem with your basket"));
+            if (basket == null) return BadRequest(Result<CustomerBasket>.Fail("Problem with your basket"));
 
             return basket;
         }

@@ -1,5 +1,4 @@
 ﻿using System;
-using WebApi.Domain.Entities.Identity;
 
 namespace API.Identity.Dtos
 {

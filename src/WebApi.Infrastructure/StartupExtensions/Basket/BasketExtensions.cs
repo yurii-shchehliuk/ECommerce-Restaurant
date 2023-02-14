@@ -3,8 +3,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 using System.Linq;
+using System.Net;
 using WebApi.Db.Store;
-using WebApi.Domain.Errors;
+using WebApi.Domain.Core;
 using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Domain.Interfaces.Services;
 using WebApi.Infrastructure.Repositories;
@@ -41,7 +42,7 @@ namespace WebApi.Infrastructure.StartupExtensions.Basket
             //    o.Configuration = _config.GetConnectionString("Redis")
             //);
             //services.AddHostedService<RedisSubscriber>();
-            
+
             /// MassTransit-RabbitMQ
             //services.AddMassTransit(config =>
             //{
@@ -54,7 +55,7 @@ namespace WebApi.Infrastructure.StartupExtensions.Basket
             //services.AddMassTransitHostedService();
 
             //services.AddHostedService<MessageWorker>();
-           
+
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.InvalidModelStateResponseFactory = actionContext =>
@@ -64,10 +65,7 @@ namespace WebApi.Infrastructure.StartupExtensions.Basket
                         .SelectMany(x => x.Value.Errors)
                         .Select(x => x.ErrorMessage).ToArray();
 
-                    var errorResponse = new ApiValidationErrorResponse
-                    {
-                        Errors = errors
-                    };
+                    var errorResponse = Result<string>.Fail("InvalidModelStateResponseFactory", errors);
 
                     return new BadRequestObjectResult(errorResponse);
                 };
