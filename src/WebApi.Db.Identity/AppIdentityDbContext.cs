@@ -4,7 +4,7 @@ using WebApi.Domain.Entities.Identity;
 
 namespace WebApi.Db.Identity
 {
-    public class AppIdentityDbContext : IdentityDbContext<AppUser>
+    public class AppIdentityDbContext : IdentityDbContext<AppUser, AppRole, string>
     {
         public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options) : base(options)
         {

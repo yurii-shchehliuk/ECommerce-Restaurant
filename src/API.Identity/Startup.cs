@@ -23,10 +23,6 @@ namespace API.Identity
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            ///<todo>separate database for comments</todo>
-            services.AddIdentityDb(_config);
-            services.AddStoreDb(_config);
-
             services.AddMediatR(typeof(Startup));
             services.AddAutoMapper(typeof(Helpers.MappingProfiles));
             services.AddValidatorsFromAssemblyContaining<CommentCreate>();

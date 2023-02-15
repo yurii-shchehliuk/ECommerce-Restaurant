@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using WebApi.Domain.Enums;
+using WebApi.Domain.Entities.Identity.Enums;
 
 namespace API.Identity.ViewModels
 {
@@ -19,7 +19,7 @@ namespace API.Identity.ViewModels
         [Required]
         public string ConfirmPassword { get; set; }
 
-        public UserRoles UserRole { get; set; } = UserRoles.RegularUser;
+        public UserRoles UserRole { get; set; } = UserRoles.User;
 
     }
 }

@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Domain.Entities.Identity;
-using WebApi.Domain.Enums;
+using WebApi.Domain.Entities.Identity.Enums;
 
 namespace WebApi.Db.Identity
 {
@@ -16,7 +16,7 @@ namespace WebApi.Db.Identity
             await context.Database.EnsureCreatedAsync();
 
             await SeedUsersAsync(services.GetRequiredService<UserManager<AppUser>>());
-            await SeedRoles(services.GetRequiredService<RoleManager<IdentityRole>>());
+            await SeedRoles(services.GetRequiredService<RoleManager<AppRole>>());
         }
 
         private static async Task SeedUsersAsync(UserManager<AppUser> userManager)
@@ -63,12 +63,13 @@ namespace WebApi.Db.Identity
             }
         }
 
-        private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
+        private static async Task SeedRoles(RoleManager<AppRole> roleManager)
         {
-            if (!await roleManager.RoleExistsAsync(UserRoles.Administrator.ToString()))
+            if (!await roleManager.RoleExistsAsync(UserRole.Admin))
             {
-                await roleManager.CreateAsync(new IdentityRole(UserRoles.Administrator.ToString()));
-                await roleManager.CreateAsync(new IdentityRole(UserRoles.RegularUser.ToString()));
+                await roleManager.CreateAsync(new AppRole(UserRole.Admin));
+                await roleManager.CreateAsync(new AppRole(UserRole.User));
+                await roleManager.CreateAsync(new AppRole(UserRole.Super));
             }
         }
     }

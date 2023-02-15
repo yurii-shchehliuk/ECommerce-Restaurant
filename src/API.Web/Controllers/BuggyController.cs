@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Db.Store;
+using WebApi.Domain.Constants;
 using WebApi.Domain.Core;
+using WebApi.Domain.Entities.Identity.Enums;
 
 namespace API.Web.Controllers
 {
@@ -12,17 +14,10 @@ namespace API.Web.Controllers
         {
         }
 
-        [HttpGet("testauth")]
-        [Authorize]
-        public ActionResult<string> GetSecretText()
-        {
-            return "secret stuff";
-        }
-
         [HttpGet("notfound")]
         public ActionResult GetNotFoundRequest()
         {
-            return NotFound(Result<object>.Fail("Not found"));
+            return NotFound(Result<object>.Fail(404));
         }
 
         [HttpGet("servererror")]
@@ -34,11 +29,81 @@ namespace API.Web.Controllers
         [HttpGet("badrequest")]
         public ActionResult GetBadRequest()
         {
-            return BadRequest(Result<object>.Fail("Bad request"));
+            return BadRequest(Result<object>.Fail(400));
         }
 
         [HttpGet("badrequest/{id}")]
         public ActionResult GetNotFoundRequest(int id)
+        {
+            return Ok();
+        }
+
+        [HttpGet("AllAccess")]
+        [AllowAnonymous]
+        public ActionResult AllAccess()
+        {
+            return Ok();
+        }
+
+        [HttpGet("AuthorizedAccess")]
+        [Authorize]
+        public ActionResult AuthorizedAccess()
+        {
+            return Ok();
+        }
+
+        [HttpGet("UserAccess")]
+        [Authorize(Roles = UserRole.User)]
+        public ActionResult UserAccess()
+        {
+            return Ok();
+        }
+
+        [HttpGet("AdminAccess")]
+        [Authorize(Roles = UserRole.Admin)]
+        public ActionResult AdminAccess()
+        {
+            return Ok();
+        }
+
+        [HttpGet("User_Admin_Access")]
+        [Authorize(Roles = "User,Admin")]
+        public ActionResult User_Admin_Access()
+        {
+            return Ok();
+        }
+
+        [HttpGet("PolicyAccess")]
+        [Authorize(Policy = Policy.Admin)]
+        public ActionResult PolicyAccess()
+        {
+            return Ok();
+        }
+        /// Accessible by Admin asuers with a particular claims (defined in policies)
+        [HttpGet("Admin_CreateAccess")]
+        [Authorize(Policy = Policy.Admin_CreateAccess)]
+        public ActionResult Admin_CreateAccess()
+        {
+            return Ok();
+        }
+
+        [HttpGet("Admin_Create_Edit_DeleteAccess")]
+        [Authorize(Policy = Policy.Admin_Create_Edit_DeleteAccess)]
+        public ActionResult Admin_Create_Edit_DeleteAccess()
+        {
+            return Ok();
+        }
+
+        [HttpGet("Admin_Create_Edit_DeleteAccess_Or_SuperAdmin")]
+        [Authorize(Policy = Policy.Admin_Create_Edit_DeleteAccess_Or_SuperAdmin)]
+        public ActionResult Admin_Create_Edit_DeleteAccess_Or_SuperAdmin()
+        {
+            return Ok();
+        }
+
+        [HttpGet("OnlySuperAdminChecker")]
+        [Authorize(Policy = Policy.OnlySuperAdminChecker)]
+        public ActionResult OnlySuperAdminChecker()
         {
             return Ok();
         }

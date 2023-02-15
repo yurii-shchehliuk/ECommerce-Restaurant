@@ -8,7 +8,9 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using WebApi.Db.Identity;
+using WebApi.Domain.Constants;
 using WebApi.Domain.Entities.Identity;
+using WebApi.Domain.Entities.Identity.Enums;
 using WebApi.Domain.Interfaces.Services;
 using WebApi.Infrastructure.Services;
 
@@ -19,25 +21,21 @@ namespace WebApi.Infrastructure.StartupExtensions.Identity
         #region service
         public static void AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
+            ///<todo>separate database for comments</todo>
+            services.AddIdentityDb(config);
+            services.AddStoreDb(config);
+
             services.AddScoped<ITokenService, TokenService>();
             services.AddTransient<IEmailSender>(s => new EmailSender(config));
+
+            services.AddSignalR(hubOptions =>
+            {
+                hubOptions.EnableDetailedErrors = true;
+                hubOptions.KeepAliveInterval = System.TimeSpan.FromMinutes(5);
+            });
+
             services.AddIdentityServices(config);
-        }
-
-        private static void AddIdentityServices2(this IServiceCollection services, IConfiguration config)
-        {
-            services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppIdentityDbContext>().AddDefaultTokenProviders();
-            services.Configure<IdentityOptions>(o =>
-            {
-                o.Password = new PasswordOptions { RequireDigit = false, RequiredLength = 8 };
-                o.Lockout = new LockoutOptions { DefaultLockoutTimeSpan = TimeSpan.FromSeconds(30), MaxFailedAccessAttempts = 5 };
-            });
-
-            services.ConfigureApplicationCookie(o =>
-            {
-                o.AccessDeniedPath= "/";
-            });
-
+            //services.AddIdentityServices2(config);
         }
 
         private static void AddIdentityServices(this IServiceCollection services, IConfiguration config)
@@ -47,16 +45,22 @@ namespace WebApi.Infrastructure.StartupExtensions.Identity
                 c.SignIn.RequireConfirmedAccount = true;
 
             }).AddEntityFrameworkStores<AppIdentityDbContext>()
+              .AddRoles<AppRole>()
+              .AddRoleManager<RoleManager<AppRole>>()
+              .AddSignInManager<SignInManager<AppUser>>()
+              .AddEntityFrameworkStores<AppIdentityDbContext>()
               .AddTokenProvider<DataProtectorTokenProvider<AppUser>>(TokenOptions.DefaultProvider);
 
-            builder = new IdentityBuilder(builder.UserType, builder.Services);
-            builder.AddEntityFrameworkStores<AppIdentityDbContext>();
-            builder.AddSignInManager<SignInManager<AppUser>>();
+            //builder = new IdentityBuilder(builder.UserType, builder.Services);
+            //builder.AddEntityFrameworkStores<AppIdentityDbContext>();
+            //builder.AddSignInManager<SignInManager<AppUser>>();
+            //builder.AddRoles<AppRole>();
+            //builder.AddRoleManager<RoleManager<AppRole>>();
 
-            services.AddSignalR(hubOptions =>
+            services.Configure<IdentityOptions>(o =>
             {
-                hubOptions.EnableDetailedErrors = true;
-                hubOptions.KeepAliveInterval = System.TimeSpan.FromMinutes(5);
+                o.Password = new PasswordOptions { RequireDigit = false, RequiredLength = 8 };
+                o.Lockout = new LockoutOptions { DefaultLockoutTimeSpan = TimeSpan.FromSeconds(30), MaxFailedAccessAttempts = 5 };
             });
 
             services.AddAuthentication(options =>
@@ -90,10 +94,29 @@ namespace WebApi.Infrastructure.StartupExtensions.Identity
                         return Task.CompletedTask;
                     }
                 };
-            });
-            //.AddFacebook(o=>o{});
-        }
+            }); //.AddFacebook(o=>o{});
 
+            services.AddAuthorization(o =>
+            {
+                o.AddPolicy(Policy.Admin, policy => policy.RequireRole(UserRole.Admin));
+                o.AddPolicy(Policy.Admin_CreateAccess, policy => policy.RequireRole(UserRole.Admin).RequireClaim(Claims.Create, Claims.True));
+                o.AddPolicy(Policy.Admin_Create_Edit_DeleteAccess, policy => policy.RequireRole(UserRole.Admin)
+                    .RequireClaim(Claims.Create, Claims.True).RequireClaim(Claims.Edit, Claims.True).RequireClaim(Claims.Delete, Claims.True));
+                o.AddPolicy(Policy.Admin_Create_Edit_DeleteAccess_Or_SuperAdmin, policy => policy.RequireAssertion(context => (
+                    context.User.IsInRole(UserRole.Admin) && context.User.HasClaim(c => c.Type == Claims.Create && c.Value == Claims.True)
+                        && context.User.HasClaim(c => c.Type == Claims.Edit && c.Value == Claims.True)
+                        && context.User.HasClaim(c => c.Type == Claims.Delete && c.Value == Claims.True)
+                    ) || context.User.IsInRole(UserRole.Super)
+                ));
+                o.AddPolicy(Policy.OnlySuperAdminChecker, policy => policy.Requirements.Add(new OnlySuperAdminChecker()));
+
+            });
+
+            //services.ConfigureApplicationCookie(o =>
+            //{
+            //    o.AccessDeniedPath= "/";
+            //});
+        }
         #endregion
     }
 }

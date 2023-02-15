@@ -21,11 +21,11 @@ namespace API.Identity.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<AppRole> _roleManager;
         private readonly ITokenService _tokenService;
         private readonly IEmailSender _emailSender;
         private readonly IMapper _mapper;
-        public UserController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, RoleManager<IdentityRole> roleManager, ITokenService tokenService, IEmailSender emailSender, IMapper mapper)
+        public UserController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, RoleManager<AppRole> roleManager, ITokenService tokenService, IEmailSender emailSender, IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -226,6 +226,6 @@ namespace API.Identity.Controllers
 
         ///<todo>External logins, e.g. google/facebook</todo>
         ///<todo>Two factor authentication</todo>
-
+        ///<todo>Manage user claims</todo>
     }
 }
