@@ -24,18 +24,25 @@ export class NavBarComponent implements OnInit {
   ngOnInit() {
     this.basket$ = this.basketService.basket$;
     this.currentUser$ = this.accountService.currentUser$;
+    // (this.currentUser$.subscribe({
+    //   next: (res) => {
+    //     console.log(res);
+    //   },
+    //   error: (res) => {
+    //     console.log(res);
+    //   },
+    //   complete: () => {
+    //     console.log("sds");
+    //   }
+    // }));
+
   }
 
-  authenticateDropDown() {
+  authenticateDialog() {
     const dialogRef = this.dialog.open(AuthenticateDialogComponent);
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
     });
-  }
-  ddl() {
-    // this.currentUser$.subscribe((res) => {
-    //   console.log(res, 'ddl obs');
-    // });
   }
 
   logout() {

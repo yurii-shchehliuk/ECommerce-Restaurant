@@ -23,14 +23,13 @@ namespace WebApi.Infrastructure.Repositories
         {
             await _context.Set<T>().AddAsync(GenericExtensions.RemoveId<T>(entity));
         }
-
-        public async Task DeleteAsync(T entity)
+        public async Task Delete(T entity)
         {
             _context.Set<T>().Remove(entity);
         }
         public async Task DeleteAsync(int id)
         {
-            await DeleteAsync(await FindByIdAsync(id));
+            await Delete(await FindByIdAsync(id));
         }
 
         public async Task<IReadOnlyList<T>> ListAllAsync()
@@ -56,7 +55,7 @@ namespace WebApi.Infrastructure.Repositories
             return FindBy(predicate).Include(include);
 
         }
-        public async Task UpdateAsync(T entity)
+        public async Task Update(T entity)
         {
             try
             {

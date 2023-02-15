@@ -1,16 +1,16 @@
+<div class="w-100 flex justify-content-center align-items-center">
+    <mat-form-field class="w-100 d-inline pb-0">
+        <div class="textarea-container">
+            <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5" class="d-inline"
+                placeholder="Type a message" [(ngModel)]="message.messageBody"
+                name="messageBody">{{message.messageBody}}</textarea>
+            <button mat-button type="submit" class="d-inline" style="float: right" (click)="sendMessage()">
+                <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+            </button>
+        </div>
+    </mat-form-field>
+</div>
 <ng-container *ngIf="groupMessages.length > 0; else feedEmpty">
-    <div class="w-100 flex justify-content-center align-items-center">
-        <mat-form-field class="w-100 d-inline pb-0">
-            <div class="textarea-container">
-                <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5" class="d-inline"
-                    placeholder="Type a message" [(ngModel)]="message.messageBody"
-                    name="messageBody">{{message.messageBody}}</textarea>
-                <button mat-button type="submit" class="d-inline" style="float: right" (click)="sendMessage()">
-                    <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
-                </button>
-            </div>
-        </mat-form-field>
-    </div>
     <div *ngFor="let msg of groupMessages" class="card rounded-0 my-2">
         <mat-card class="w-100">
             <img mat-card-sm-image src="https://material.angular.io/assets/img/examples/shiba2.jpg"

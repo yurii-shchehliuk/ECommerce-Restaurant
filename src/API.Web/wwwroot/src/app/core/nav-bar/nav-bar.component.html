@@ -10,10 +10,43 @@
       <button mat-button><i class="fa fa-shopping-cart fa-2x text-dark"></i></button>
       <div *ngIf="(basket$ | async)" class="cart-no">{{(basket$ | async).items.length}}</div>
     </a>
+
+    <!-- logged out -->
     <ng-container *ngIf="(currentUser$ | async) === null">
-      <button mat-button class="me-5 "><i class="fa fa-user-o fa-2x" (click)="authenticateDropDown()"></i></button>
+      <button mat-button class="me-5 "><i class="fa fa-user-o fa-2x" (click)="authenticateDialog()"></i></button>
+      <!-- <a routerLink="/account/login" class="btn btn-outline-secondary me-2">Login</a>
+      <a routerLink="/account/register" class="btn btn-outline-secondary me-3">Sign up</a> -->
     </ng-container>
 
+    <!-- user logged in -->
+    <ng-container *ngIf="(currentUser$ | async) && !(currentUser$ | async).isAdmin">
+      <div class="dropdown ms-3 me-5" dropdown>
+        <a class="dropdown-toggle" style="cursor: pointer" dropdownToggle>
+          <strong>Welcome {{(currentUser$ | async).displayName}}</strong>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" style="cursor: pointer;" *dropdownMenu>
+          <a routerLink="/basket" class="dropdown-item d-flex align-items-center py-2">
+            <i class="fa fa-shopping-cart me-3"></i> View Basket
+          </a>
+          <a routerLink="/orders" class="dropdown-item d-flex align-items-center py-2">
+            <i class="fa fa-history me-3"></i> View Orders
+          </a>
+          <a routerLink="features/Gifts-n-Points" class="dropdown-item d-flex align-items-center py-2">
+            <i class="fa fa-diamond me-2"></i> Gifts&Points
+          </a>
+          <a routerLink="/chat" class="dropdown-item d-flex align-items-center py-2">
+            <i class="fa fa-weixin me-2"></i> Chat
+          </a>
+          <div class="dropdown-divider"></div>
+          <a (click)="logout()" class="dropdown-item d-flex align-items-center py-2">
+            <i class="fa fa-sign-out me-3"></i> Logout
+          </a>
+        </div>
+      </div>
+
+    </ng-container>
+
+    <!-- admin logged in -->
     <ng-container *ngIf="(currentUser$ | async) && (currentUser$ | async).isAdmin">
       <div class="dropdown ms-3 me-5" dropdown>
         <a class="dropdown-toggle" style="cursor: pointer" dropdownToggle>
@@ -40,33 +73,5 @@
       </div>
 
     </ng-container>
-
-    <ng-container *ngIf="(currentUser$ | async) && !(currentUser$ | async).isAdmin">
-      <div class="dropdown ms-3 me-5" dropdown (click)="ddl()">
-        <a class="dropdown-toggle" style="cursor: pointer" dropdownToggle>
-          <strong>Welcome {{(currentUser$ | async).displayName}}</strong>
-        </a>
-        <div class="dropdown-menu dropdown-menu-right" style="cursor: pointer;" *dropdownMenu>
-          <a routerLink="/basket" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-shopping-cart me-3"></i> View Basket
-          </a>
-          <a routerLink="/orders" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-history me-3"></i> View Orders
-          </a>
-          <a routerLink="features/Gifts-n-Points" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-diamond me-2"></i> Gifts&Points
-          </a>
-          <a routerLink="/chat" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-weixin me-2"></i> Chat
-          </a>
-          <div class="dropdown-divider"></div>
-          <a (click)="logout()" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-sign-out me-3"></i> Logout
-          </a>
-        </div>
-      </div>
-
-    </ng-container>
-
   </div>
 </div>

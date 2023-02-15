@@ -11,7 +11,7 @@ namespace WebApi.Domain.Interfaces.Repositories
     {
         Task AddAsync(T entity);
 
-        Task DeleteAsync(T entity);
+        Task Delete(T entity);
         Task DeleteAsync(int id);
 
         Task<IReadOnlyList<T>> ListAllAsync();
@@ -24,7 +24,7 @@ namespace WebApi.Domain.Interfaces.Repositories
 
         IQueryable<T> FindBy(Expression<Func<T, bool>> predicate);
 
-        Task UpdateAsync(T entity);
+        Task Update(T entity);
 
         Task<T> GetEntityWithSpec(ISpecification<T> spec);
 

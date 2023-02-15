@@ -38,7 +38,7 @@ namespace WebApi.Infrastructure.Controllers
         [HttpPut("{id}")]
         public virtual async Task<IActionResult> Update(string id, [FromBody] T record)
         {
-            await _context.UpdateAsync(record);
+            await _context.Update(record);
             return Ok();
         }
 

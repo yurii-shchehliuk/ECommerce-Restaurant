@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
+import { AccountService } from 'src/app/account/account.service';
 
 @Component({
   selector: 'app-authenticate-dialog',
@@ -7,9 +10,28 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AuthenticateDialogComponent implements OnInit {
 
-  constructor() { }
+  loginForm: FormGroup;
 
-  ngOnInit(): void {
+  constructor(private accountService: AccountService, public dialogRef: MatDialogRef<AuthenticateDialogComponent>) { }
+
+  ngOnInit() {
+    this.createLoginForm();
+  }
+
+  onSubmit() {
+    this.accountService.login(this.loginForm.value).subscribe(() => {
+      this.dialogRef.close();
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  private createLoginForm() {
+    this.loginForm = new FormGroup({
+      email: new FormControl('', [Validators.required, Validators
+        .pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')]),
+      password: new FormControl('', Validators.required)
+    });
   }
 
 }

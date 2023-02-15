@@ -103,7 +103,7 @@ namespace WebApi.Infrastructure.Services
             if (order == null) return null;
 
             order.Status = OrderStatus.PaymentRecevied;
-            await _unitOfWork.Repository<Order>().UpdateAsync(order);
+            await _unitOfWork.Repository<Order>().Update(order);
 
             await _unitOfWork.Complete();
 

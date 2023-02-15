@@ -51,7 +51,7 @@ namespace WebApi.Infrastructure.Services
 
             if (existingOrder != null)
             {
-                await _unitOfWork.Repository<Order>().DeleteAsync(existingOrder);
+                await _unitOfWork.Repository<Order>().Delete(existingOrder);
                 await _paymentService.CreateOrUpdatePaymentIntent(basket.PaymentIntentId);
             }
 

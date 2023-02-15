@@ -53,35 +53,38 @@ export class CommentComponent implements OnInit {
   sendMessage(): void {
     this.message.userName = localStorage.getItem('user_name');
 
-    if (this.message.messageBody.length === 0)
-      {return;}
-    if (this.message.userName?.length !== 0) {
+    if (this.message.messageBody.length === 0) { return; }
+    if (this.message.userName === null || this.message.userName?.length === 0) {
       const result = this.openDialog();
+    } else {
+      this.sendMessageProcess();
     }
-    console.log(this.message);
   }
 
   private openDialog() {
     const dialogRef = this.dialog.open(RegistrationDialogComponent);
     dialogRef.afterClosed().subscribe((result: any) => {
       console.log(`Dialog result: ${result}`);
+      this.sendMessageProcess();
+    });
+  }
 
-      /// <todo>push to array only last comment.
-      /// because currently array assigns with new comment the whole list
-      /// </todo>
-      this.groupMessages = [];
+  private sendMessageProcess() {
+    /// <todo>push to array only last comment.
+    /// because currently array assigns with new comment the whole list
+    /// </todo>
+    this.groupMessages = [];
 
-      this.signalrService.sendGroupMessage(this.message).subscribe({
-        next: (data) => {
-          console.log(data);
-        },
-        error: (err) => {
-          console.log('sendGroupMessage', err);
-        },
-        complete: () => {
-          this.message.messageBody = '';
-        }
-      });
+    this.signalrService.sendGroupMessage(this.message).subscribe({
+      next: (data) => {
+        console.log(data);
+      },
+      error: (err) => {
+        console.log('sendGroupMessage', err);
+      },
+      complete: () => {
+        this.message.messageBody = '';
+      }
     });
   }
 }
