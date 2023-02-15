@@ -4,6 +4,7 @@ import { AccountService } from '../account.service';
 import { Router } from '@angular/router';
 import { timer, of } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-register',
@@ -20,17 +21,6 @@ export class RegisterComponent implements OnInit {
     this.createRegisterForm();
   }
 
-  createRegisterForm() {
-    this.registerForm = this.fb.group({
-      displayName: [null, [Validators.required]],
-      email: [null,
-        [Validators.required, Validators.pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')],
-        [this.validateEmailNotTaken()]
-      ],
-      password: [null, [Validators.required]]
-    });
-  }
-
   onSubmit() {
     this.accountService.register(this.registerForm.value).subscribe(response => {
       this.router.navigateByUrl('/shop');
@@ -40,7 +30,7 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  validateEmailNotTaken(): AsyncValidatorFn {
+  private validateEmailNotTaken(): AsyncValidatorFn {
     return control => timer(500).pipe(
       switchMap(() => {
         if (!control.value) {
@@ -53,4 +43,14 @@ export class RegisterComponent implements OnInit {
     );
   }
 
+  private createRegisterForm() {
+    this.registerForm = this.fb.group({
+      displayName: [null, [Validators.required]],
+      email: [null,
+        [Validators.required, Validators.pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')],
+        [this.validateEmailNotTaken()]
+      ],
+      password: [null, [Validators.required]]
+    });
+  }
 }

@@ -13,9 +13,9 @@
 
     <!-- logged out -->
     <ng-container *ngIf="(currentUser$ | async) === null">
-      <button mat-button class="me-5 "><i class="fa fa-user-o fa-2x" (click)="authenticateDialog()"></i></button>
-      <!-- <a routerLink="/account/login" class="btn btn-outline-secondary me-2">Login</a>
-      <a routerLink="/account/register" class="btn btn-outline-secondary me-3">Sign up</a> -->
+      <!-- <button mat-button class="me-5 "><i class="fa fa-user-o fa-2x" (click)="authenticateDialog()"></i></button> -->
+      <a routerLink="/account/login" class="btn btn-outline-secondary me-2">Login</a>
+      <a routerLink="/account/register" class="btn btn-outline-secondary me-3">Sign up</a>
     </ng-container>
 
     <!-- user logged in -->

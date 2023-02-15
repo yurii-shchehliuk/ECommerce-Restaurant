@@ -12,8 +12,8 @@ namespace WebApi.Infrastructure.StartupExtensions
 {
     public static class CommonExtensions
     {
-        private static readonly string AllCorsPolicy = string.Empty;
-        private static readonly string CustomCorsPolicy = string.Empty;
+        private static readonly string AllCorsPolicy = nameof(AllCorsPolicy);
+        private static readonly string CustomCorsPolicy = nameof(CustomCorsPolicy);
         public static IConfiguration SeedConfiguration(Microsoft.AspNetCore.Hosting.IWebHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -58,7 +58,7 @@ namespace WebApi.Infrastructure.StartupExtensions
         {
             services.AddCors(opt =>
             {
-                opt.AddPolicy(nameof(AllCorsPolicy), policy =>
+                opt.AddPolicy(AllCorsPolicy, policy =>
                 {
                     policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("*");
 
@@ -69,7 +69,7 @@ namespace WebApi.Infrastructure.StartupExtensions
         {
             services.AddCors(opt =>
             {
-                opt.AddPolicy(nameof(CustomCorsPolicy), policy =>
+                opt.AddPolicy(CustomCorsPolicy, policy =>
                 {
                     policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5021", "http://localhost:4200").AllowCredentials();
 
@@ -121,8 +121,8 @@ namespace WebApi.Infrastructure.StartupExtensions
             app.UseMiddleware<ExceptionMiddleware>();
         }
 
-        public static void UserAllCorsConfiguration(this IApplicationBuilder app) => app.UseCors(nameof(AllCorsPolicy));
-        public static void UserCorsConfiguration(this IApplicationBuilder app) => app.UseCors(nameof(CustomCorsPolicy));
+        public static void UserAllCorsConfiguration(this IApplicationBuilder app) => app.UseCors(AllCorsPolicy);
+        public static void UserCorsConfiguration(this IApplicationBuilder app) => app.UseCors(CustomCorsPolicy);
         #endregion
     }
 }
