@@ -1,15 +1,21 @@
 ﻿using API.Admin.Functions.ProductFunc.Commands;
 using API.Admin.Functions.ProductFunc.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApi.Domain.DTOs;
+using WebApi.Domain.Entities.Identity.Enums;
 using WebApi.Domain.Entities.Store;
 using WebApi.Infrastructure.Controllers;
 
 namespace API.Admin.Controllers
 {
+    /// <summary>
+    /// user's products management
+    /// </summary>
+    [Authorize(Roles = UserRole.User)]
     public class ProductController : BaseApiController
     {
         [HttpGet("id")]

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
@@ -12,11 +13,8 @@ namespace WebApi.Db.Identity
     {
         public static async Task SeedIdentityAsync(IServiceProvider services)
         {
-            var context = services.GetRequiredService<AppIdentityDbContext>();
-            await context.Database.EnsureCreatedAsync();
-
-            await SeedUsersAsync(services.GetRequiredService<UserManager<AppUser>>());
             await SeedRoles(services.GetRequiredService<RoleManager<AppRole>>());
+            await SeedUsersAsync(services.GetRequiredService<UserManager<AppUser>>());
         }
 
         private static async Task SeedUsersAsync(UserManager<AppUser> userManager)
@@ -41,6 +39,7 @@ namespace WebApi.Db.Identity
                 };
 
                 await userManager.CreateAsync(user, "Pa$$w0rd");
+                await userManager.AddToRoleAsync(user, UserRole.Admin);
 
                 user = new AppUser
                 {
@@ -60,6 +59,7 @@ namespace WebApi.Db.Identity
                 };
 
                 await userManager.CreateAsync(user, "Pa$$w0rd");
+                await userManager.AddToRoleAsync(user, UserRole.User);
             }
         }
 

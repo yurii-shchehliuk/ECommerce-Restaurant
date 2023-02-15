@@ -12,8 +12,6 @@ using WebApi.Infrastructure.Controllers;
 
 namespace API.Basket.Controllers
 {
-    [Authorize]
-    [AllowAnonymous]
     public class OrdersController : BaseApiController
     {
         private readonly IOrderService _orderService;

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -20,9 +21,12 @@ namespace API.Identity
             {
                 var services = scope.ServiceProvider;
                 var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+                var context = services.GetRequiredService<AppIdentityDbContext>();
                 try
                 {
-
+                    Log.ForContext("ConnectionString:", context.Database.GetDbConnection().ConnectionString).Information("Information");
+                    await context.Database.EnsureCreatedAsync();
+                    await context.Database.MigrateAsync();
                     await AppIdentityDbContextSeed.SeedIdentityAsync(services);
                 }
                 catch (Exception ex)

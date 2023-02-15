@@ -44,11 +44,11 @@ namespace WebApi.Infrastructure.StartupExtensions.Identity
             {
                 c.SignIn.RequireConfirmedAccount = true;
 
-            }).AddEntityFrameworkStores<AppIdentityDbContext>()
+            })
               .AddRoles<AppRole>()
+              .AddEntityFrameworkStores<AppIdentityDbContext>()
               .AddRoleManager<RoleManager<AppRole>>()
               .AddSignInManager<SignInManager<AppUser>>()
-              .AddEntityFrameworkStores<AppIdentityDbContext>()
               .AddTokenProvider<DataProtectorTokenProvider<AppUser>>(TokenOptions.DefaultProvider);
 
             //builder = new IdentityBuilder(builder.UserType, builder.Services);

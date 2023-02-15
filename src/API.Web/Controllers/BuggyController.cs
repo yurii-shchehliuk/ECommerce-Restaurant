@@ -68,7 +68,7 @@ namespace API.Web.Controllers
         }
 
         [HttpGet("User_Admin_Access")]
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = $"{UserRole.User}, {UserRole.Admin}")]
         public ActionResult User_Admin_Access()
         {
             return Ok();

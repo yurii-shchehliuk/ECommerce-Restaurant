@@ -14,6 +14,7 @@ using WebApi.Domain.Constants;
 using WebApi.Domain.Core;
 using WebApi.Domain.DTOs;
 using WebApi.Domain.Entities.Identity;
+using WebApi.Domain.Entities.Identity.Enums;
 using WebApi.Domain.Interfaces.Services;
 using WebApi.Infrastructure.Controllers;
 
@@ -43,7 +44,7 @@ namespace API.Identity.Controllers
             var user = await _userManager.FindByEmailFromClaimsPrinciple(HttpContext.User);
             if (user == null)
                 return NotFound(Result<LoginVM>.Fail("Invalid credentials"));
-            
+
             return new UserDto
             {
                 Email = user.Email,
@@ -135,6 +136,7 @@ namespace API.Identity.Controllers
             var result = await _userManager.CreateAsync(user, registerDTO.Password);
 
             if (!result.Succeeded) return BadRequest(Result<IdentityError>.Fail("Error appeared on creating", result.Errors));
+            await _userManager.AddToRoleAsync(user, UserRole.User);
             var emailConfirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             //_emailSender.SendEmailAsync(user.Email, "Register account", $"<a href=\"{emailConfirmToken}\">Click to confirm account</a>");
 
@@ -149,6 +151,7 @@ namespace API.Identity.Controllers
         [HttpPost("RegisterAdmin")]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
+        /// with posibility to add the role
         public async Task<ActionResult<UserDto>> RegisterAdmin(RegisterVM registerDTO)
         {
             if (CheckEmailExistsAsync(registerDTO.Email).Result.Value)
@@ -166,7 +169,7 @@ namespace API.Identity.Controllers
 
             var result = await _userManager.CreateAsync(user, registerDTO.Password);
 
-            if (!result.Succeeded) 
+            if (!result.Succeeded)
                 return BadRequest(Result<IdentityError>.Fail(400, result.Errors));
 
             if (!await _roleManager.RoleExistsAsync(registerDTO.UserRole.ToString()))
