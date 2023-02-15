@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using WebApi.Db.Identity;
 using WebApi.Db.Store;
+using WebApi.Infrastructure.Controllers;
 using WebApi.Infrastructure.Helpers;
 
 namespace WebApi.Infrastructure.StartupExtensions
@@ -86,6 +87,11 @@ namespace WebApi.Infrastructure.StartupExtensions
         {
             services.AddDbContext<AppIdentityDbContext>(x =>
                x.UseSqlServer(config.GetConnectionString("IdentityConnection")));
+        }
+
+        public static void AddControllersExtension(this IServiceCollection services)
+        {
+            services.AddControllers(o=>o.Conventions.Add(new ControllersNameConvention()));
         }
         #endregion
 

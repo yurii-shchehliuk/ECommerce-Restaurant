@@ -39,13 +39,13 @@ namespace WebApi.Infrastructure.Services
             if (basket.DeliveryMethodId.HasValue)
             {
                 var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>()
-                    .GetByIdAsync((int)basket.DeliveryMethodId);
+                    .FindByIdAsync((int)basket.DeliveryMethodId);
                 shippingPrice = deliveryMethod.Price;
             }
 
             foreach (var item in basket.Items)
             {
-                var productItem = await _unitOfWork.Repository<Product>().GetByIdAsync(item.Id);
+                var productItem = await _unitOfWork.Repository<Product>().FindByIdAsync(item.Id);
                 if (item.Price != productItem.Price)
                 {
                     item.Price = productItem.Price;
@@ -103,7 +103,7 @@ namespace WebApi.Infrastructure.Services
             if (order == null) return null;
 
             order.Status = OrderStatus.PaymentRecevied;
-            _unitOfWork.Repository<Order>().Update(order);
+            await _unitOfWork.Repository<Order>().UpdateAsync(order);
 
             await _unitOfWork.Complete();
 

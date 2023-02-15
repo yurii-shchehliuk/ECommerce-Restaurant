@@ -1,3 +1,4 @@
+using WebApi.Infrastructure.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

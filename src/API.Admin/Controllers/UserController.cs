@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using WebApi.Infrastructure.Controllers;
 
 namespace API.Admin.Controllers
 {

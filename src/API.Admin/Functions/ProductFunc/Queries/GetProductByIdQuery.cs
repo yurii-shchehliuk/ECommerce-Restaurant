@@ -18,7 +18,7 @@ namespace API.Admin.Functions.ProductFunc.Queries
             }
             public async Task<Product> Handle(GetProductByIdQuery query, CancellationToken cancellationToken)
             {
-                return await _productsRepo.GetByIdAsync(query.Id);
+                return await _productsRepo.FindByIdAsync(query.Id);
             }
         }
     }

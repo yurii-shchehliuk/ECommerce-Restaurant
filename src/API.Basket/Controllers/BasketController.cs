@@ -6,6 +6,7 @@ using System;
 using System.Threading.Tasks;
 using WebApi.Domain.Entities.Store;
 using WebApi.Domain.Interfaces.Repositories;
+using WebApi.Infrastructure.Controllers;
 
 namespace API.Basket.Controllers
 {

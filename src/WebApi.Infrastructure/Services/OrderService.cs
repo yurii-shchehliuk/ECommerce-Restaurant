@@ -33,14 +33,14 @@ namespace WebApi.Infrastructure.Services
             var items = new List<OrderItem>();
             foreach (var item in basket.Items)
             {
-                var productItem = await _unitOfWork.Repository<Product>().GetByIdAsync(item.Id);
+                var productItem = await _unitOfWork.Repository<Product>().FindByIdAsync(item.Id);
                 var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name, productItem.PictureUrl);
                 var orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity);
                 items.Add(orderItem);
             }
 
             // get delivery method from repo
-            var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(deliveryMethodId);
+            var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().FindByIdAsync(deliveryMethodId);
 
             // calc subtotal
             var subtotal = items.Sum(item => item.Price * item.Quantity);
@@ -51,13 +51,13 @@ namespace WebApi.Infrastructure.Services
 
             if (existingOrder != null)
             {
-                _unitOfWork.Repository<Order>().Delete(existingOrder);
+                await _unitOfWork.Repository<Order>().DeleteAsync(existingOrder);
                 await _paymentService.CreateOrUpdatePaymentIntent(basket.PaymentIntentId);
             }
 
             // create order
             var order = new Order(items, buyerEmail, shippingAddress, deliveryMethod, subtotal, basket.PaymentIntentId);
-            _unitOfWork.Repository<Order>().Add(order);
+            _unitOfWork.Repository<Order>().AddAsync(order);
             //_orderProcessingNotification.OrderReceived(order, buyerEmail, basket.PaymentIntentId);
 
             // save to db

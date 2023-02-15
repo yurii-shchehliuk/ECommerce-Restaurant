@@ -1,3 +1,4 @@
+using WebApi.Infrastructure.Controllers;
 namespace API.Identity.Controllers
 {
     public class AccountController : BaseApiController

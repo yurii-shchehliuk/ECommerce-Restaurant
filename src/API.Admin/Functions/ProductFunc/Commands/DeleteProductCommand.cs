@@ -19,8 +19,8 @@ namespace API.Admin.Functions.ProductFunc.Commands
             }
             public async Task<Unit> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
             {
-                var product = await _unitOfWork.Repository<Product>().GetByIdAsync(request.Id);
-                _unitOfWork.Repository<Product>().Delete(product);
+                var product = await _unitOfWork.Repository<Product>().FindByIdAsync(request.Id);
+                _unitOfWork.Repository<Product>().DeleteAsync(product);
 
                 await _unitOfWork.Complete();
                 return Unit.Value;

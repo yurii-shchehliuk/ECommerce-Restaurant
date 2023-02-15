@@ -24,7 +24,7 @@ namespace API.Admin.Functions.ProductFunc.Commands
 
             public async Task<Unit> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
             {
-                var product = await _unitOfWork.Repository<Product>().GetByIdAsync(request.Product.Id);
+                var product = await _unitOfWork.Repository<Product>().FindByIdAsync(request.Product.Id);
                 _mapper.Map(request.Product, product);
                 await _unitOfWork.Complete();
 

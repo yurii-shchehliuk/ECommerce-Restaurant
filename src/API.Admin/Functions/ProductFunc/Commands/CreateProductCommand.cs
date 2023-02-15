@@ -29,7 +29,7 @@ namespace API.Admin.Functions.ProductFunc.Commands
                 try
                 {
                     var product = _mapper.Map<Product>(request.Product);
-                    _unitOfWork.Repository<Product>().Add(product);
+                    _unitOfWork.Repository<Product>().AddAsync(product);
                 }
                 catch (Exception ex)
                 {

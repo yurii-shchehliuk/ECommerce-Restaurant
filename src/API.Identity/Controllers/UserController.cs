@@ -8,15 +8,17 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using WebApi.Domain.Constants;
 using WebApi.Domain.Core;
 using WebApi.Domain.DTOs;
 using WebApi.Domain.Entities.Identity;
 using WebApi.Domain.Interfaces.Services;
+using WebApi.Infrastructure.Controllers;
 
 namespace API.Identity.Controllers
 {
-    [AllowAnonymous]
     public class UserController : BaseApiController
     {
         private readonly UserManager<AppUser> _userManager;
@@ -35,8 +37,7 @@ namespace API.Identity.Controllers
             _mapper = mapper;
         }
 
-        [Authorize]
-        [HttpGet]
+        [HttpGet("GetCurrentUser")]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
             var user = await _userManager.FindByEmailFromClaimsPrinciple(HttpContext.User);
@@ -180,7 +181,7 @@ namespace API.Identity.Controllers
         }
 
 
-        [HttpPost()]
+        [HttpPost("ForgotPassword")]
         [AllowAnonymous]
         public async Task<ActionResult<UserDto>> ForgotPassword(ForgotPasswordVM forgotPwd)
         {
@@ -194,7 +195,7 @@ namespace API.Identity.Controllers
             return Ok();
         }
 
-        [HttpPost()]
+        [HttpPost("ResetPassword")]
         [AllowAnonymous]
         public async Task<ActionResult<UserDto>> ResetPassword(ResetPasswordVM resetPwd)
         {
@@ -207,7 +208,7 @@ namespace API.Identity.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [HttpGet("ConfirmEmail")]
         [AllowAnonymous]
         public async Task<ActionResult<UserDto>> ConfirmEmail(string userEmail, string token)
         {
@@ -226,6 +227,18 @@ namespace API.Identity.Controllers
 
         ///<todo>External logins, e.g. google/facebook</todo>
         ///<todo>Two factor authentication</todo>
-        ///<todo>Manage user claims</todo>
+        ///<todo>crud user claims</todo>
+
+        [HttpGet("claims/GetUserClaims")]
+        [AllowAnonymous]
+        public async Task<ActionResult<List<Claim>>> GetUserClaims(UserClaimsVM userClaims)
+        {
+            var user = await _userManager.FindByEmailAsync(userClaims.UserEmail);
+            if (user == null)
+                return NotFound(Result<LoginVM>.Fail("Invalid credentials"));
+
+
+            return Ok(ClasimStore.claimList);
+        }
     }
 }

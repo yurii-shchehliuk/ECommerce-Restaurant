@@ -22,7 +22,7 @@ namespace API.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllersExtension();
 
             services.AddSpaStaticFiles(configuration =>
             {

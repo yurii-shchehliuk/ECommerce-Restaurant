@@ -27,7 +27,7 @@ namespace API.Identity
             services.AddAutoMapper(typeof(Helpers.MappingProfiles));
             services.AddValidatorsFromAssemblyContaining<CommentCreate>();
 
-            services.AddControllers();
+            services.AddControllersExtension();
             //services.AddHttpContextAccessor();
 
             services.AddApplicationServices(_config);

@@ -44,7 +44,7 @@ namespace API.Admin
             //    config.Filters.Add(new AuthorizeFilter(policy));
             //});
 
-            services.AddControllers();
+            services.AddControllersExtension();
             services.AddApplicationServices(_config);
 
             // Add assebply with handlers

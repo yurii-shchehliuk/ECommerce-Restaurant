@@ -23,7 +23,7 @@ namespace API.Basket
 
             services.AddAutoMapper(typeof(MappingProfiles));
 
-            services.AddControllers();
+            services.AddControllersExtension();
 
             services.AddApplicationServices(_config);
             services.AddSwaggerDocumentation();

@@ -5,15 +5,15 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebApi.Domain.Entities.Identity
+namespace WebApi.Domain.Constants
 {
     public static class ClasimStore
     {
         public static List<Claim> claimList = new List<Claim>
         {
-            new Claim("Create", "Create"),
-            new Claim("Edit", "Edit"),
-            new Claim("Delete", "Delete"),
+            new Claim(Claims.Create, Claims.Create),
+            new Claim(Claims.Edit, Claims.Edit),
+            new Claim(Claims.Delete, Claims.Delete),
         };
     }
 }

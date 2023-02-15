@@ -1,10 +1,12 @@
 ﻿using API.Admin.Functions.ProductFunc.Commands;
 using API.Admin.Functions.ProductFunc.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApi.Domain.DTOs;
 using WebApi.Domain.Entities.Store;
+using WebApi.Infrastructure.Controllers;
 
 namespace API.Admin.Controllers
 {

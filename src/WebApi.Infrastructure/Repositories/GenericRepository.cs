@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using WebApi.Db.Store;
 using WebApi.Domain.Entities;
@@ -17,9 +19,18 @@ namespace WebApi.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task AddAsync(T entity)
         {
-            return await _context.Set<T>().FindAsync(id);
+            await _context.Set<T>().AddAsync(GenericExtensions.RemoveId<T>(entity));
+        }
+
+        public async Task DeleteAsync(T entity)
+        {
+            _context.Set<T>().Remove(entity);
+        }
+        public async Task DeleteAsync(int id)
+        {
+            await DeleteAsync(await FindByIdAsync(id));
         }
 
         public async Task<IReadOnlyList<T>> ListAllAsync()
@@ -27,19 +38,40 @@ namespace WebApi.Infrastructure.Repositories
             return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<T> GetEntityWithSpec(ISpecification<T> spec)
-        {
-            return await ApplySpecification(spec).FirstOrDefaultAsync();
-        }
-
         public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec)
         {
             return await ApplySpecification(spec).ToListAsync();
         }
-
-        public async Task<int> CountAsync(ISpecification<T> spec)
+        public async Task<T?> FindByIdAsync(int id)
         {
-            return await ApplySpecification(spec).CountAsync();
+            return await _context.Set<T>().FindAsync(id);
+        }
+
+        public IQueryable<T> FindBy(Expression<Func<T, bool>> predicate)
+        {
+            return _context.Set<T>().Where(predicate);
+        }
+        public IQueryable<T> FindBy(Expression<Func<T, bool>> predicate, string include)
+        {
+            return FindBy(predicate).Include(include);
+
+        }
+        public async Task UpdateAsync(T entity)
+        {
+            try
+            {
+                _context.Set<T>().Attach(entity);
+                _context.Entry(entity).State = EntityState.Modified;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<T> GetEntityWithSpec(ISpecification<T> spec)
+        {
+            return await ApplySpecification(spec).FirstOrDefaultAsync();
         }
 
         private IQueryable<T> ApplySpecification(ISpecification<T> spec)
@@ -47,20 +79,13 @@ namespace WebApi.Infrastructure.Repositories
             return SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), spec);
         }
 
-        public void Add(T entity)
+        public async Task<int> CountAsync(ISpecification<T> spec)
         {
-            _context.Set<T>().Add(entity);
+            return await ApplySpecification(spec).CountAsync();
         }
 
-        public void Update(T entity)
+        public void Dispose()
         {
-            _context.Set<T>().Attach(entity);
-            _context.Entry(entity).State = EntityState.Modified;
-        }
-
-        public void Delete(T entity)
-        {
-            _context.Set<T>().Remove(entity);
         }
     }
 }

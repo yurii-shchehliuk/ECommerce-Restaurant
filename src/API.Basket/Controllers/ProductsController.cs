@@ -9,6 +9,7 @@ using WebApi.Domain.Core;
 using WebApi.Domain.Entities.Store;
 using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Domain.Specifications;
+using WebApi.Infrastructure.Controllers;
 
 namespace API.Basket.Controllers
 {
