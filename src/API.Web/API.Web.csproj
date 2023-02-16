@@ -7,21 +7,22 @@
     <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Content\**" />
+    <Content Remove="Content\**" />
+    <EmbeddedResource Remove="Content\**" />
+    <None Remove="Content\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.10" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="5.2.2" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\**" CopyToPublishDirectory="PreserveNewest" />
-    <Compile Remove="Content\images\**" />
-    <Content Remove="Content\images\**" />
-    <EmbeddedResource Remove="Content\images\**" />
-    <None Remove="Content\images\**" />
     <ProjectReference Include="..\WebApi.Domain\WebApi.Domain.csproj" />
     <ProjectReference Include="..\WebApi.Infrastructure\WebApi.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Content\" />
+    <Folder Include="ClientApp\" />
   </ItemGroup>
 </Project>

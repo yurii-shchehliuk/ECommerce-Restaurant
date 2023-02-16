@@ -1,0 +1,21 @@
+<div class="container mt-5">
+    <button (click)="get500Error()" class="btn btn-outline-primary me-3">Test 500 Error</button>
+    <button (click)="get404Error()" class="btn btn-outline-primary me-3">Test 404 Error</button>
+    <button (click)="get400Error()" class="btn btn-outline-primary me-3">Test 400 Error</button>
+    <button (click)="getAuthorizedAccess()" class="btn btn-outline-primary me-3">AuthorizedAccess</button>
+    <button (click)="getAllAccess()" class="btn btn-outline-primary me-3">AllAccess</button>
+    <button (click)="getUserAccess()" class="btn btn-outline-primary me-3">UserAccess</button>
+    <button (click)="getAdminAccess()" class="btn btn-outline-primary me-3">AdminAccess</button>
+    <button (click)="getUser_Admin_Access()" class="btn btn-outline-primary me-3">User_Admin_Access</button>
+    <button (click)="getPolicyAccess()" class="btn btn-outline-primary me-3">PolicyAccess</button>
+    <button (click)="getAdmin_CreateAccess()" class="btn btn-outline-primary me-3">Admin_CreateAccess</button>
+    <button (click)="getAdmin_Create_Edit_DeleteAccess()" class="btn btn-outline-primary me-3">Admin_Create_Edit_DeleteAccess</button>
+    <button (click)="getAdmin_Create_Edit_DeleteAccess_Or_SuperAdmin()" class="btn btn-outline-primary me-3">Admin_Create_Edit_DeleteAccess_Or_SuperAdmin</button>
+    <button (click)="getOnlySuperAdminChecker()" class="btn btn-outline-primary me-3">Test 400 Error</button>
+    <button (click)="get400ValidationError()" class="btn btn-outline-primary me-3">Test 400 Validation Error</button>
+    <div class="row mt-5" *ngIf="validationErrors">
+        <ul class="text-danger">
+        <li *ngFor="let error of validationErrors">{{error}}</li>
+        </ul>
+    </div>
+</div>

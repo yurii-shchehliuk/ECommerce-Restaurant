@@ -223,7 +223,6 @@ Global
 		{B17DD0FC-417B-4FB3-95BD-7AA8514C1448}.Release|x86.ActiveCfg = Release|Any CPU
 		{B17DD0FC-417B-4FB3-95BD-7AA8514C1448}.Release|x86.Build.0 = Release|Any CPU
 		{C9F9518D-5063-4437-90D9-735477927EBF}.Debug|Any CPU.ActiveCfg = NoVariablesDefault
-		{C9F9518D-5063-4437-90D9-735477927EBF}.Debug|Any CPU.Build.0 = NoVariablesDefault
 		{C9F9518D-5063-4437-90D9-735477927EBF}.Debug|x64.ActiveCfg = NoVariablesDefault
 		{C9F9518D-5063-4437-90D9-735477927EBF}.Debug|x64.Build.0 = NoVariablesDefault
 		{C9F9518D-5063-4437-90D9-735477927EBF}.Debug|x86.ActiveCfg = NoVariablesDefault

@@ -55,25 +55,28 @@ namespace API.Web
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "Content")
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")
                 ),
-                RequestPath = "/Content"
+                RequestPath = "/wwwroot"
             });
 
-            app.UseSpa(spa =>
+            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
             {
-                //path to the angular application
-                spa.Options.SourcePath = "wwwroot";
+                app.UseSpa(spa =>
+                {
+                    //path to the angular application
+                    spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment())
-                {
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
-                }
-                else
-                {
-                    spa.Options.StartupTimeout = new TimeSpan(0, 0, 80);
-                    spa.UseAngularCliServer(npmScript: "start");
-                }
+                    if (env.IsDevelopment())
+                    {
+                        spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    }
+                    else
+                    {
+                        spa.Options.StartupTimeout = new TimeSpan(0, 0, 80);
+                        spa.UseAngularCliServer(npmScript: "start");
+                    }
+                });
             });
 
             app.UserAllCorsConfiguration();

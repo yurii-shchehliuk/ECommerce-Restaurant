@@ -11,34 +11,7 @@ namespace API.Web.Controllers
 {
     public class BuggyController : BaseApiController
     {
-        public BuggyController(StoreContext context)
-        {
-        }
-
-        [HttpGet("notfound")]
-        public ActionResult GetNotFoundRequest()
-        {
-            return NotFound(Result<object>.Fail(404));
-        }
-
-        [HttpGet("servererror")]
-        public ActionResult GetServerError()
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
-        }
-
-        [HttpGet("badrequest")]
-        public ActionResult GetBadRequest()
-        {
-            return BadRequest(Result<object>.Fail(400));
-        }
-
-        [HttpGet("badrequest/{id}")]
-        public ActionResult GetNotFoundRequest(int id)
-        {
-            return Ok();
-        }
-
+        #region access tests
         [HttpGet("AllAccess")]
         [AllowAnonymous]
         public ActionResult AllAccess()
@@ -108,5 +81,33 @@ namespace API.Web.Controllers
         {
             return Ok();
         }
+        #endregion
+
+        #region request tests
+
+        [HttpGet("notfound")]
+        public ActionResult GetNotFoundRequest()
+        {
+            return NotFound(Result<object>.Fail(404));
+        }
+
+        [HttpGet("servererror")]
+        public ActionResult GetServerError()
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+        }
+
+        [HttpGet("badrequest")]
+        public ActionResult GetBadRequest()
+        {
+            return BadRequest(Result<object>.Fail(400));
+        }
+
+        [HttpGet("badrequest/{id}")]
+        public ActionResult GetNotFoundRequest(int id)
+        {
+            return Ok();
+        }
+        #endregion
     }
 }
