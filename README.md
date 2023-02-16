@@ -65,10 +65,6 @@ Admin's functionality:
 ### nginx docker container 
 https://gist.github.com/dahlsailrunner/679e6dec5fd769f30bce90447ae80081
 
-### redis
-https://chocolatey.org/install
-cmd: redis-server
-	 redis-cli
 
 ## Launching
-Set either docker-compose or all API.\* projects as startup. 
+cd build/README.nd
