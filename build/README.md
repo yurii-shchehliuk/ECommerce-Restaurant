@@ -1,4 +1,4 @@
-# install packages in src\API.Web\wwwroot
+# install packages in src\API.Web\ClientApp
 npm install
 #check angular build
 ng build
