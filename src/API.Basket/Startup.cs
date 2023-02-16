@@ -33,10 +33,6 @@ namespace API.Basket
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //var virtualPath = "/api";
-            //app.Map(virtualPath, builder =>
-            //{
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -59,7 +55,6 @@ namespace API.Basket
             {
                 endpoints.MapControllers();
                 //endpoints.MapFallbackToController("Index", "Fallback");
-            });            //});
-        }
+            });        }
     }
 }

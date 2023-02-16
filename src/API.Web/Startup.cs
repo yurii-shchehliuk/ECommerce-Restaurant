@@ -59,7 +59,9 @@ namespace API.Web
                 ),
                 RequestPath = "/wwwroot"
             });
-
+            var virtualPath = "/api";
+            //app.Map(virtualPath, builder => { });
+            //app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder => { });
             app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
             {
                 app.UseSpa(spa =>
@@ -69,13 +71,11 @@ namespace API.Web
 
                     if (env.IsDevelopment())
                     {
-                        spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
-                    }
-                    else
-                    {
+                        //spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
                         spa.Options.StartupTimeout = new TimeSpan(0, 0, 80);
                         spa.UseAngularCliServer(npmScript: "start");
                     }
+                   
                 });
             });
 
