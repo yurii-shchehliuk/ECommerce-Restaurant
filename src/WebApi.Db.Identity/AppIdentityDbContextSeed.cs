@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApi.Domain.Constants;
 using WebApi.Domain.Entities.Identity;
 using WebApi.Domain.Entities.Identity.Enums;
 
@@ -12,8 +13,12 @@ namespace WebApi.Db.Identity
     {
         public static async Task SeedIdentityAsync(IServiceProvider services)
         {
-            await SeedRoles(services.GetRequiredService<RoleManager<AppRole>>());
-            await SeedUsersAsync(services.GetRequiredService<UserManager<AppUser>>());
+            var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
+            var usrMgr = services.GetRequiredService<UserManager<AppUser>>();
+            await SeedRoles(roleManager);
+            await SeedUsersAsync(usrMgr);
+
+
         }
 
         private static async Task SeedUsersAsync(UserManager<AppUser> userManager)
@@ -70,6 +75,7 @@ namespace WebApi.Db.Identity
                 await roleManager.CreateAsync(new AppRole(UserRole.User));
                 await roleManager.CreateAsync(new AppRole(UserRole.Super));
             }
+
         }
     }
 }

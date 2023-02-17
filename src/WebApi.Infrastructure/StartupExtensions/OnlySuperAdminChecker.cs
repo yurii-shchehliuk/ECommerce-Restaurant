@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 
-namespace WebApi.Infrastructure.StartupExtensions.Identity
+namespace WebApi.Infrastructure.StartupExtensions
 {
     internal class OnlySuperAdminChecker : AuthorizationHandler<OnlySuperAdminChecker>, IAuthorizationRequirement
     {

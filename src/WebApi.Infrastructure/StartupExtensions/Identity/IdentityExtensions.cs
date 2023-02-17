@@ -33,12 +33,9 @@ namespace WebApi.Infrastructure.StartupExtensions.Identity
                 hubOptions.EnableDetailedErrors = true;
                 hubOptions.KeepAliveInterval = System.TimeSpan.FromMinutes(5);
             });
-
-            services.AddIdentityServices(config);
-            //services.AddIdentityServices2(config);
         }
 
-        private static void AddIdentityServices(this IServiceCollection services, IConfiguration config)
+        public static void AddIdentityServices(this IServiceCollection services, IConfiguration config)
         {
             var builder = services.AddIdentityCore<AppUser>(c =>
             {

@@ -19,11 +19,10 @@ namespace API.Basket
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddStoreDb(_config);
-
             services.AddAutoMapper(typeof(MappingProfiles));
 
             services.AddControllersExtension();
+            services.AddCommonIdentity(_config);
 
             services.AddApplicationServices(_config);
             services.AddSwaggerDocumentation();

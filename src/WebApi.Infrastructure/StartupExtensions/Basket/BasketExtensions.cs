@@ -17,6 +17,9 @@ namespace WebApi.Infrastructure.StartupExtensions.Basket
         #region service
         public static void AddApplicationServices(this IServiceCollection services, IConfiguration _config)
         {
+            services.AddStoreDb(_config);
+            services.AddIdentityDb(_config);
+
             /// services
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IPaymentService, PaymentService>();

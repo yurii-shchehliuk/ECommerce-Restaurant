@@ -10,7 +10,8 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class TestErrorComponent implements OnInit {
 
-  baseUrl = environment.baseApi.web;
+  // baseUrl = environment.baseApi.web;
+  baseUrl = environment.identityApi.api;
   validationErrors: any;
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }

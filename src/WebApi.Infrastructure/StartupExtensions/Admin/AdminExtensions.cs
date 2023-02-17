@@ -10,6 +10,9 @@ namespace WebApi.Infrastructure.StartupExtensions.Admin
         #region service
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration _config)
         {
+            services.AddIdentityDb(_config);
+            services.AddStoreDb(_config);
+
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             //services.AddTransient<IProductRepository, ProductRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

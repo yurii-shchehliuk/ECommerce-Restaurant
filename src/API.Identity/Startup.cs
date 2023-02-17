@@ -28,10 +28,10 @@ namespace API.Identity
             services.AddValidatorsFromAssemblyContaining<CommentCreate>();
 
             services.AddControllersExtension();
+            services.AddIdentityServices(_config);
             //services.AddHttpContextAccessor();
 
             services.AddApplicationServices(_config);
-
             services.AddSwaggerDocumentation();
             services.AddCorsConfiguration();
         }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -6,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using WebApi.Domain.Entities.Identity;
 using WebApi.Domain.Interfaces.Services;
 
@@ -21,15 +23,17 @@ namespace WebApi.Infrastructure.Services
             _issuer = config["Token:Issuer"];
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Token:Key"]));
         }
-
-        public string CreateToken(AppUser user)
+        public RefreshToken GenerateRefreshToken()
         {
-            var claims = new List<Claim>
-            {
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.GivenName, user.DisplayName)
-            };
+            var randomNumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return new RefreshToken { Token = Convert.ToBase64String(randomNumber) };
 
+        }
+
+        public string CreateToken(List<Claim> claims)
+        {
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -46,15 +50,6 @@ namespace WebApi.Infrastructure.Services
 
             string result = tokenHandler.WriteToken(token);
             return result;
-        }
-
-        public RefreshToken GenerateRefreshToken()
-        {
-            var randomNumber = new byte[32];
-            using var rng = RandomNumberGenerator.Create();
-            rng.GetBytes(randomNumber);
-            return new RefreshToken { Token = Convert.ToBase64String(randomNumber) };
-
-        }
+        }  
     }
 }

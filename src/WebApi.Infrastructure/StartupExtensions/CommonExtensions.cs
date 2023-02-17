@@ -1,10 +1,15 @@
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 using WebApi.Db.Identity;
 using WebApi.Db.Store;
+using WebApi.Domain.Constants;
+using WebApi.Domain.Entities.Identity.Enums;
 using WebApi.Infrastructure.Controllers;
 using WebApi.Infrastructure.Helpers;
 
@@ -92,6 +97,42 @@ namespace WebApi.Infrastructure.StartupExtensions
         public static void AddControllersExtension(this IServiceCollection services)
         {
             services.AddControllers(o => o.Conventions.Add(new ControllersNameConvention()));
+        }
+
+        public static void AddCommonIdentity(this IServiceCollection services, IConfiguration config)
+        {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Token:Key"])),
+                    ValidIssuer = config["Token:Issuer"],
+                    ValidateIssuer = true,
+                    ValidateAudience = false
+                };
+            });
+
+            services.AddAuthorization(o =>
+            {
+                o.AddPolicy(Policy.Admin, policy => policy.RequireRole(UserRole.Admin));
+                o.AddPolicy(Policy.Admin_CreateAccess, policy => policy.RequireRole(UserRole.Admin).RequireClaim(Claims.Create, Claims.True));
+                o.AddPolicy(Policy.Admin_Create_Edit_DeleteAccess, policy => policy.RequireRole(UserRole.Admin)
+                    .RequireClaim(Claims.Create, Claims.True).RequireClaim(Claims.Edit, Claims.True).RequireClaim(Claims.Delete, Claims.True));
+                o.AddPolicy(Policy.Admin_Create_Edit_DeleteAccess_Or_SuperAdmin, policy => policy.RequireAssertion(context => (
+                    context.User.IsInRole(UserRole.Admin) && context.User.HasClaim(c => c.Type == Claims.Create && c.Value == Claims.True)
+                        && context.User.HasClaim(c => c.Type == Claims.Edit && c.Value == Claims.True)
+                        && context.User.HasClaim(c => c.Type == Claims.Delete && c.Value == Claims.True)
+                    ) || context.User.IsInRole(UserRole.Super)
+                ));
+                o.AddPolicy(Policy.OnlySuperAdminChecker, policy => policy.Requirements.Add(new OnlySuperAdminChecker()));
+
+            });
         }
         #endregion
 

@@ -7,9 +7,9 @@ namespace WebApi.Domain.Constants
     {
         public static List<Claim> claimList = new List<Claim>
         {
-            new Claim(Claims.Create, Claims.Create),
-            new Claim(Claims.Edit, Claims.Edit),
-            new Claim(Claims.Delete, Claims.Delete),
+            new Claim(Claims.Create, Claims.True),
+            new Claim(Claims.Edit, Claims.True),
+            new Claim(Claims.Delete, Claims.True),
         };
     }
 }

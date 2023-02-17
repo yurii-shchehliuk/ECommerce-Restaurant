@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using WebApi.Domain.Constants;
@@ -47,7 +49,7 @@ namespace API.Identity.Controllers
             return new UserDto
             {
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user),
+                Token = _tokenService.CreateToken(await GetValidClaims(user)),
                 DisplayName = user.DisplayName,
                 IsAdmin = user.IsAdmin
             };
@@ -104,11 +106,12 @@ namespace API.Identity.Controllers
                 return Unauthorized(Result<LoginVM>.Fail("Account temporarily locked"));
 
             if (!result.Succeeded) return Unauthorized(Result<LoginVM>.Fail("Invalid login attempt"));
-
+            //await _userManager.AddClaimAsync(user, ClasimStore.claimList.First());
+            
             return new UserDto
             {
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user),
+                Token = _tokenService.CreateToken(await GetValidClaims(user)),
                 DisplayName = user.DisplayName,
                 IsAdmin = user.IsAdmin
             };
@@ -142,7 +145,7 @@ namespace API.Identity.Controllers
             return new UserDto
             {
                 DisplayName = user.DisplayName,
-                Token = _tokenService.CreateToken(user),
+                Token = _tokenService.CreateToken(await GetValidClaims(user)),
                 Email = user.Email
             };
         }
@@ -174,12 +177,14 @@ namespace API.Identity.Controllers
             if (!await _roleManager.RoleExistsAsync(registerDTO.UserRole.ToString()))
                 return BadRequest(Result<string>.Fail(400, new string[] { "Selected role doesnt exists" }));
 
-            await _userManager.AddToRoleAsync(user, registerDTO.UserRole.ToString());
+            await _userManager.AddToRoleAsync(user, UserRole.Admin);
+            ///<todo>manage user claims</todo>
+            await _roleManager.AddClaimAsync(await _roleManager.FindByNameAsync(UserRole.Admin), ClasimStore.claimList.First());
 
             return new UserDto
             {
                 DisplayName = user.DisplayName,
-                Token = _tokenService.CreateToken(user),
+                Token = _tokenService.CreateToken(await GetValidClaims(user)),
                 Email = user.Email
             };
         }
@@ -243,6 +248,35 @@ namespace API.Identity.Controllers
 
 
             return Ok(ClasimStore.claimList);
+        }
+
+        private async Task<List<Claim>> GetValidClaims(AppUser user)
+        {
+            IdentityOptions _options = new IdentityOptions();
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.GivenName, user.DisplayName),
+                new Claim(_options.ClaimsIdentity.UserIdClaimType, user.Id.ToString()),
+                new Claim(_options.ClaimsIdentity.UserNameClaimType, user.UserName)
+            };
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            var userRoles = await _userManager.GetRolesAsync(user);
+            claims.AddRange(userClaims);
+            foreach (var userRole in userRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, userRole));
+                var role = await _roleManager.FindByNameAsync(userRole);
+                if (role != null)
+                {
+                    var roleClaims = await _roleManager.GetClaimsAsync(role);
+                    foreach (Claim roleClaim in roleClaims)
+                    {
+                        claims.Add(roleClaim);
+                    }
+                }
+            }
+            return claims;
         }
     }
 }

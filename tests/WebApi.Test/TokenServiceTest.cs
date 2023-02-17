@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using WebApi.Domain.Entities.Identity;
 using WebApi.Infrastructure.Services;
 using Xunit;
@@ -23,7 +24,7 @@ namespace WebApi.Test
             TokenService tokenService = new TokenService(null);
 
             //act
-            var result = tokenService.CreateToken(user);
+            var result = tokenService.CreateToken(new List<Claim>());
 
             //assert
             Assert.NotEmpty(result);

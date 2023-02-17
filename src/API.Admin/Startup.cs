@@ -16,21 +16,6 @@ namespace API.Admin
         {
             _config = configuration;
         }
-        public void ConfigureDevelopmentServices(IServiceCollection services)
-        {
-            services.AddStoreDb(_config);
-            services.AddIdentityDb(_config);
-
-            ConfigureServices(services);
-        }
-
-        public void ConfigureProductionServices(IServiceCollection services)
-        {
-            services.AddStoreDb(_config);
-            services.AddIdentityDb(_config);
-
-            ConfigureServices(services);
-        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -45,12 +30,12 @@ namespace API.Admin
             //});
 
             services.AddControllersExtension();
-            services.AddApplicationServices(_config);
-
-            // Add assebply with handlers
+            services.AddCommonIdentity(_config);
+            // Add assembly handlers
             services.AddMediatR(typeof(Startup));
             services.AddAutoMapper(typeof(Helpers.MappingProfiles));
 
+            services.AddApplicationServices(_config);
             services.AddSwaggerDocumentation();
             services.AddAllCorsConfiguration();
         }
@@ -68,17 +53,8 @@ namespace API.Admin
 
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
-            //app.UseHttpsRedirection();
-
             app.UseRouting();
             app.UseStaticFiles();
-            //app.UseStaticFiles(new StaticFileOptions
-            //{
-            //    FileProvider = new PhysicalFileProvider(
-            //        Path.Combine(Directory.GetCurrentDirectory(), "Content")
-            //    ),
-            //    RequestPath = "/content"
-            //});
 
             app.UserAllCorsConfiguration();
 
