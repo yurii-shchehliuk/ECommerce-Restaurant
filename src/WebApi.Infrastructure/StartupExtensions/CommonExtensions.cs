@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -91,7 +91,7 @@ namespace WebApi.Infrastructure.StartupExtensions
 
         public static void AddControllersExtension(this IServiceCollection services)
         {
-            services.AddControllers(o=>o.Conventions.Add(new ControllersNameConvention()));
+            services.AddControllers(o => o.Conventions.Add(new ControllersNameConvention()));
         }
         #endregion
 

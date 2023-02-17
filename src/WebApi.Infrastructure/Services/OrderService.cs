@@ -57,7 +57,7 @@ namespace WebApi.Infrastructure.Services
 
             // create order
             var order = new Order(items, buyerEmail, shippingAddress, deliveryMethod, subtotal, basket.PaymentIntentId);
-            _unitOfWork.Repository<Order>().AddAsync(order);
+            await _unitOfWork.Repository<Order>().AddAsync(order);
             //_orderProcessingNotification.OrderReceived(order, buyerEmail, basket.PaymentIntentId);
 
             // save to db

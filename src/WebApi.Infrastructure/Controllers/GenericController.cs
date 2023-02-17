@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebApi.Domain.Interfaces.Repositories;
-using WebApi.Infrastructure.Controllers;
 
 namespace WebApi.Infrastructure.Controllers
 {

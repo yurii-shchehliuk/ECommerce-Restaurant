@@ -1,17 +1,5 @@
 Restaurant application based on .NET 6 (EF Core, Swagger, JWT, Stripe, AutoMapper,...) and Angular 14 (RxJS, Nxg-bootstrap, xng-breadcrumb, bootswatch), RabbitMQ, Redis, MSSQL
 
-Regular user's functionality:
-* JWT authentication
-* SignalR online chat
-* Stripe payment
-* RabbitMQ messages
-* Redis basket
-
-Admin's functionality:
-* SignalR online chat
-* Meals CRUD
-* RabbitMQ CQRS
-
 ## List of micro-services and infrastructure components
 
 <table>
@@ -51,7 +39,7 @@ Admin's functionality:
 	 <tr>
         <td align="center">4.</td>
         <td>Admin API (tbd)</td>
-        <td>Manages customer & orders (tbd). CQRS MediatR. Serilog</td>
+        <td>Manages customer & orders (tbd). CQRS MediatR</td>
         <td>
             <a href="#">dev</a> |
             <a href="#">prod</a>
@@ -60,11 +48,5 @@ Admin's functionality:
   </tbody>  
 </table>
 
-## Asynchronous services with synchronous and asynchronous communication
-
-### nginx docker container 
-https://gist.github.com/dahlsailrunner/679e6dec5fd769f30bce90447ae80081
-
-
 ## Launching
-cd build/README.nd
+cd build/README.md

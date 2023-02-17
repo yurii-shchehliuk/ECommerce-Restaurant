@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using WebApi.Domain.Constants;
-using WebApi.Domain.Entities.Identity;
 using WebApi.Domain.Entities.Identity.Enums;
 using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Infrastructure.Controllers;

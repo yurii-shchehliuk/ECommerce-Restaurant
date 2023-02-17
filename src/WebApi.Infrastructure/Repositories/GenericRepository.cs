@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using WebApi.Db.Store;
 using WebApi.Domain.Entities;
@@ -26,6 +28,7 @@ namespace WebApi.Infrastructure.Repositories
         public async Task Delete(T entity)
         {
             _context.Set<T>().Remove(entity);
+            await Task.CompletedTask.WaitAsync(CancellationToken.None);
         }
         public async Task DeleteAsync(int id)
         {
@@ -41,7 +44,7 @@ namespace WebApi.Infrastructure.Repositories
         {
             return await ApplySpecification(spec).ToListAsync();
         }
-        public async Task<T?> FindByIdAsync(int id)
+        public async Task<T> FindByIdAsync(int id)
         {
             return await _context.Set<T>().FindAsync(id);
         }
@@ -61,10 +64,12 @@ namespace WebApi.Infrastructure.Repositories
             {
                 _context.Set<T>().Attach(entity);
                 _context.Entry(entity).State = EntityState.Modified;
+                await Task.CompletedTask.WaitAsync(CancellationToken.None);
             }
             catch (Exception ex)
             {
-                throw ex;
+                Log.Error(ex, "Updating error");
+                throw;
             }
         }
 

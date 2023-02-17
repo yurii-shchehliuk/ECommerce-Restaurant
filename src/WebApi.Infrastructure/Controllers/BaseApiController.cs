@@ -1,11 +1,10 @@
-using Microsoft.AspNetCore.Authorization;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
 using System;
-using WebApi.Domain.CQRS.QueryHandling;
-using MediatR;
+using System.Threading.Tasks;
 using WebApi.Domain.CQRS.CommandHandling;
+using WebApi.Domain.CQRS.QueryHandling;
 
 namespace WebApi.Infrastructure.Controllers
 {

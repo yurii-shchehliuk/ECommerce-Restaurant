@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using WebApi.Domain.Specifications;
@@ -18,7 +18,7 @@ namespace WebApi.Domain.Interfaces.Repositories
 
         Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
 
-        Task<T?> FindByIdAsync(int id);
+        Task<T> FindByIdAsync(int id);
 
         IQueryable<T> FindBy(Expression<Func<T, bool>> predicate, string include);
 

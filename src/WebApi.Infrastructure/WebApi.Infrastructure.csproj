@@ -1,26 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="SignalR\**" />
-    <EmbeddedResource Remove="SignalR\**" />
-    <None Remove="SignalR\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Repositories\ProductRepository.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Autofac" Version="6.5.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.10" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.10" />
-    <PackageReference Include="Stripe.net" Version="41.5.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\WebApi.Db.Identity\WebApi.Db.Identity.csproj" />
-    <ProjectReference Include="..\WebApi.Db.Store\WebApi.Db.Store.csproj" />
-    <ProjectReference Include="..\WebApi.Domain\WebApi.Domain.csproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Remove="SignalR\**" />
+		<EmbeddedResource Remove="SignalR\**" />
+		<None Remove="SignalR\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Repositories\ProductRepository.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Autofac" Version="6.5.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.10" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.10" />
+		<PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10"/>
+		<PackageReference Include="Stripe.net" Version="41.5.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\WebApi.Db.Identity\WebApi.Db.Identity.csproj" />
+		<ProjectReference Include="..\WebApi.Db.Store\WebApi.Db.Store.csproj" />
+		<ProjectReference Include="..\WebApi.Domain\WebApi.Domain.csproj" />
+	</ItemGroup>
 </Project>

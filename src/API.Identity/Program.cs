@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,7 +7,6 @@ using Serilog;
 using System;
 using System.Threading.Tasks;
 using WebApi.Db.Identity;
-using WebApi.Domain.Entities.Identity;
 
 namespace API.Identity
 {

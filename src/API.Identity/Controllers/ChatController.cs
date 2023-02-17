@@ -1,5 +1,4 @@
-﻿using WebApi.Infrastructure.Controllers;
-using API.Identity.Dtos;
+﻿using API.Identity.Dtos;
 using API.Identity.Functions.CommentFunc.Commands;
 using API.Identity.Functions.CommentFunc.Queries;
 using API.Identity.SignalR;
@@ -7,6 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
+using WebApi.Infrastructure.Controllers;
 
 namespace API.Identity.Controllers
 {

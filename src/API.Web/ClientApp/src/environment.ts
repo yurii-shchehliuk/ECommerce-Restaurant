@@ -4,7 +4,10 @@
 export const environment = {
   production: false,
   adminApi: 'http://localhost:5011/api/',
-  baseApi: 'http://localhost:5021/api/',
+  baseApi: {
+    web: 'http://localhost:5021/api/',
+    server: 'http://localhost:52766/api/'
+  },
   basketApi: 'http://localhost:5031/api/',
   identityApi: {
     api: 'http://localhost:5041/api/',

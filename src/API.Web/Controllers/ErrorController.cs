@@ -1,6 +1,6 @@
-using WebApi.Infrastructure.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Domain.Core;
+using WebApi.Infrastructure.Controllers;
 
 namespace API.Web.Controllers
 {

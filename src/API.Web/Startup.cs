@@ -1,13 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.IO;
 using WebApi.Infrastructure.StartupExtensions;
 using WebApi.Infrastructure.StartupExtensions.ApiWeb;
 
@@ -52,34 +48,9 @@ namespace API.Web
 
             app.UseRouting();
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")
-                ),
-                RequestPath = "/wwwroot"
-            });
-            var virtualPath = "/api";
-            //app.Map(virtualPath, builder => { });
-            //app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder => { });
-            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
-            {
-                app.UseSpa(spa =>
-                {
-                    //path to the angular application
-                    spa.Options.SourcePath = "ClientApp";
-
-                    if (env.IsDevelopment())
-                    {
-                        //spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
-                        spa.Options.StartupTimeout = new TimeSpan(0, 0, 80);
-                        spa.UseAngularCliServer(npmScript: "start");
-                    }
-                   
-                });
-            });
-
             app.UserAllCorsConfiguration();
+
+            app.UseAngular(false);
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -87,6 +58,14 @@ namespace API.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+
+                endpoints.MapControllerRoute(
+                        name: "apiFallback",
+                        pattern: "api/{*endpointName}",
+                        defaults: new { controller = "Fallback", action = "SpaFallback" });
+
+                endpoints.MapFallbackToFile("index.html");
+
             });
         }
     }

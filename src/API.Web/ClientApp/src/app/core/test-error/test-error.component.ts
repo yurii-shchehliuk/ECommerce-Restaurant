@@ -10,7 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class TestErrorComponent implements OnInit {
 
-  baseUrl = environment.baseApi;
+  baseUrl = environment.baseApi.web;
   validationErrors: any;
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
@@ -133,7 +133,7 @@ export class TestErrorComponent implements OnInit {
   }
 
   private toastrSuccess() {
-    this.toastr.error("Success access");
+    this.toastr.success("Success access");
   }
 
 }

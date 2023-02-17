@@ -1,6 +1,5 @@
 ﻿using API.Admin.Functions.ProductFunc.Commands;
 using API.Admin.Functions.ProductFunc.Queries;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;

@@ -1,12 +1,16 @@
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using System;
+using System.IO;
 
 namespace WebApi.Infrastructure.StartupExtensions.ApiWeb
 {
     public static class ApiWebExtensions
     {
-        #region service
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration _config)
         {
             services.AddHttpContextAccessor();
@@ -14,6 +18,36 @@ namespace WebApi.Infrastructure.StartupExtensions.ApiWeb
 
             return services;
         }
-        #endregion
+
+        public static void UseAngular(this IApplicationBuilder app, bool spa = true)
+        {
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")
+                ),
+                RequestPath = "/wwwroot"
+            });
+
+
+            if (spa)
+            {
+                // var virtualPath = "/api";
+                // app.Map(virtualPath, builder => { });
+                // app.MapWhen(x => !x.Request.Path.Value.StartsWith(virtualPath), builder => { });
+
+                app.UseSpa(spa =>
+                {
+                    //path to the angular application
+                    spa.Options.SourcePath = "ClientApp";
+
+                    //spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    spa.Options.StartupTimeout = new TimeSpan(0, 0, 15);
+                    spa.UseAngularCliServer(npmScript: "start");
+
+                });
+            }
+
+        }
     }
 }

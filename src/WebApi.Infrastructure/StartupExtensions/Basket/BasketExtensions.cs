@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 using System.Linq;
-using System.Net;
 using WebApi.Db.Store;
 using WebApi.Domain.Core;
 using WebApi.Domain.Interfaces.Repositories;
