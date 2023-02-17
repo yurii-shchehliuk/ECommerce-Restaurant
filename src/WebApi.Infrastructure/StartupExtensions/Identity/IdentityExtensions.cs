@@ -11,7 +11,9 @@ using WebApi.Db.Identity;
 using WebApi.Domain.Constants;
 using WebApi.Domain.Entities.Identity;
 using WebApi.Domain.Entities.Identity.Enums;
+using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Domain.Interfaces.Services;
+using WebApi.Infrastructure.Repositories;
 using WebApi.Infrastructure.Services;
 
 namespace WebApi.Infrastructure.StartupExtensions.Identity
@@ -27,6 +29,7 @@ namespace WebApi.Infrastructure.StartupExtensions.Identity
 
             services.AddScoped<ITokenService, TokenService>();
             services.AddTransient<IEmailSender>(s => new EmailSender(config));
+            services.AddScoped(typeof(IIdentityGenericRepository<>), typeof(IdentityGenericRepository<>));
 
             services.AddSignalR(hubOptions =>
             {

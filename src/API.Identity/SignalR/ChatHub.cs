@@ -7,18 +7,10 @@ using System.Threading.Tasks;
 namespace API.Identity.SignalR
 {
     /// <summary>
-    /// 
     /// </summary>
     /// <info>this staff should be invoked</info>
     public class ChatHub : Hub
     {
-        private readonly IMediator mediator;
-
-        public ChatHub(IMediator mediator)
-        {
-            this.mediator = mediator;
-        }
-
         public async Task JoinToGroup(string groupName)
         {
             await this.Groups.AddToGroupAsync(

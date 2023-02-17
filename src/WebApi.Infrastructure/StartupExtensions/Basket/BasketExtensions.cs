@@ -25,7 +25,6 @@ namespace WebApi.Infrastructure.StartupExtensions.Basket
             services.AddScoped<IPaymentService, PaymentService>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             //services.AddSingleton<IOrderProcessingNotification, MessageNotification>();
             /// Redis

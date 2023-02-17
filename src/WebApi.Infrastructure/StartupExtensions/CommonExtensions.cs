@@ -10,8 +10,10 @@ using WebApi.Db.Identity;
 using WebApi.Db.Store;
 using WebApi.Domain.Constants;
 using WebApi.Domain.Entities.Identity.Enums;
+using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Infrastructure.Controllers;
 using WebApi.Infrastructure.Helpers;
+using WebApi.Infrastructure.Repositories;
 
 namespace WebApi.Infrastructure.StartupExtensions
 {
@@ -88,6 +90,7 @@ namespace WebApi.Infrastructure.StartupExtensions
             services.AddDbContext<StoreContext>(x =>
                x.UseSqlServer(config.GetConnectionString("DefaultConnection")));
         }
+
         public static void AddIdentityDb(this IServiceCollection services, IConfiguration config)
         {
             services.AddDbContext<AppIdentityDbContext>(x =>
@@ -97,6 +100,7 @@ namespace WebApi.Infrastructure.StartupExtensions
         public static void AddControllersExtension(this IServiceCollection services)
         {
             services.AddControllers(o => o.Conventions.Add(new ControllersNameConvention()));
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         }
 
         public static void AddCommonIdentity(this IServiceCollection services, IConfiguration config)

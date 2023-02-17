@@ -20,7 +20,6 @@ namespace API.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersExtension();
-            services.AddCommonIdentity(_config);
 
             services.AddSpaStaticFiles(configuration =>
             {

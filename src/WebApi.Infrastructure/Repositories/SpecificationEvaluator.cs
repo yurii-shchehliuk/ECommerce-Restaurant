@@ -5,7 +5,7 @@ using WebApi.Domain.Specifications;
 
 namespace WebApi.Infrastructure.Repositories
 {
-    public class SpecificationEvaluator<TEntity> where TEntity : BaseEntity
+    public class SpecificationEvaluator<TEntity> where TEntity : class
     {
         public static IQueryable<TEntity> GetQuery(IQueryable<TEntity> inputQuery, ISpecification<TEntity> spec)
         {

@@ -15,7 +15,6 @@ namespace WebApi.Infrastructure.StartupExtensions.Admin
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             //services.AddTransient<IProductRepository, ProductRepository>();
-            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             /// MassTransit-RabbitMQ
             //services.AddMassTransit(config =>

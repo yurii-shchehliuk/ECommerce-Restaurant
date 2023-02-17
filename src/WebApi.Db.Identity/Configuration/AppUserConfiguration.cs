@@ -8,7 +8,7 @@ namespace WebApi.Db.Identity.Configuration
     {
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
-            //builder.ToTable("AspNetUsers");
+            builder.ToTable("AspNetUsers");
             builder.Property(p => p.Id).IsRequired();
         }
     }

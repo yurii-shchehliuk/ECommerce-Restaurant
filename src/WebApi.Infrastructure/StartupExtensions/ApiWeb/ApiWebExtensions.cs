@@ -13,7 +13,6 @@ namespace WebApi.Infrastructure.StartupExtensions.ApiWeb
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration _config)
         {
-            services.AddIdentityDb(_config);
             services.AddHttpContextAccessor();
             services.AddFluentValidationAutoValidation();
 

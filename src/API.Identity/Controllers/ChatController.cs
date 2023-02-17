@@ -10,15 +10,13 @@ using WebApi.Infrastructure.Controllers;
 
 namespace API.Identity.Controllers
 {
-    public class ChatController : BaseApiController
+    public class ChatController : BaseApiControllerV1
     {
         private readonly IHubContext<ChatHub> hubContext;
-        private readonly IMediator mediator;
 
-        public ChatController(IHubContext<ChatHub> hubContext, IMediator mediator)
+        public ChatController(IHubContext<ChatHub> hubContext)
         {
             this.hubContext = hubContext;
-            this.mediator = mediator;
         }
 
         [HttpPost]
@@ -36,10 +34,10 @@ namespace API.Identity.Controllers
         public async Task GroupMessage([FromBody] CommentDTO msg)
         {
             //await hubContext.Clients.Group(msg.GroupName).SendAsync("CreateMessage", msg);
-            var msgResult = await mediator.Send(new CommentCreate.Command { Comment = msg, ProductId = System.Convert.ToInt32(msg.GroupName) });
+            var msgResult = await Mediator.Send(new CommentCreate.Command { Comment = msg, ProductId = msg.GroupName });
             if (msgResult.IsSuccess)
             {
-                var result = await mediator.Send(new CommentsList.Query { ProductId = System.Convert.ToInt32(msgResult.Value.GroupName) });
+                var result = await Mediator.Send(new CommentsList.Query { ProductId = msgResult.Value.GroupName });
                 await hubContext.Clients.Group(msg.GroupName).SendAsync("GetGroupMessages", result.Value);
             }
         }
@@ -47,7 +45,7 @@ namespace API.Identity.Controllers
         [HttpGet("groupId")]
         public async Task GetMessages(string groupId)
         {
-            var result = await mediator.Send(new CommentsList.Query { ProductId = System.Convert.ToInt32(groupId) });
+            var result = await Mediator.Send(new CommentsList.Query { ProductId = groupId });
             await hubContext.Clients.Group(groupId.ToString()).SendAsync("GetGroupMessages", result.Value);
         }
     }
