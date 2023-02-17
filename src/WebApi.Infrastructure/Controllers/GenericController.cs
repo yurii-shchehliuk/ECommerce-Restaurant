@@ -22,7 +22,7 @@ namespace WebApi.Infrastructure.Controllers
         }
 
         [HttpGet("{id}")]
-        public virtual async Task<T> Get([FromQuery] int id)
+        public virtual async Task<T> Get(int id)
         {
             return await _context.FindByIdAsync(id);
         }

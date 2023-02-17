@@ -6,18 +6,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Serilog;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using WebApi.Domain.Constants;
 using WebApi.Domain.Core;
 using WebApi.Domain.DTOs;
 using WebApi.Domain.Entities.Identity;
 using WebApi.Domain.Entities.Identity.Enums;
-using WebApi.Domain.Interfaces.Services;
 using WebApi.Infrastructure.Controllers;
 
 namespace API.Identity.Controllers
@@ -80,7 +76,7 @@ namespace API.Identity.Controllers
         }
 
         [HttpPost("login")]
-    
+
         public async Task<ActionResult<UserDto>> Login(LoginVM loginVM)
         {
             var user = await UserManager.FindByEmailAsync(loginVM.Email);
@@ -113,7 +109,7 @@ namespace API.Identity.Controllers
 
         [HttpPost("register")]
         [ValidateAntiForgeryToken]
-    
+
         public async Task<ActionResult<UserDto>> Register(RegisterVM registerDTO)
         {
             if (CheckEmailExistsAsync(registerDTO.Email).Result.Value)
@@ -190,7 +186,7 @@ namespace API.Identity.Controllers
         ///<todo>Two factor authentication</todo>
         ///<todo>crud user claims</todo>
 
-        
+
         private async Task<List<Claim>> GetValidClaims(AppUser user)
         {
             IdentityOptions _options = new IdentityOptions();

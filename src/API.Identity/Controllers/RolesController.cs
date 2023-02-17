@@ -4,7 +4,7 @@ using WebApi.Infrastructure.Controllers;
 
 namespace API.Identity.Controllers
 {
-    public class RolesController : GenericController<AppRole>
+    public class RolesController : BaseIdentityController<AppRole>
     {
         public RolesController(IIdentityGenericRepository<AppRole> context) : base(context)
         {

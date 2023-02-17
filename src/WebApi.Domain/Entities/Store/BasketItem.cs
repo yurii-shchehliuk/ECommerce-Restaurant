@@ -1,6 +1,6 @@
 namespace WebApi.Domain.Entities.Store
 {
-    public class BasketItem: BaseEntity
+    public class BasketItem : BaseEntity
     {
         public string ProductName { get; set; }
         public decimal Price { get; set; }

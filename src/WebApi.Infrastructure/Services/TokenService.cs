@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -7,7 +6,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using WebApi.Domain.Entities.Identity;
 using WebApi.Domain.Interfaces.Services;
 
@@ -50,6 +48,6 @@ namespace WebApi.Infrastructure.Services
 
             string result = tokenHandler.WriteToken(token);
             return result;
-        }  
+        }
     }
 }

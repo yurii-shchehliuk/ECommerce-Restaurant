@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Serilog;
 using System;
 using System.Threading.Tasks;

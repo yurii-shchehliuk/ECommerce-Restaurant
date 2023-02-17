@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
 using WebApi.Db.Identity.Configuration;
 using WebApi.Domain.Entities.Identity;
 

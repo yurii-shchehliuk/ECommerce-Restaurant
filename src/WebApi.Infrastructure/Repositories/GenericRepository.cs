@@ -7,7 +7,6 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using WebApi.Db.Store;
-using WebApi.Domain.Entities;
 using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Domain.Specifications;
 
@@ -25,14 +24,14 @@ namespace WebApi.Infrastructure.Repositories
         {
             await _context.Set<T>().AddAsync(GenericExtensions.RemoveId<T>(entity));
         }
-        public async Task Delete(T entity)
+        public async Task DeleteAsync(T entity)
         {
             _context.Set<T>().Remove(entity);
             await Task.CompletedTask.WaitAsync(CancellationToken.None);
         }
         public async Task DeleteAsync(int id)
         {
-            await Delete(await FindByIdAsync(id));
+            await DeleteAsync(await FindByIdAsync(id));
         }
 
         public async Task<IReadOnlyList<T>> ListAllAsync()

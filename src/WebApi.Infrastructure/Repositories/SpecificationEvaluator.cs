@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using WebApi.Domain.Entities;
 using WebApi.Domain.Specifications;
 
 namespace WebApi.Infrastructure.Repositories

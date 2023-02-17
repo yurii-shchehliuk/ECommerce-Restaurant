@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApi.Domain.Constants;
 using WebApi.Domain.Entities.Identity;
 using WebApi.Domain.Entities.Identity.Enums;
 

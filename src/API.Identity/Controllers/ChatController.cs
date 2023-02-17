@@ -2,9 +2,9 @@
 using API.Identity.Functions.CommentFunc.Commands;
 using API.Identity.Functions.CommentFunc.Queries;
 using API.Identity.SignalR;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using System;
 using System.Threading.Tasks;
 using WebApi.Infrastructure.Controllers;
 
@@ -34,10 +34,10 @@ namespace API.Identity.Controllers
         public async Task GroupMessage([FromBody] CommentDTO msg)
         {
             //await hubContext.Clients.Group(msg.GroupName).SendAsync("CreateMessage", msg);
-            var msgResult = await Mediator.Send(new CommentCreate.Command { Comment = msg, ProductId = msg.GroupName });
+            var msgResult = await Mediator.Send(new CommentCreate.Command { Comment = msg, ProductId = Convert.ToInt32(msg.GroupName) });
             if (msgResult.IsSuccess)
             {
-                var result = await Mediator.Send(new CommentsList.Query { ProductId = msgResult.Value.GroupName });
+                var result = await Mediator.Send(new CommentsList.Query { ProductId = Convert.ToInt32(msgResult.Value.GroupName) });
                 await hubContext.Clients.Group(msg.GroupName).SendAsync("GetGroupMessages", result.Value);
             }
         }
@@ -45,7 +45,7 @@ namespace API.Identity.Controllers
         [HttpGet("groupId")]
         public async Task GetMessages(string groupId)
         {
-            var result = await Mediator.Send(new CommentsList.Query { ProductId = groupId });
+            var result = await Mediator.Send(new CommentsList.Query { ProductId = Convert.ToInt32(groupId) });
             await hubContext.Clients.Group(groupId.ToString()).SendAsync("GetGroupMessages", result.Value);
         }
     }

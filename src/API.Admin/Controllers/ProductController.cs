@@ -15,7 +15,7 @@ namespace API.Admin.Controllers
     /// user's products management
     /// </summary>
     [Authorize(Roles = UserRole.User)]
-    public class ProductController : BaseApiController
+    public class ProductController : BaseApiControllerV1
     {
         [HttpGet("id")]
         public async Task<ActionResult<Product>> Details(int id)
