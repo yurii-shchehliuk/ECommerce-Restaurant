@@ -22,7 +22,7 @@ namespace WebApi.Domain.Constants
         public const string False = nameof(Claims.False);
     }
 
-    public static class ClasimStore
+    public static class ClaimsStore
     {
         public static List<Claim> claimList = new List<Claim>
         {

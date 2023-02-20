@@ -23,7 +23,7 @@ namespace API.Identity.Controllers
                 return NotFound(Result<LoginVM>.Fail("Invalid credentials"));
 
 
-            return Ok(ClasimStore.claimList);
+            return Ok(ClaimsStore.claimList);
         }
 
         [HttpPost]
