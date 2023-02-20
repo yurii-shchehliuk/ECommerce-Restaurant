@@ -10,10 +10,10 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using WebApi.Domain.Constants;
 using WebApi.Domain.Core;
 using WebApi.Domain.DTOs;
 using WebApi.Domain.Entities.Identity;
-using WebApi.Domain.Entities.Identity.Enums;
 using WebApi.Infrastructure.Controllers;
 
 namespace API.Identity.Controllers
@@ -65,6 +65,7 @@ namespace API.Identity.Controllers
         public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto address)
         {
             var user = await UserManager.FindByUserByClaimsPrincipleWithAddressAsync(HttpContext.User);
+
 
             user.Address = _mapper.Map<AddressDto, Address>(address);
 

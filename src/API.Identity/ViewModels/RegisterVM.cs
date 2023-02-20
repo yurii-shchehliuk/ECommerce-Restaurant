@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using WebApi.Domain.Entities.Identity.Enums;
+using WebApi.Domain.Entities.Identity;
 
 namespace API.Identity.ViewModels
 {

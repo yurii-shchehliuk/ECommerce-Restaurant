@@ -39,7 +39,6 @@ namespace API.Basket
             }
 
             app.ApplicationConfiguration();
-            app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             //app.UseHttpsRedirection();
 

@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Domain.Constants;
 using WebApi.Domain.Core;
-using WebApi.Domain.Entities.Identity.Enums;
 using WebApi.Infrastructure.Controllers;
 
-namespace API.Web.Controllers
+namespace API.Identity.Controllers
 {
     public class BuggyController : BaseApiController
     {

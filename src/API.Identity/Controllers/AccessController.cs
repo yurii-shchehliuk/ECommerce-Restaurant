@@ -8,7 +8,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using WebApi.Domain.Constants;
 using WebApi.Domain.Core;
-using WebApi.Domain.Entities.Identity.Enums;
 using WebApi.Infrastructure.Controllers;
 
 namespace API.Identity.Controllers

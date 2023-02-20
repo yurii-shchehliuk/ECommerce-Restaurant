@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using WebApi.Domain.Entities.Identity.Enums;
+using WebApi.Domain.Constants;
 using WebApi.Infrastructure.Controllers;
 
 namespace API.Admin.Controllers

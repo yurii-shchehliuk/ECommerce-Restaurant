@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using WebApi.Db.Identity;
 using WebApi.Domain.Constants;
 using WebApi.Domain.Entities.Identity;
-using WebApi.Domain.Entities.Identity.Enums;
 using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Domain.Interfaces.Services;
 using WebApi.Infrastructure.Repositories;

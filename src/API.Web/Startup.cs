@@ -1,4 +1,3 @@
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -20,13 +19,6 @@ namespace API.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersExtension();
-
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "wwwroot/dist";
-            });
-
-            services.AddMediatR(typeof(Startup));
 
             services.AddApplicationServices(_config);
             services.AddSwaggerDocumentation();
@@ -50,7 +42,7 @@ namespace API.Web
 
             app.UserAllCorsConfiguration();
 
-            app.UseAngular(false);
+            app.UseAngular(true);
 
             app.UseAuthentication();
             app.UseAuthorization();
