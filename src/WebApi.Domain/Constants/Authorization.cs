@@ -1,4 +1,8 @@
-﻿namespace WebApi.Domain.Constants
+﻿using System.Collections.Generic;
+using System.Security.Claims;
+using WebApi.Domain.Entities.Identity;
+
+namespace WebApi.Domain.Constants
 {
     public static class Policy
     {
@@ -16,5 +20,22 @@
         public const string Delete = nameof(Claims.Delete);
         public const string True = nameof(Claims.True);
         public const string False = nameof(Claims.False);
+    }
+
+    public static class ClasimStore
+    {
+        public static List<Claim> claimList = new List<Claim>
+        {
+            new Claim(Claims.Create, Claims.True),
+            new Claim(Claims.Edit, Claims.True),
+            new Claim(Claims.Delete, Claims.True),
+        };
+    }
+
+    public static class UserRole
+    {
+        public const string Admin = nameof(UserRoles.Admin);
+        public const string User = nameof(UserRoles.User);
+        public const string Super = nameof(UserRoles.Super);
     }
 }

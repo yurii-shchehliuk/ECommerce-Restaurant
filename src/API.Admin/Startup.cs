@@ -51,8 +51,6 @@ namespace API.Admin
 
             app.ApplicationConfiguration();
 
-            app.UseStatusCodePagesWithReExecute("/errors/{0}");
-
             app.UseRouting();
             app.UseStaticFiles();
 

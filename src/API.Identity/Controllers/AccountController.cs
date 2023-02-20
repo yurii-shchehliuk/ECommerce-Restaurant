@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
-using WebApi.Domain.Entities.Identity.Enums;
+using WebApi.Domain.Constants;
 using WebApi.Infrastructure.Controllers;
+
 namespace API.Identity.Controllers
 {
     [Authorize(Roles = UserRole.User)]

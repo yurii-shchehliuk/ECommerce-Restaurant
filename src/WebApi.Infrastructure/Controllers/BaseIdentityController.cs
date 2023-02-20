@@ -12,7 +12,7 @@ namespace WebApi.Infrastructure.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class BaseIdentityController<T> : ControllerBase where T : class
+    public abstract class BaseIdentityController<T> : ControllerBase where T : class
     {
         protected UserManager<AppUser> UserManager => _userManager ??= HttpContext.RequestServices.GetService<UserManager<AppUser>>();
         protected SignInManager<AppUser> SignInManager => _signInManager ??= HttpContext.RequestServices.GetService<SignInManager<AppUser>>();

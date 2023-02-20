@@ -25,6 +25,7 @@ namespace API.Identity
         {
             services.AddMediatR(typeof(Startup));
             services.AddAutoMapper(typeof(Helpers.MappingProfiles));
+            ///<todo>move to infrastrucutre</todo>
             services.AddValidatorsFromAssemblyContaining<CommentCreate>();
 
             services.AddControllersExtension();
@@ -46,8 +47,6 @@ namespace API.Identity
             }
 
             app.ApplicationConfiguration();
-
-            app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             //app.UseHttpsRedirection();
 

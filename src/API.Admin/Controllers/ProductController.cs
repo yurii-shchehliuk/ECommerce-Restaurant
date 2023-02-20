@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WebApi.Domain.Constants;
 using WebApi.Domain.DTOs;
-using WebApi.Domain.Entities.Identity.Enums;
 using WebApi.Domain.Entities.Store;
 using WebApi.Infrastructure.Controllers;
 

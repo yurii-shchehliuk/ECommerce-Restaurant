@@ -9,7 +9,6 @@ using System.Text;
 using WebApi.Db.Identity;
 using WebApi.Db.Store;
 using WebApi.Domain.Constants;
-using WebApi.Domain.Entities.Identity.Enums;
 using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Infrastructure.Controllers;
 using WebApi.Infrastructure.Helpers;
