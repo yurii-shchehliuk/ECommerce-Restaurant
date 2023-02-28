@@ -4,6 +4,8 @@ import { ShopService } from '../shop.service';
 import { ActivatedRoute } from '@angular/router';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { BasketService } from 'src/app/basket/basket.service';
+import { Store } from '@ngrx/store';
+import { getDisplayImage, productActionFn, State } from 'src/app/state/product.reducer';
 
 @Component({
   selector: 'app-product-details',
@@ -15,9 +17,11 @@ export class ProductDetailsComponent implements OnInit {
   quantity = 1;
 
   constructor(private shopService: ShopService,
-              private activateRoute: ActivatedRoute,
-              private bcService: BreadcrumbService,
-              private basketService: BasketService) {
+    private activateRoute: ActivatedRoute,
+    private bcService: BreadcrumbService,
+    private basketService: BasketService,
+    private store: Store<State>
+  ) {
     this.bcService.set('@productDetails', '');
   }
 
@@ -48,4 +52,21 @@ export class ProductDetailsComponent implements OnInit {
     });
   }
 
+  displayImage: boolean = true;
+  onCheckChanged(): void {
+    this.store.dispatch(productActionFn.toggleImage());
+    // this.store.subscribe(state => {
+    //   this.displayImage = state.product.displayImage;
+    // });
+    // this.store.select('product').subscribe(
+    //   displ => {
+    //     this.displayImage = displ.displayImage;
+    //     console.log(displ);
+    //   }
+    // );
+
+    this.store.select(getDisplayImage).subscribe(
+      showImage => this.displayImage = showImage
+    );
+  }
 }

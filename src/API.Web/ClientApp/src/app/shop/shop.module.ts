@@ -6,6 +6,10 @@ import { SharedModule } from '../shared/shared.module';
 import { ProductDetailsComponent } from './product-details/product-details.component';
 import { ShopRoutingModule } from './shop-routing.module';
 import { FeaturesModule } from '../features/features.module';
+// ngrx
+import { StoreModule } from '@ngrx/store';
+import { store } from 'src/environment';
+import { productReducer } from '../state/product.reducer';
 
 @NgModule({
   declarations: [ShopComponent, ProductItemComponent, ProductDetailsComponent],
@@ -13,7 +17,8 @@ import { FeaturesModule } from '../features/features.module';
     CommonModule,
     SharedModule,
     ShopRoutingModule,
-    FeaturesModule
+    FeaturesModule,
+    StoreModule.forFeature(store.product, productReducer)
   ]
 })
 export class ShopModule { }
