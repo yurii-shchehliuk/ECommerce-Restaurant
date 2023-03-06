@@ -34,7 +34,7 @@ namespace API.Identity.Controllers
         {
             var user = await UserManager.FindByEmailFromClaimsPrinciple(HttpContext.User);
             if (user == null)
-                return NotFound(Result<LoginVM>.Fail("Invalid credentials"));
+                return Ok(Result<LoginVM>.Fail("Invalid credentials"));
 
             return new UserDto
             {
@@ -194,9 +194,9 @@ namespace API.Identity.Controllers
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.GivenName, user.DisplayName),
-                new Claim(_options.ClaimsIdentity.UserIdClaimType, user.Id.ToString()),
-                new Claim(_options.ClaimsIdentity.UserNameClaimType, user.UserName)
+                new Claim(JwtRegisteredClaimNames.NameId, user.Id),
+                new Claim(_options.ClaimsIdentity.UserIdClaimType, user.Id),
+                new Claim(_options.ClaimsIdentity.EmailClaimType, user.UserName)
             };
             var userClaims = await UserManager.GetClaimsAsync(user);
             var userRoles = await UserManager.GetRolesAsync(user);

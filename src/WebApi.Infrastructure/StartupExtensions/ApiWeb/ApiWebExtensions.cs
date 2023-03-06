@@ -44,7 +44,7 @@ namespace WebApi.Infrastructure.StartupExtensions.ApiWeb
                     spa.Options.SourcePath = "ClientApp";
 
                     //spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
-                    spa.Options.StartupTimeout = new TimeSpan(0, 0, 15);
+                    spa.Options.StartupTimeout = new TimeSpan(0, 0, 20);
                     spa.UseAngularCliServer(npmScript: "start");
 
                 });
