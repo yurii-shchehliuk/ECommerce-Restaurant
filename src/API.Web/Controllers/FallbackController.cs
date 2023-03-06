@@ -24,6 +24,7 @@ namespace API.Web.Controllers
         {
             return PhysicalFile(Path.Combine(Directory.GetCurrentDirectory(), "ClientApp/dist", "index.html"), "text/HTML");
         }
+
         public IActionResult ApiNotFoundFallback(string endpointName)
         {
             return NotFound($"No endpoint matching \"{endpointName}\" not found!");

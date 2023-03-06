@@ -14,6 +14,7 @@ namespace API.Admin.Functions.ProductFunc.Commands
     public class CreateProductCommand : ICommand
     {
         public ProductCreateDto Product { get; set; }
+
         public class CreateProductHandler : ICommandHandler<CreateProductCommand>
         {
             private readonly IUnitOfWork _unitOfWork;
@@ -24,6 +25,7 @@ namespace API.Admin.Functions.ProductFunc.Commands
                 _unitOfWork = unitOfWork;
                 this._mapper = mapper;
             }
+
             public async Task<Unit> Handle(CreateProductCommand request, CancellationToken cancellationToken)
             {
                 try

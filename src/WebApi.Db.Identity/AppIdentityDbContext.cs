@@ -10,7 +10,10 @@ namespace WebApi.Db.Identity
         public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options) : base(options)
         {
         }
+
         public DbSet<AppRole> ApplicationRoles { get; set; }
+
+        public DbSet<AppRoleClaim> ApplicationRolesClaims { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

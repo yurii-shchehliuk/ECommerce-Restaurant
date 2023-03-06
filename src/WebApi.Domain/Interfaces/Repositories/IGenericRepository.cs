@@ -12,6 +12,7 @@ namespace WebApi.Domain.Interfaces.Repositories
         Task AddAsync(T entity);
 
         Task DeleteAsync(T entity);
+
         Task DeleteAsync(int id);
 
         Task<IReadOnlyList<T>> ListAllAsync();

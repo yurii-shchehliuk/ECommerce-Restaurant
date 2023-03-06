@@ -16,8 +16,6 @@ namespace WebApi.Db.Identity
             var usrMgr = services.GetRequiredService<UserManager<AppUser>>();
             await SeedRoles(roleManager);
             await SeedUsersAsync(usrMgr);
-
-
         }
 
         private static async Task SeedUsersAsync(UserManager<AppUser> userManager)

@@ -8,10 +8,15 @@
 		<TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
 	</PropertyGroup>
 	<ItemGroup>
+		<Compile Remove="ClientApp\**" />
 		<Compile Remove="Content\**" />
+		<Content Remove="ClientApp\**" />
 		<Content Remove="Content\**" />
+		<EmbeddedResource Remove="ClientApp\**" />
 		<EmbeddedResource Remove="Content\**" />
+		<None Remove="ClientApp\**" />
 		<None Remove="Content\**" />
+		<TypeScriptCompile Remove="ClientApp\**" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.9.5">
@@ -25,8 +30,5 @@
 	<ItemGroup>
 		<ProjectReference Include="..\WebApi.Domain\WebApi.Domain.csproj" />
 		<ProjectReference Include="..\WebApi.Infrastructure\WebApi.Infrastructure.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-		<Folder Include="ClientApp\" />
 	</ItemGroup>
 </Project>
