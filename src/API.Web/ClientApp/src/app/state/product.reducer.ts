@@ -11,6 +11,7 @@ export const productActionFn = {
     toggleImage: createAction("[Product] Toggle product image"),
     createDraftProduct: createAction("[Product] Create draft product", props<{ product: any }>()),
     initializeProduct: createAction("[Product] Initialize product"),
+    // for effects
     loadItems: createAction("[Item] load"),
     loadItemsSuccess: createAction("[Item] loadItemsSuccess", props<{ items: any[] }>()),
     loadItemsError: createAction("[Item] loadItemsError", props<{ error: string }>()),

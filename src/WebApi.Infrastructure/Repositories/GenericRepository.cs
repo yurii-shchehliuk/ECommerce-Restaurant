@@ -13,7 +13,7 @@ using WebApi.Domain.Specifications;
 
 namespace WebApi.Infrastructure.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
+    public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly StoreContext _context;
         public GenericRepository(StoreContext context)
@@ -46,7 +46,6 @@ namespace WebApi.Infrastructure.Repositories
         }
         public async Task<T> FindByIdAsync(int id)
         {
-            _context.Set<T>().Where(c => c.Id == id);
             return await _context.Set<T>().FindAsync(id);
         }
 

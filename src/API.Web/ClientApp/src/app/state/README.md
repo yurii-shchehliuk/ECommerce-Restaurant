@@ -12,3 +12,7 @@
 ## selectors
 - decouple store from component
 - cached
+
+## effects
+- keep components pure
+- move needed services into one effect
