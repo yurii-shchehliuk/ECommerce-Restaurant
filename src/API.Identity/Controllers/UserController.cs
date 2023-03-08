@@ -30,19 +30,20 @@ namespace API.Identity.Controllers
         }
 
         [HttpGet("GetCurrentUser")]
-        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        public async Task<ActionResult<Result<UserDto>>> GetCurrentUser()
         {
             var user = await UserManager.FindByEmailFromClaimsPrinciple(HttpContext.User);
             if (user == null)
-                return Ok(Result<LoginVM>.Fail("Invalid credentials"));
+                return Ok(Result<UserDto>.Fail("Invalid credentials"));
 
-            return new UserDto
+            return Result<UserDto>.Success(new UserDto
             {
                 Email = user.Email,
                 Token = TokenService.CreateToken(await GetValidClaims(user)),
                 DisplayName = user.DisplayName,
                 IsAdmin = user.IsAdmin
-            };
+            });
+            
         }
 
         [HttpGet("emailexists")]
@@ -77,7 +78,6 @@ namespace API.Identity.Controllers
         }
 
         [HttpPost("login")]
-
         public async Task<ActionResult<UserDto>> Login(LoginVM loginVM)
         {
             var user = await UserManager.FindByEmailAsync(loginVM.Email);

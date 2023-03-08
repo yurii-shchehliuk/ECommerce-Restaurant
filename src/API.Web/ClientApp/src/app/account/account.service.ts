@@ -6,19 +6,20 @@ import { IUser } from '../shared/models/user';
 import { map, take } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { IAddress } from '../shared/models/address';
+import { iResult } from '../shared/models/result';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountService {
-  
+
   baseUrl = environment.identityApi.api;
 
   private currentUserSource = new ReplaySubject<IUser>(1);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   currentUser$ = this.currentUserSource.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) { }
 
   loadCurrentUser(token: string) {
     if (token === null) {
@@ -30,10 +31,13 @@ export class AccountService {
     headers = headers.set('Authorization', `Bearer ${token}`);
 
     return this.http.get(this.baseUrl + 'user/GetCurrentUser', { headers }).pipe(
-      map((user: IUser) => {
-        if (user) {
-          localStorage.setItem('token', user.token);
-          this.currentUserSource.next(user);
+      map((result: iResult<IUser>) => {
+        if (result?.isSuccess) {
+          console.log(result);
+          localStorage.setItem('token', result.value.token);
+          this.currentUserSource.next(result.value);
+        } else {
+          this.logout();
         }
       })
     );

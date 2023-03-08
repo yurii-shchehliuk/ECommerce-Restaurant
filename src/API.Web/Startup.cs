@@ -42,7 +42,7 @@ namespace API.Web
 
             app.UserAllCorsConfiguration();
 
-            app.UseAngular(true);
+            app.UseAngular(env.IsDevelopment());
 
             app.UseAuthentication();
             app.UseAuthorization();

@@ -35,7 +35,11 @@ namespace WebApi.Infrastructure.StartupExtensions
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = System.Reflection.Assembly.GetEntryAssembly().GetName().Name, Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = System.Reflection.Assembly.GetEntryAssembly().GetName().Name,
+                    Version = "v1"
+                });
 
                 var securitySchema = new OpenApiSecurityScheme
                 {
@@ -77,8 +81,10 @@ namespace WebApi.Infrastructure.StartupExtensions
             {
                 opt.AddPolicy(CustomCorsPolicy, policy =>
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5021", "http://localhost:4200").AllowCredentials();
-
+                    policy.AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .WithOrigins("http://localhost:5021", "http://localhost:4200")
+                          .AllowCredentials();
                 });
             });
         }
@@ -145,8 +151,9 @@ namespace WebApi.Infrastructure.StartupExtensions
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c
-                .SwaggerEndpoint("/swagger/v1/swagger.json", $"{System.Reflection.Assembly.GetEntryAssembly().GetName().Name} v1");
+                c.SwaggerEndpoint(
+                    "/swagger/v1/swagger.json",
+                    $"{System.Reflection.Assembly.GetEntryAssembly().GetName().Name} v1");
             });
 
             return app;
@@ -156,7 +163,8 @@ namespace WebApi.Infrastructure.StartupExtensions
         {
             var forwardedHeaderOptions = new ForwardedHeadersOptions
             {
-                ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+                ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor
+                                   | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
             };
             forwardedHeaderOptions.KnownNetworks.Clear();
             forwardedHeaderOptions.KnownProxies.Clear();

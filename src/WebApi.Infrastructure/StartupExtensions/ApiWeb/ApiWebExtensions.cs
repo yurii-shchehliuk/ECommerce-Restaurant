@@ -22,7 +22,7 @@ namespace WebApi.Infrastructure.StartupExtensions.ApiWeb
             return services;
         }
 
-        public static void UseAngular(this IApplicationBuilder app, bool spa = true)
+        public static void UseAngular(this IApplicationBuilder app, bool isDev, bool spa = true)
         {
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -42,10 +42,15 @@ namespace WebApi.Infrastructure.StartupExtensions.ApiWeb
                 {
                     //path to the angular application
                     spa.Options.SourcePath = "ClientApp";
-
-                    //spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
-                    spa.Options.StartupTimeout = new TimeSpan(0, 0, 20);
-                    spa.UseAngularCliServer(npmScript: "start");
+                    if (isDev)
+                    {
+                        spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    }
+                    else
+                    {
+                        spa.Options.StartupTimeout = new TimeSpan(0, 0, 20);
+                        spa.UseAngularCliServer(npmScript: "start");
+                    }
 
                 });
             }
