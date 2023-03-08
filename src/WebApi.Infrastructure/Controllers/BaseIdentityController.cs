@@ -60,6 +60,8 @@ namespace WebApi.Infrastructure.Controllers
         public virtual async Task<IActionResult> Post([FromBody] T record)
         {
             await _context.AddAsync(record);
+            await _context.SaveChangesAsync();
+
             return Ok();
         }
 
@@ -67,6 +69,7 @@ namespace WebApi.Infrastructure.Controllers
         public virtual async Task<IActionResult> Update(string id, [FromBody] T record)
         {
             await _context.Update(record);
+            await _context.SaveChangesAsync();
             return Ok();
         }
 

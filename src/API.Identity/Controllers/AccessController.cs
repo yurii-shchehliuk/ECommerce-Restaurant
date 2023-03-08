@@ -8,13 +8,19 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using WebApi.Domain.Constants;
 using WebApi.Domain.Core;
+using WebApi.Domain.Entities.Identity;
+using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Infrastructure.Controllers;
 
 namespace API.Identity.Controllers
 {
     [Authorize(Roles = UserRole.Admin)]
-    public class AccessController : BaseIdentityController<AccessController>
+    public class AccessController : BaseIdentityController<AppUserClaim>
     {
+        public AccessController(IIdentityGenericRepository<AppUserClaim> context) : base(context)
+        {
+        }
+
         [HttpGet("claims/GetUserClaims")]
         public async Task<ActionResult<List<Claim>>> GetUserClaims(UserClaimsVM userClaims)
         {

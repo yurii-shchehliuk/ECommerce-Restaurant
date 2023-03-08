@@ -18,6 +18,7 @@ namespace WebApi.Domain.Constants
         public const string Create = nameof(Claims.Create);
         public const string Edit = nameof(Claims.Edit);
         public const string Delete = nameof(Claims.Delete);
+        // claim values
         public const string True = nameof(Claims.True);
         public const string False = nameof(Claims.False);
     }

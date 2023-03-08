@@ -45,7 +45,12 @@ namespace WebApi.Infrastructure.Repositories
         }
         public async Task<T> FindByIdAsync(string id)
         {
-            return await _context.Set<T>().FindAsync(id);
+            if (GenericExtensions.GetIdType<T>() == typeof(string))
+            {
+                return await _context.Set<T>().FindAsync(id);
+            }
+            return await _context.Set<T>().FindAsync(Convert.ToInt32(id));
+
         }
 
         public IQueryable<T> FindBy(Expression<Func<T, bool>> predicate)
@@ -89,6 +94,11 @@ namespace WebApi.Infrastructure.Repositories
 
         public void Dispose()
         {
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

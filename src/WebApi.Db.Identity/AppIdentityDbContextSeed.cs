@@ -72,7 +72,6 @@ namespace WebApi.Db.Identity
                 await roleManager.CreateAsync(new AppRole(UserRole.User));
                 await roleManager.CreateAsync(new AppRole(UserRole.Super));
             }
-
         }
     }
 }

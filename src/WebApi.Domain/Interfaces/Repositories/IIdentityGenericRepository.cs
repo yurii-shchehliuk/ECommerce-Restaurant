@@ -10,7 +10,9 @@ namespace WebApi.Domain.Interfaces.Repositories
     public interface IIdentityGenericRepository<T> where T : class
     {
         Task<T> FindByIdAsync(string id);
+
         Task DeleteAsync(string id);
+
         Task AddAsync(T entity);
 
         Task DeleteAsync(T entity);
@@ -19,6 +21,7 @@ namespace WebApi.Domain.Interfaces.Repositories
 
         Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
 
+        Task SaveChangesAsync();
 
         IQueryable<T> FindBy(Expression<Func<T, bool>> predicate, string include);
 

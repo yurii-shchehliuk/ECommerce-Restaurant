@@ -10,7 +10,7 @@ namespace API.Admin.Controllers
     /// <summary>
     /// admin's user management
     /// </summary>
-    [Authorize(Roles = UserRole.Admin)]
+    [Authorize(Roles = UserRole.Super)]
     public class UserController : BaseApiController
     {
         public UserController()

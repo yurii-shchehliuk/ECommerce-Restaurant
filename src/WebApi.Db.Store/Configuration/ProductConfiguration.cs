@@ -37,8 +37,6 @@ namespace WebApi.DB.Store.Configuration
             builder.HasOne(p => p.Product)
                 .WithMany(c => c.Comments)
                 .OnDelete(DeleteBehavior.Cascade);
-
-
         }
     }
 }

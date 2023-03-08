@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace WebApi.Infrastructure.Repositories
 {
@@ -22,6 +23,19 @@ namespace WebApi.Infrastructure.Repositories
                 }
             }
             return entity;
+        }
+
+        public static Type GetIdType<T>()
+        {
+            var inst = (T)Activator.CreateInstance(typeof(T), new object[] { });
+            var propVal = inst.GetType().GetProperty("Id").GetValue(inst, null);
+            if (propVal == null)
+            {
+                // t is string
+                return typeof(string);
+            }
+            // t is int
+            return typeof(int);
         }
     }
 }

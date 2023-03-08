@@ -20,6 +20,7 @@ namespace WebApi.Db.Identity
 
             builder.ApplyConfiguration(new AppUserConfiguration());
             builder.ApplyConfiguration(new AppRoleConfiguration());
+            builder.ApplyConfiguration(new AppRoleClaimConfiguration());
             base.OnModelCreating(builder);
         }
     }

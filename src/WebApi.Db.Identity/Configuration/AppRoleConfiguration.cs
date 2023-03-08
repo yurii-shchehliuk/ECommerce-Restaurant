@@ -9,7 +9,8 @@ namespace WebApi.Db.Identity.Configuration
         public void Configure(EntityTypeBuilder<AppRole> builder)
         {
             builder.ToTable("AspNetRoles");
-            builder.HasKey(p => p.Id);// Property(p => p.Id).HasKe();
+            builder.Property(p => p.Id).IsRequired();
+            builder.HasKey(p => p.Id);
         }
     }
 }
