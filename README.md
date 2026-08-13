@@ -1,3 +1,5 @@
+
+
 Restaurant application based on .NET 6 (EF Core, Swagger, JWT, Stripe, AutoMapper,...) and Angular 14 (RxJS, Nxg-bootstrap, xng-breadcrumb, bootswatch), RabbitMQ, Redis, MSSQL
 
 ## List of micro-services and infrastructure components
@@ -49,4 +51,4 @@ Restaurant application based on .NET 6 (EF Core, Swagger, JWT, Stripe, AutoMappe
 </table>
 
 ## Launching
-cd build/README.md
+docker-compose up -d
