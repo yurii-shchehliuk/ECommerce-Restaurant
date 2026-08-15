@@ -13,9 +13,9 @@ COPY ["WebApi.Domain/WebApi.Domain.csproj", "WebApi.Domain/"]
 COPY ["WebApi.Db.Store/WebApi.Db.Store.csproj", "WebApi.Db.Store/"]
 COPY ["WebApi.Infrastructure/WebApi.Infrastructure.csproj", "WebApi.Infrastructure/"]
 COPY ["EventBus.Messages/EventBus.Messages.csproj", "EventBus.Messages/"]
-RUN dotnet restore "API.Basket/API.Basket.csproj"
+RUN dotnet restore "src/API.Basket/API.Basket.csproj"
 COPY . .
-WORKDIR "/src/API.Basket"
+WORKDIR "/src/src/API.Basket"
 RUN dotnet build "API.Basket.csproj" -c Release -o /app/build
 
 FROM build AS publish
