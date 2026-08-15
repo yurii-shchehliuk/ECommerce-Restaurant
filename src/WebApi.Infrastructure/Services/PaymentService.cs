@@ -28,7 +28,10 @@ namespace WebApi.Infrastructure.Services
 
         public async Task<CustomerBasket> CreateOrUpdatePaymentIntent(string basketId)
         {
-            StripeConfiguration.ApiKey = _config["StripeSettings:SecretKey"] ?? "sk_test_51KoUd9JYz8ovjrojmsxa26nCNjjx4ZByg3nCVukaOauIoAucxqWgnQ4adgSrm4RQuNwa1yXRja2WiJIQEIfcHsu900fO4gvZzF";
+            StripeConfiguration.ApiKey = _config["StripeSettings:SecretKey"]
+                ?? throw new System.InvalidOperationException(
+                    "StripeSettings:SecretKey is not configured. Set it with 'dotnet user-secrets set \"StripeSettings:SecretKey\" \"sk_test_...\"' " +
+                    "or the StripeSettings__SecretKey environment variable. Never commit it.");
 
             var basket = await _basketRepository.GetBasketAsync(basketId);
 

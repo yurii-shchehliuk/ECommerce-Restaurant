@@ -65,7 +65,7 @@ services:
             - "1433:1433" 
         environment: 
             - "ACCEPT_EULA=Y"  
-            - "SA_PASSWORD=P@ssw0rd" 
+            - "SA_PASSWORD=${SA_PASSWORD:?set SA_PASSWORD in .env}" 
         volumes: 
             - sqldata:/var/opt/mssql 
         networks: 

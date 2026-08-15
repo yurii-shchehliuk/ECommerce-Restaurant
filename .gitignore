@@ -64,3 +64,22 @@ bin/
 obj/
 
 .angular/
+
+# Working notes — must never be committed
+PORTFOLIO-PLAN.md
+BUILD-PLAN.md
+GETTING-STARTED.md
+
+# secrets — templates are committed, real values never are
+**/appsettings.Local.json
+**/appsettings.Production.json
+**/Common.env
+*.env
+!*.env.template
+!**/Common.env.template
+
+# dev certs and keys
+**/ssl/*.key
+**/ssl/*.pem
+**/ssl/*.pfx
+*.pfx

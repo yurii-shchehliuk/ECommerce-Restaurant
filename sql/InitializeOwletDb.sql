@@ -4,7 +4,7 @@
 ----------------------------------------------------------------------------
 USE master;
 GO
-CREATE LOGIN [owlet_dbuser] WITH PASSWORD=N'P@ssw0rd', CHECK_EXPIRATION=OFF, CHECK_POLICY=ON;
+CREATE LOGIN [owlet_dbuser] WITH PASSWORD=N'$(OWLET_DBUSER_PASSWORD)', CHECK_EXPIRATION=OFF, CHECK_POLICY=ON;
 GO
 USE appdb;
 GO
