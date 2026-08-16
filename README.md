@@ -1,17 +1,18 @@
 # Owlet — a .NET microservices storefront
 
-An e-commerce backend split into four ASP.NET Core services with an Angular front
-end: JWT issued by one service and validated independently by the others, a
-Redis-backed basket, two separate SQL Server databases, Stripe payments, Serilog
-shipping structured logs to Seq, and the whole stack defined in Docker Compose.
+Four ASP.NET Core services behind an nginx gateway: a JWT issued by one and
+validated independently by the others, a Redis-backed basket, two separate SQL
+Server databases, an order event published to RabbitMQ by one service and
+consumed by another, Serilog shipping structured logs from all four to Seq, and
+the whole stack in one `docker compose up`.
 
-Built as a personal project between 2019 and 2023 to learn distributed-system
-mechanics by building one rather than by reading about one.
+![Placing an order in the storefront and watching the event arrive on the admin side](docs/owlet-demo.gif)
 
-> **If you are evaluating this repo, read [What I'd do differently](#what-id-do-differently).**
-> It is an honest audit of where this falls short — including one significant path
-> (asynchronous order publishing over RabbitMQ) that is written but never wired up.
-> I would rather tell you that than have you find it.
+*Sign in, add to the basket, then place an order while sitting on the admin
+**Order events** page. The new row appears within the page's two-second poll —
+it exists only because `API.Basket` published an `OrderPlaced` message and
+`API.Admin` consumed it off RabbitMQ. Recorded against the Compose stack; the
+whole clip is real pages on `http://localhost:5200`.*
 
 ---
 
@@ -26,27 +27,37 @@ The subject is a storefront. The **shape** is an integration platform:
 - structured logs from every hop, collected in one place,
 - and the whole thing reproducible in containers by someone who has never seen it.
 
-That is the same architecture as a freight or EDI integration layer with different
-nouns. It is the reason this stays public: it is the artifact that shows the
-distributed-system reasoning, not the artifact that shows the domain.
+That is the same architecture as a freight or EDI integration layer with
+different nouns.
+
+## Honest history
+
+This repository was built between 2019 and 2023 as a personal project, and in
+2026 it was audited and repaired. The audit found that a lot of what the
+architecture diagram implied was not actually wired up: `EventBus.Messages` was
+referenced by no project, the MassTransit registrations and the publish call
+were commented out, the one consumer implemented no interface either library
+would dispatch to, **no** EF migrations were committed, nginx routed to a single
+service, and `API.Admin` was commented out of the Compose file.
+
+All of that is fixed, and the fixes are verified below rather than asserted.
+What is still missing has its own section, because a README that names its gaps
+is worth more than one that omits them.
 
 ---
 
 ## The problem it was built to explore
 
-A single ASP.NET monolith serving a storefront forces one deployment, one database
-and one scaling decision onto parts of the system that want completely different
-things:
+A single ASP.NET monolith serving a storefront forces one deployment, one
+database and one scaling decision onto parts of the system that want completely
+different things:
 
 - A **basket** is hot, ephemeral, read constantly, and nobody cares if it is lost
-  on redeploy. It wants an in-memory store.
-- An **order** is durable, transactional and audited. It wants a relational
-  database and it must never be lost.
+  on redeploy.
+- An **order** is durable, transactional and audited, and must never be lost.
 - **Identity** has different uptime requirements from both, and needs to be
   callable by every other service without them sharing its schema.
 
-Putting all three behind one `DbContext` means the basket's read volume sits on the
-same connection pool as order writes, and a change to identity redeploys checkout.
 The interesting engineering problem is not "split it into services" — it is what
 happens to authentication, consistency and local development once you do.
 
@@ -57,146 +68,186 @@ happens to authentication, consistency and local development once you do.
 ```mermaid
 flowchart LR
     BR[Browser]
-    NG["Angular 15 SPA<br/>(ClientApp)"]
-    NX["nginx :5200"]
-    ID["API.Identity :5041<br/>ASP.NET Core Identity"]
-    BK["API.Basket :5031<br/>Stripe, orders"]
-    WEB["API.Web :5021<br/>SPA host"]
-    AD["API.Admin<br/>MediatR / CQRS"]
+    NX["nginx gateway<br/>:5200"]
+    WEB["API.Web<br/>serves the Angular 15 bundle"]
+    ID["API.Identity<br/>ASP.NET Core Identity, issues the JWT"]
+    BK["API.Basket<br/>basket, payments, orders"]
+    AD["API.Admin<br/>MediatR/CQRS, consumes OrderPlaced"]
     IDDB[("SQL Server<br/>identitydb")]
     APPDB[("SQL Server<br/>appdb")]
     RD[("Redis")]
+    MQ{{"RabbitMQ<br/>owlet-order-placed"}}
     SEQ[("Seq")]
     STRIPE["Stripe API"]
-    MQ["RabbitMQ"]
 
-    BR --> NG
-    NG --> WEB
-    NG --> ID
-    NG --> BK
-    NX --> ID
+    BR --> NX
+    NX -->|"/"| WEB
+    NX -->|"/svc/identity/"| ID
+    NX -->|"/svc/basket/"| BK
+    NX -->|"/svc/admin/"| AD
+
     ID --> IDDB
     BK --> RD
     BK --> APPDB
     BK --> STRIPE
     AD --> APPDB
+
+    BK -. "publishes OrderPlaced" .-> MQ
+    MQ -. "consumed by OrderPlacedConsumer" .-> AD
+
     ID -. "signs JWT (HS512)" .-> BK
     ID -. "signs JWT (HS512)" .-> AD
+    ID -. "signs JWT (HS512)" .-> WEB
+
     ID --> SEQ
     BK --> SEQ
+    AD --> SEQ
     WEB --> SEQ
-    BK -. "written, not wired" .-> MQ
-    MQ -. "written, not wired" .-> AD
-
-    linkStyle 15,16 stroke-dasharray:6 6,stroke:#b45309
 ```
 
-Longer notes — project layout, the shared-infrastructure decision, the request
-path, and why each store was chosen — are in
+Longer notes — project layout, the shared-infrastructure trade-off, the request
+path, why each store was chosen — are in
 **[docs/architecture.md](docs/architecture.md)**.
 
 ### The services
 
-| Service | Responsibility | Storage | State |
-|---|---|---|---|
-| `API.Identity` | ASP.NET Core Identity, registration and sign-in, **issues** the JWT | SQL Server `identitydb` | Complete |
-| `API.Basket` | Basket CRUD, Stripe PaymentIntents and webhook, order creation | Redis + SQL Server `appdb` | Complete |
-| `API.Web` | Hosts the Angular SPA | — | Complete for dev; see caveats |
-| `API.Admin` | Product administration via MediatR/CQRS | SQL Server `appdb` | Partial, and not in Compose |
+| Service | Responsibility | Storage |
+|---|---|---|
+| `API.Identity` | ASP.NET Core Identity, registration and sign-in, **issues** the JWT. Owns `identitydb`'s schema | SQL Server `identitydb` |
+| `API.Basket` | Basket CRUD, Stripe PaymentIntents and webhook, order creation, **publishes** `OrderPlaced`. Owns `appdb`'s schema | Redis + SQL Server `appdb` |
+| `API.Admin` | Product administration via MediatR/CQRS, **consumes** `OrderPlaced` | SQL Server `appdb` |
+| `API.Web` | Serves the built Angular bundle | — |
 
 ### Supporting projects
 
 | Project | What it is |
 |---|---|
-| `WebApi.Domain` | Entities, DTOs, repository/service interfaces, specifications, the thin CQRS marker interfaces over MediatR |
-| `WebApi.Infrastructure` | The largest project (~1,600 lines). Startup extensions, `TokenService`, `PaymentService`, `OrderService`, Swagger and JWT wiring shared by all four hosts |
-| `WebApi.Db.Identity` | `AppIdentityDbContext` + identity seeding |
-| `WebApi.Db.Store` | `StoreContext` (EF Core) **and** `BasketContext` (Redis), plus JSON seed data |
-| `EventBus.Messages` | RabbitMQ publisher and consumers — see the caveat below |
-| `nginx` | Reverse proxy container config |
+| `WebApi.Domain` | Entities, DTOs, repository/service interfaces, specifications, the CQRS marker interfaces over MediatR |
+| `WebApi.Infrastructure` | Startup extensions, `TokenService`, `PaymentService`, `OrderService`, the publisher and the consumer's sink, shared by all four hosts |
+| `WebApi.Db.Identity` | `AppIdentityDbContext`, its migration, identity seeding |
+| `WebApi.Db.Store` | `StoreContext` (EF Core) and its migration, `BasketContext` (Redis), JSON seed data |
+| `EventBus.Messages` | The wire contracts, the consumer, and the MassTransit registration for both sides |
+| `nginx` | The gateway |
 
 ### The parts that were actually difficult
 
+- **The bus, done so it cannot rot again.** `OrderPlaced` lives in
+  `EventBus.Messages`, an assembly that **references no domain project** — so a
+  change to the `Order` entity cannot silently change the wire format, which is
+  exactly what the previous contract allowed by embedding the entity itself.
+  `OrderPlacedConsumer` implements `IConsumer<OrderPlaced>` and binds a durable
+  queue. Consumption is idempotent on `EventId`, enforced by a unique index,
+  because RabbitMQ delivers at least once. And there is now a test that fails if
+  a published message does not reach a consumer — the test whose absence let the
+  whole path sit dead for three years.
+
 - **Authentication across service boundaries.** `TokenService`
   ([`src/WebApi.Infrastructure/Services/TokenService.cs`](src/WebApi.Infrastructure/Services/TokenService.cs))
-  signs a JWT with `HmacSha512Signature` from `Token:Key`. `API.Basket` and
-  `API.Admin` each validate it independently through the shared
-  `AddCommonIdentity` extension
-  ([`src/WebApi.Infrastructure/StartupExtensions/CommonExtensions.cs`](src/WebApi.Infrastructure/StartupExtensions/CommonExtensions.cs)),
-  which registers `AddJwtBearer` with the same key and issuer. **No service calls
-  Identity on the request path** — the token carries the claims they need, so
-  Identity being down does not stop an authenticated user from using their basket.
-  Identity configures its own `JwtBearer` separately because it needs an
-  `OnMessageReceived` hook to pull `access_token` off the query string for SignalR.
+  signs with `HmacSha512Signature`. Basket, Admin and Web each validate
+  independently through `AddCommonIdentity`
+  ([`CommonExtensions.cs`](src/WebApi.Infrastructure/StartupExtensions/CommonExtensions.cs)).
+  **No service calls Identity on the request path**, so Identity being down does
+  not stop an authenticated user from using their basket. The cost is the usual
+  one: a token cannot be revoked before it expires.
 
-- **Basket in Redis, behind an interface.** `IBasketRepository`
-  ([`src/WebApi.Domain/Interfaces/Repositories/IBasketRepository.cs`](src/WebApi.Domain/Interfaces/Repositories/IBasketRepository.cs))
-  is implemented by `BasketContext`
-  ([`src/WebApi.Db.Store/BasketContext.cs`](src/WebApi.Db.Store/BasketContext.cs))
-  over `StackExchange.Redis`, serialising with `System.Text.Json` and a 30-day TTL.
-  The consequence that mattered: a basket survives a restart of `API.Basket`, and a
-  second Basket instance sees the same data — which an in-process cache would not.
+- **Basket in Redis, behind an interface.** `IBasketRepository` is implemented by
+  `BasketContext` over `StackExchange.Redis`. The consequence that matters: the
+  basket survives a restart of `API.Basket`, which an in-process cache would not.
 
-- **Two EF Core contexts, two databases.** `AppIdentityDbContext` and
-  `StoreContext` live in separate projects against separate SQL Server databases, so
-  an identity schema change cannot touch the store schema. Both are created and
-  seeded at startup from JSON in `src/WebApi.Db.Store/SeedData/`.
+- **Two EF contexts, two databases, one owner each.** `API.Basket` migrates
+  `appdb` and `API.Identity` migrates `identitydb`; `API.Admin` reads `appdb` and
+  only waits for it, because two services racing to apply the same migrations is
+  how a schema ends up half-created.
 
-- **Four thin hosts over one infrastructure library.** Almost all cross-cutting
-  wiring — JWT, Swagger with a Bearer security scheme, AutoMapper profiles, the
-  generic repository and unit of work — lives in `WebApi.Infrastructure` as
-  `IServiceCollection` extensions. `API.Web` is 156 lines of C# in total as a
-  result. Getting the seam right was more of the work than any individual feature.
-
-- **Stripe including the webhook.** `PaymentService`
-  ([`src/WebApi.Infrastructure/Services/PaymentService.cs`](src/WebApi.Infrastructure/Services/PaymentService.cs))
-  creates and updates PaymentIntents and writes `PaymentIntentId` and
-  `ClientSecret` onto the basket; `PaymentsController` handles the
-  `payment_intent.succeeded` / `payment_intent.payment_failed` callbacks via
-  `EventUtility.ConstructEvent`. The webhook is the half people skip.
-
-- **Structured logging that crosses services.** Serilog on `API.Identity`,
-  `API.Basket` and `API.Web`, all sinking to a **Seq** container, so one request can
-  be looked at in one place instead of being reconstructed from three sets of
-  console output.
+- **A gateway, not a reverse proxy in front of one service.** nginx serves the
+  SPA at `/` and routes `/svc/identity/`, `/svc/basket/` and `/svc/admin/`,
+  stripping the prefix. The `/svc` prefix exists because the Angular router
+  already owns `/basket`, `/admin`, `/orders` and `/shop`.
 
 ---
 
-## What works today
+## Verified, not asserted
 
-Verified against the source, not from memory:
+Everything below was observed on 16 August 2026 against `docker compose up`
+on this machine. Where something was not verified, it says so.
 
-- Register and sign in through `API.Identity`, receive a JWT, and use it against
-  `API.Basket` — which validates it without ever touching `identitydb`.
-- The basket survives `docker restart api.basket`, because it is in Redis.
-- Stripe test-mode PaymentIntent creation, update, and webhook handling.
-- Product create/read/update/delete through `API.Admin`'s MediatR handlers.
-- Both databases created and seeded on first start.
-- Swagger UI on each API in Development.
+**The stack comes up.** Eleven containers: four services, the gateway, SQL
+Server, Redis, RabbitMQ, Seq, smtp4dev, redis-commander. SQL Server, Redis and
+RabbitMQ gate the services with health checks, so the APIs no longer race the
+database's cold start:
 
-**Size:** ~5,500 lines of C# across 157 files in 9 projects, ~3,500 lines of
-TypeScript in the Angular client, 128 commits between September 2019 and March 2023.
+```
+[02:25:33 INF] AppIdentityDbContext migrated on attempt 1     (API.Identity)
+[02:25:33 INF] StoreContext migrated on attempt 1             (API.Basket)
+[02:25:37 INF] StoreContext reachable on attempt 2            (API.Admin)
+[02:25:37 INF] Configured endpoint owlet-order-placed, Consumer: EventBus.Messages.Consumers.OrderPlacedConsumer
+[02:25:34 INF] Bus started: rabbitmq://rabbitowlet/
+```
 
-There is **no hosted demo**, and that is deliberate. An honest deployment needs SQL
-Server, Redis, RabbitMQ, Seq and four .NET containers; no free tier runs that
-without cold-starting a five-service stack in front of whoever clicked the link.
-`docker compose up` and the source are the demo.
+**The whole loop runs.** Register → sign in → add to basket → place an order →
+the event arrives on the admin side. The GIF above is that loop. The order's
+subtotal is re-priced from the database, not taken from the basket: the demo
+basket claimed $9.50 for an item the catalogue prices at $1.00, and the order
+was written at the catalogue price.
+
+**The message really travels.** With Admin running, an order published at
+`02:44:28.4939` was consumed at `02:44:28.4990` — 5 ms:
+
+```
+[INF] Consumed OrderPlaced 402e0db1-191f-429f-969c-2eb1bdab9348
+      for order 6 (demo@owlet.local, 1 items, total 26.00)
+```
+
+**A durable queue means Admin can be down.** `docker compose stop api.admin`,
+then place an order. Checkout still returns 200, and the broker holds the
+message:
+
+```
+name                 messages  consumers
+owlet-order-placed          1          0
+```
+
+Start Admin again and it drains, 14.3 seconds after publication — the exact
+length of the outage. That row is still visible in
+[docs/order-events.png](docs/order-events.png) with a `14280 ms` bus latency.
+
+**The basket survives a restart.** `docker compose restart api.basket`, then
+re-read the basket: same contents, because it is in Redis and not in the process.
+
+**All four services log to Seq.** 23 events from `API.Admin`, 22 from
+`API.Basket`, 16 from `API.Identity`, 6 from `API.Web`, each tagged with a
+`Service` property — [docs/seq.png](docs/seq.png).
+
+**Build and tests.** `dotnet build Owlet.sln` succeeds with no warnings and no
+Node.js installed. `dotnet test` runs **25 tests, all passing**, none of which
+need Docker.
+
+**Four defects were found only by running it**, and are fixed with tests:
+registration returned 500 on every request; only the first order after a fresh
+start could ever succeed; the SQL Server health check never passed; and Seq
+crash-looped. The commit `Fix four defects found by actually running the stack`
+has the details.
+
+**Size:** ~7,000 lines of C# across 165 files in 9 projects, ~3,700 lines of
+TypeScript in the Angular client, 133 commits since September 2019.
+
+There is **no hosted demo**, deliberately. An honest deployment needs SQL Server,
+Redis, RabbitMQ, Seq and four .NET containers; no free tier runs that without
+cold-starting a five-service stack in front of whoever clicked the link.
 
 ---
 
 ## Stack
 
-**Backend** — .NET 6, ASP.NET Core, EF Core 6.0.10, ASP.NET Core Identity, MediatR
-11, AutoMapper 12, FluentValidation 11, Stripe.net 41, StackExchange.Redis 2.6,
-Swashbuckle 6.5, Serilog.AspNetCore 6.1 (+ Serilog.Sinks.Seq 5.2)
+**Backend** — .NET 6, ASP.NET Core, EF Core 6, ASP.NET Core Identity, MassTransit
+8 (RabbitMQ), MediatR 11, AutoMapper 12, FluentValidation 11, Stripe.net 41,
+StackExchange.Redis 2.6, Swashbuckle 6.5, Serilog (+ Seq sink)
 **Front end** — Angular 15.1, RxJS 7.8, NgRx Store 15.3, Angular Material 15,
-ngx-bootstrap 10, ngx-toastr 16, ngx-spinner 15, xng-breadcrumb 9, Bootstrap 5.2 /
-Bootswatch, TypeScript 4.9
+ngx-bootstrap 10, ngx-toastr 16, Bootstrap 5.2 / Bootswatch, TypeScript 4.9
 **Infrastructure** — Docker Compose, nginx, SQL Server 2019, Redis 6, RabbitMQ 3,
-Seq, smtp4dev, redis-commander, Portainer
-**Tests** — xUnit 2.4 (`tests/WebApi.Test`) — 4 tests, covering JWT issuance and
-cross-service validation, plus a Redis cache fixture. Thin, and item 4 below says
-so plainly.
+Seq, smtp4dev, redis-commander
+**Tests** — xUnit 2.4, 25 tests, including a MassTransit in-memory harness test
+that asserts a published message reaches its consumer
 
 ---
 
@@ -209,144 +260,110 @@ Full instructions, including running without Docker, are in
 git clone https://github.com/yurii1exe/ECommerce-Restaurant.git
 cd ECommerce-Restaurant
 
-# 1. Configuration. Real values are never committed — only templates are.
+# Configuration. Real values are never committed, only templates.
+cp .env.template .env                                        # set SA_PASSWORD
 cp src/WebApi.Domain/Common.env.template src/WebApi.Domain/Common.env
-cp .env.template .env
 
-# 2. Generate a signing key (64 bytes — the code signs with HS512)
+# The signing key: TokenService signs with HS512, so it needs 64 bytes.
 openssl rand -base64 64        # paste into Common.env as Token__Key
-# and set a strong SA_PASSWORD in .env
 
-# 3. The Compose files expect to run from the repository root
-cp docker/docker-compose*.yml docker/.dockerignore .
-docker compose up
+docker compose up --build
 ```
 
-| Service | URL |
-|---|---|
-| nginx (fronts Identity) | http://localhost:5200 |
-| API.Identity | http://localhost:5041 |
-| API.Basket | http://localhost:5031 |
-| API.Web | http://localhost:5021 |
-| Seq (logs) | http://localhost:5342 |
-| RabbitMQ management | http://localhost:8088 |
-| redis-commander | http://localhost:8081 |
-| smtp4dev (mail catcher) | http://localhost:5010 |
+The compose files sit next to `Owlet.sln`, so that is the whole command. Then
+open **http://localhost:5200**.
 
-Locally I use `dotnet user-secrets` rather than editing `appsettings.json`:
+| | URL |
+|---|---|
+| Storefront and gateway | http://localhost:5200 |
+| Order events (the async path, live) | http://localhost:5200/admin/order-events |
+| Seq (logs from all four services) | http://localhost:5342 |
+| RabbitMQ management (`guest`/`guest`) | http://localhost:8088 |
+| redis-commander | http://localhost:8081 |
+| smtp4dev | http://localhost:5010 |
+| Swagger | :5041, :5031, :5011 `/swagger` |
+
+Swagger is registered only in the Development environment. The three API services
+run as Development under Compose; `API.Web` runs as Production because that is
+what makes it serve the built bundle instead of trying to launch the Angular CLI,
+so it has no Swagger and answers `/swagger` with the SPA's index page.
+
+Locally, use `dotnet user-secrets` rather than editing `appsettings.json`:
 
 ```bash
 cd src/API.Identity
-dotnet user-secrets init
 dotnet user-secrets set "Token:Key" "<your 64-byte key>"
 ```
 
-Stripe is not optional if you want the payment path: set
-`StripeSettings:SecretKey` the same way, with your own test-mode key.
-
-The Angular client is run separately for development
-(`cd src/API.Web/ClientApp && npm install && ng serve`) — `API.Web` proxies to the
-Angular CLI dev server rather than serving a built bundle.
-
-> **Honest caveat:** the Compose stack was last run in 2023 against .NET 6 base
-> images. It is not re-verified as of this README. `dotnet build` on the solution
-> passes for every C# project (the `API.Web` project also runs `tsc`, which needs
-> `npm install` in `ClientApp` first).
+Stripe is optional and only the payment path needs it; there is no default key
+and the code fails fast with an explanatory message rather than falling back to
+a committed one.
 
 ---
 
-## What I'd do differently
+## What is still wrong
 
-Written in 2026, after coming back to this cold. These are real defects, not
-modesty.
+Written in 2026 after fixing everything above. These are real, not modesty.
 
-**1. Configuration was wrong from the first commit.** Real connection strings and a
-JWT signing key were committed straight into `appsettings.json` — and into `bin/`
-output that also got committed. The right answer is templates in the repo, real
-values in user-secrets or the environment, and a `.gitignore` written *before* the
-first commit rather than six years after it. That is now fixed in `HEAD`:
-`Common.env.template` and `.env.template` are committed, the real files are ignored,
-and every `appsettings.json` carries a `REPLACE_ME` placeholder. The history still
-contains the old values — rewriting it would break five branches and every clone,
-and would not un-publish anything, so the honest fix was to rotate, not to pretend.
+**1. There is no transactional outbox.** `OrderService` commits the order and
+then publishes. Those are two operations with no transaction across them, so a
+crash in the gap loses the event silently — the order exists and nothing
+downstream ever hears about it. MassTransit's EF Core outbox is the fix and it
+is the next change this project needs. Until then the failure mode is documented
+rather than solved.
 
-**2. The signing key was 16 characters.** `TokenService` signs with **HS512**, and
-RFC 7518 §3.2 requires a key at least as large as the algorithm's hash output —
-512 bits, or 64 bytes. The key in use was `"super secret key"`: 128 bits, a quarter
-of what the algorithm requires. It never failed loudly, because the token library
-enforces a blanket minimum key size rather than the per-algorithm minimum the RFC
-specifies, so a key that clears the floor but not the requirement is accepted in
-silence. That is the worst failure mode there is: cryptography that quietly does
-less than you think it does. Every token this system ever issued was weaker than
-its own algorithm claimed.
+**2. No correlation IDs.** All four services log to one Seq instance, which is
+most of the value, but nothing ties the lines from one checkout together. A
+correlation ID through the request pipeline and the message headers is cheap and
+is the highest-value remaining change to the logging story.
 
-**3. The asynchronous order path is written but not wired.** This is the biggest
-gap, and the previous README implied otherwise. `EventBus.Messages` contains a
-RabbitMQ publisher (`RabbitMqManager`) and two consumers, RabbitMQ is in the
-Compose file, and `RabbitMqHost` is in configuration — but:
+**3. The signing key was 16 characters, and short keys fail quietly.**
+`TokenService` signs with HS512; RFC 7518 §3.2 requires a key at least as large
+as the algorithm's hash output — 512 bits. The committed key was
+`"super secret key"`: 128 bits, a quarter of the requirement. It never threw,
+because the token library enforces a blanket minimum rather than the
+per-algorithm minimum, so a key that clears the floor but not the requirement is
+accepted in silence. `AnUndersizedKeyIsAcceptedSilently_WhichIsHowTheDefectSurvived`
+is a characterisation test that proves it.
 
-- no project references `EventBus.Messages`, so none of it is even compiled into a
-  running service;
-- the MassTransit registration in `BasketExtensions` and `AdminExtensions` is
-  commented out;
-- the publish call in `OrderService` is commented out;
-- `OrderReceivedConsumer` extends RabbitMQ.Client's `DefaultBasicConsumer` and has
-  a MassTransit-shaped `Consume(ConsumeContext<T>)` method but does not implement
-  `IConsumer<T>` — it is half-migrated between two libraries and would not be
-  invoked by either;
-- and the one message contract, `OrderMessageDTO`, lives in `WebApi.Domain`, not in
-  the shared contracts project that exists specifically to hold it.
+**4. Configuration was wrong from the first commit.** Real connection strings and
+the signing key were committed into `appsettings.json`, and into `bin/` output
+that was also committed. `HEAD` is now templates plus `REPLACE_ME` placeholders,
+with real values in `.env`, `Common.env` and user-secrets. The history still
+contains the old values: rewriting it would break five branches and every clone
+and would not un-publish anything, so the honest fix was to rotate, not to
+pretend.
 
-Checkout therefore writes the order synchronously. The lesson is the one this repo
-teaches best: **a message bus in your `docker-compose.yml` is not a message bus in
-your system**, and the gap between the two is invisible unless something tests it.
+**5. Symmetric signing distributes the minting key.** Every service that merely
+needs to *validate* a token holds the key that can *issue* one. RS256 with a
+published JWKS is the right shape. Related: the token lives for 7 days,
+`GenerateRefreshToken()` exists but nothing consumes it, and `Expires` uses
+`DateTime.Now` rather than `UtcNow`, so on a non-UTC host the stated expiry is
+off by the machine's offset.
 
-**4. No test covers the thing most likely to break.** There were two tests. One
-constructed a `TokenService` with a `null` `IConfiguration` — it threw a
-`NullReferenceException` and had been failing for years — and asserted only that the
-result was a non-empty string not containing "Bearer". It checked no claim, no
-signature, no issuer, no expiry. The other needs a live local Redis.
+**6. Parts of the admin client are still stubs.** `admin/manage-users` calls
+`${environment.identityApi}Account`, but `identityApi` is an object in the
+client's environment, so that URL interpolates to `[object Object]Account`. The
+CQRS handlers behind product administration are real; the user-management screen
+is not. It is flagged here rather than quietly left to be discovered.
 
-I have since rewritten the token tests so that they assert the property that
-actually matters: that a token minted the way `API.Identity` mints it survives
-validation configured the way `API.Basket` and `API.Admin` configure it, with the
-claims intact. One of them is a characterisation test proving defect 2 empirically —
-a 128-bit key against HS512 produces a valid-looking token and raises nothing.
+**7. Checkout in the browser needs a Stripe key.** The wizard's final step
+creates a PaymentIntent. Without `StripeSettings:SecretKey` the API path works
+and the UI's last step does not, which is why the demo places its order through
+the API that the wizard itself calls.
 
-That still leaves the real gap: a contract change between a publisher and a
-consumer — the failure mode that actually bites in this architecture — has no test
-at all. Which is precisely how defect 3 survived for three years.
-
-**5. The reverse proxy fronts one service.** `nginx.local.conf` declares upstreams
-for the SPA and the basket and then comments both out; only `api.identity` is
-routed. Calling it an API gateway would be generous. The browser talks to three
-services on three ports, which means CORS is doing work a gateway should be doing.
-
-**6. Loose ends that should have been closed or deleted.** `API.Admin` is commented
-out of `docker-compose.yml` and its `UserFunc` commands are empty class declarations
-with no handlers. `API.Web` calls `UseAuthentication()` without ever registering an
-authentication scheme, and carries a `Token` section nothing reads. Autofac is
-referenced and a container module written, but nothing ever installs it. No EF
-migrations are committed — startup calls `EnsureCreatedAsync()` *and*
-`MigrateAsync()`, which is two strategies for the same job. Half-built is worse than
-absent, because it makes the architecture diagram lie.
-
-**7. No correlation IDs.** Serilog and Seq get the logs into one place, but without
-a correlation ID flowing through the HTTP calls and message headers you still cannot
-cleanly follow one checkout across services. It is the first thing I would add, and
-it is cheap.
-
-**8. It is on .NET 6 and Angular 15**, both out of support. If this were live that
-would be the top of the list rather than the bottom of it.
+**8. It is on .NET 6 and Angular 15**, both out of support. If this were live
+that would be the top of this list rather than the bottom.
 
 ---
 
 ## Scope and provenance
 
-A personal learning project, built between 2019 and 2023 in my own time. Not a
-production system, not deployed anywhere, and not derived from any employer's code
-or from paid course material. The name "Owlet" and the restaurant framing are
-incidental — the architecture is the point.
+A personal learning project, built between 2019 and 2023 in my own time and
+repaired in 2026. Not a production system, not deployed anywhere, and not derived
+from any employer's code or from paid course material. The product images under
+`src/API.Web/wwwroot/images` are third-party marketing photographs used as
+placeholder catalogue data; they are not mine and are not licensed for reuse.
 
 ## Licence
 
