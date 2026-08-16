@@ -53,7 +53,7 @@ happens to authentication, consistency and local development once you do.
 flowchart LR
     BR[Browser]
     NX["nginx gateway<br/>:5200"]
-    WEB["API.Web<br/>serves the Angular 15 bundle"]
+    WEB["API.Web<br/>serves the Angular 20 bundle"]
     ID["API.Identity<br/>ASP.NET Core Identity, issues the JWT"]
     BK["API.Basket<br/>basket, payments, orders"]
     AD["API.Admin<br/>MediatR/CQRS, consumes OrderPlaced"]
@@ -147,6 +147,22 @@ path, why each store was chosen — are in
   stripping the prefix. The `/svc` prefix exists because the Angular router
   already owns `/basket`, `/admin`, `/orders` and `/shop`.
 
+- **A client with eight runtime dependencies.** Standalone Angular 20 with
+  signals and the built-in control flow, styled by one Tailwind v4 `@theme` block
+  that every colour, radius, type step and spacing value in the application
+  resolves to. `@angular/cdk` drives the checkout stepper because it is a state
+  machine with no opinion about how the steps should look; the icons, the toasts,
+  the pager, the breadcrumb and the tables are components in this repository.
+  Every asynchronous view has a loading, an error and an empty state, and the
+  error names the service that did not answer.
+
+- **The machine room is a visible register, not a hidden page.**
+  `/admin/order-events` renders what `API.Admin` consumed off RabbitMQ in mono
+  with tabular figures, and draws each message's time on the queue as a bar
+  scaled against the slowest hop on screen. A hop that waited out a stopped
+  consumer is drawn in a different colour from one that crossed in five
+  milliseconds, because those are different facts.
+
 ---
 
 ## Measured
@@ -203,12 +219,31 @@ re-read the basket: same contents, because it is in Redis and not in the process
 `API.Basket`, 16 from `API.Identity`, 6 from `API.Web`, each tagged with a
 `Service` property — [docs/seq.png](docs/seq.png).
 
+**The client is the same one the container serves.** With the stack up, the
+gateway on `:5200` answers `/`, `/shop`, `/basket`, `/orders`,
+`/admin/order-events` and `/account/register` with 200 and renders the built
+bundle. The menu draws 9 of 28 products from `/svc/basket`; the order-events page
+draws consumed rows from `/svc/admin`. Every request the bundle makes is a
+relative `/svc` path, so the browser talks to one origin and CORS does no work.
+
+**The whole purchase runs through the pages.** Driven headless against the stack:
+register, add two items, open a product, review the basket, complete the address
+and delivery steps of the checkout wizard, place the order, and find it on
+`/orders` and on `/admin/order-events` — the second row on that page is the event
+the checkout published, consumed 233 ms later.
+
 **Build and tests.** `dotnet build Owlet.sln` succeeds with no warnings and no
 Node.js installed. `dotnet test` runs **25 tests, all passing**, none of which
-need Docker.
+need Docker. `npm run test:ci` in the client runs **72 tests, all passing**, and
+`ng lint` reports no errors.
+
+**The client audits clean.** Across thirteen routes at 1360px and 360px: exactly
+one `h1` per page, no horizontal scroll, no unlabelled form control, no button or
+link without an accessible name, no image without alt text, and no text below
+WCAG AA contrast in either the light or the dark theme.
 
 **Size:** ~7,000 lines of C# across 165 files in 9 projects in the backend, plus
-the Angular client.
+the Angular client. The client's initial payload is 378 kB, 109 kB transferred.
 
 There is **no hosted demo**, deliberately. A representative deployment needs SQL
 Server, Redis, RabbitMQ, Seq and four .NET containers; no free tier runs that
@@ -221,12 +256,14 @@ without cold-starting a five-service stack in front of whoever clicked the link.
 **Backend** — .NET 6, ASP.NET Core, EF Core 6, ASP.NET Core Identity, MassTransit
 8 (RabbitMQ), MediatR 11, AutoMapper 12, FluentValidation 11, Stripe.net 41,
 StackExchange.Redis 2.6, Swashbuckle 6.5, Serilog (+ Seq sink)
-**Front end** — Angular 15.1, RxJS 7.8, NgRx Store 15.3, Angular Material 15,
-ngx-bootstrap 10, ngx-toastr 16, Bootstrap 5.2 / Bootswatch, TypeScript 4.9
+**Front end** — Angular 20 (standalone, signals, built-in control flow),
+TypeScript 5.8, RxJS 7.8, Tailwind CSS v4, `@angular/cdk` for the checkout
+stepper, `@microsoft/signalr` for chat. Eight runtime dependencies in total.
 **Infrastructure** — Docker Compose, nginx, SQL Server 2019, Redis 6, RabbitMQ 3,
 Seq, smtp4dev, redis-commander
 **Tests** — xUnit 2.4, 25 tests, including a MassTransit in-memory harness test
-that asserts a published message reaches its consumer
+that asserts a published message reaches its consumer; Karma and Jasmine, 72
+tests on the client
 
 ---
 

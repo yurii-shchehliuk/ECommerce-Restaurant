@@ -9,7 +9,7 @@ from your IDE.
 |---|---|
 | Docker Desktop | any recent version, Linux containers |
 | .NET SDK | 6.0 for the no-Docker path (newer SDKs build `net6.0` fine, with an out-of-support warning) |
-| Node.js | only for the no-Docker path — 18.x works; the container builds the client itself |
+| Node.js | only for the no-Docker path — 20.19+, 22.12+ or 24, which is what Angular 20 supports; the container builds the client itself |
 | SQL Server | only for the no-Docker path; LocalDB or Express is enough |
 
 `dotnet build Owlet.sln` and `dotnet test` need neither Node.js nor Docker.
@@ -193,7 +193,24 @@ dotnet run --project ../../API.Web
 In Development, `API.Web` proxies to the CLI dev server, so the SPA is available
 through `API.Web` once `ng serve` is up. In Development the client uses
 `src/environment.ts`, which points at the services' own ports rather than at the
-gateway.
+gateway — so `API.Identity`, `API.Basket` and `API.Admin` all have to be
+reachable on 5041, 5031 and 5011 for the pages to fill in.
+
+Product images are served by `API.Web` itself: the catalogue rows carry absolute
+URLs pointing at its port, so run it as well as `ng serve` if you want the menu
+to have pictures.
+
+### Client checks
+
+```bash
+cd src/API.Web/ClientApp
+npm run build      # production build
+npm run test:ci    # 72 tests, headless Chrome
+npm run lint
+```
+
+`test:ci` needs a Chrome or Chromium on the machine; set `CHROME_BIN` if it is
+not on the path.
 
 ---
 

@@ -25,6 +25,8 @@ src/
   WebApi.Db.Store/       StoreContext + migration, BasketContext (Redis), seed data
   EventBus.Messages/     wire contracts, the consumer, and both bus registrations
 
+  API.Web/ClientApp/     the Angular 20 client, built into the API.Web image
+
   nginx/                 the gateway
 tests/
   WebApi.Test/           xUnit — 25 tests
@@ -263,12 +265,16 @@ one origin and CORS does no work in production. The permissive CORS policy remai
 for the `ng serve` development path, where the client is on :4200 and the services
 are on their own ports.
 
-**The SPA.** `src/API.Web/Dockerfile` has a Node stage that runs `npm ci` and
-`ng build --configuration production` and copies the output into `wwwroot/dist`.
-`UseAngular` serves that with `UseSpaStaticFiles()` outside Development and
-proxies to the Angular CLI dev server inside it. The production configuration
-swaps `src/environment.ts` for `src/environment.prod.ts`, whose URLs are all
-gateway-relative, so the deployed bundle is single-origin.
+**The SPA.** `src/API.Web/Dockerfile` has a `node:24-alpine` stage that runs
+`npm ci` and `ng build --configuration production` and copies the output into
+`wwwroot/dist`. `UseAngular` serves that with `UseSpaStaticFiles()` outside
+Development and proxies to the Angular CLI dev server inside it. The production
+configuration swaps `src/environment.ts` for `src/environment.prod.ts`, whose
+URLs are all gateway-relative, so the deployed bundle is single-origin.
+
+`AddSpaStaticFiles(RootPath = "wwwroot/dist")` expects a flat directory, which is
+why `angular.json` pins `outputPath.browser` to `""`: the v20 application builder
+would otherwise emit `dist/browser/`.
 
 **Compose.** `docker-compose.yml` sits next to `Owlet.sln`, because the build
 context is the repository root and Docker resolves it relative to the compose
@@ -285,7 +291,64 @@ default and so rejects the container's self-signed certificate without `-C`.
 
 ---
 
-## 8. If I rebuilt it today
+## 8. The client
+
+`src/API.Web/ClientApp`, Angular 20, standalone throughout - there are no
+NgModules. Every component declares the directives and pipes its own template
+uses, so what a template can reach is visible in the file beside it.
+
+**Routing and loading.** `app.routes.ts` lazily loads everything except the
+landing page, through `loadComponent` for a single view and `loadChildren` for an
+area's own `*.routes.ts`. Routes carry `title`, which the router applies to
+`document.title`, and may carry `data: { chrome: false }` to suppress the page
+title bar - used by the centred single-purpose pages, which would otherwise carry
+a second `h1`.
+
+**State.** Services hold observables; components read them with `toSignal` or the
+`async` pipe. Signal inputs are used where a component is a leaf that renders
+what it is given. There is no state-management library: the only cross-component
+state is the basket and the signed-in user, and each is one service with one
+subject.
+
+| Concern | Where |
+|---|---|
+| Basket, and the totals derived from it | `basket/basket.service.ts` |
+| Signed-in user and the token | `account/account.service.ts` |
+| Catalogue, and the page cache over it | `shop/shop.service.ts` |
+| In-flight request count | `core/services/busy.service.ts` |
+| Light / dark preference | `core/services/theme.service.ts` |
+| Notifications | `core/services/toast.service.ts` |
+
+**Design tokens.** `src/styles.css` declares the palette, the type scale, the
+radii, the shadows and the spacing rhythm in a single Tailwind v4 `@theme` block.
+The dark theme remaps those tokens and nothing else; no component is aware that
+it exists. Three states - light, dark, and follow the system - because an
+explicit choice has to be able to win against the system preference in both
+directions, which a boolean cannot express.
+
+**Dependencies.** Eight at runtime: the six `@angular/*` packages the application
+actually imports, `@microsoft/signalr` for the chat hub, and `rxjs`. Tailwind is
+a build dependency. `@angular/cdk` is the only component library, and only for
+`CdkStepper`, which supplies the checkout wizard's state machine and no styling.
+
+**Contracts the client has to honour.** Two are worth naming because getting
+either wrong produces a 400 that reads like something else:
+
+- `BasketItem` requires `pictureUrl`, `brand` and `type` on every line, so
+  `BasketService.toBasketItem` sends all three.
+- `RegisterVM` requires `ConfirmPassword` and constrains `Password` with a regular
+  expression. `shared/validators/password.ts` mirrors that rule so the answer
+  arrives under the field rather than as a server error.
+
+**Tests.** Karma and Jasmine, 72 specs, `npm run test:ci` to run them headless.
+They cover the pager's windowing, the basket service's guards and its
+re-pricing-from-the-response rule, the catalogue cache, the breadcrumb
+derivation, the theme preference, toast de-duplication, the password rules and
+the order-event latency scaling.
+
+---
+
+## 9. If I rebuilt it today
 
 - .NET 8 or 10, minimal APIs, and .NET Aspire instead of hand-rolled Compose
   wiring.
