@@ -74,6 +74,10 @@ services:
       # comes up and then fails on the first basket read.
       - ConnectionStrings__Redis=redis
       - RabbitMqHost=amqp://guest:guest@rabbitowlet:5672
+      # Catalogue rows carry ContentSrcUrl + PictureUrl. Behind the gateway that is a
+      # relative path, routed to api.web's wwwroot by the /content/ location, so the
+      # browser fetches images from the same origin as everything else.
+      - ContentSrcUrl=/content/
       - ConnectionStrings__DefaultConnection=Server=owletsql;Database=appdb;User Id=sa;Password=${SA_PASSWORD};MultipleActiveResultSets=true;TrustServerCertificate=True
       - ConnectionStrings__IdentityConnection=Server=owletsql;Database=identitydb;User Id=sa;Password=${SA_PASSWORD};MultipleActiveResultSets=true;TrustServerCertificate=True
     ports:

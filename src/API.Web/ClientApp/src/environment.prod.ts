@@ -4,9 +4,13 @@
 // nginx gateway on port 5200 and the gateway routes each prefix to a service:
 //
 //   /                    -> api.web    (this bundle)
+//   /content/...         -> api.web    (product images, from its wwwroot)
 //   /svc/identity/...    -> api.identity
 //   /svc/basket/...      -> api.basket
 //   /svc/admin/...       -> api.admin
+//
+// The picture URL on a catalogue row is relative for the same reason: API.Basket
+// prefixes it with ContentSrcUrl, which Compose sets to /content/.
 //
 // The /svc prefix keeps the gateway's routes out of the Angular router's namespace:
 // the client already owns /basket, /admin, /orders and /shop.
