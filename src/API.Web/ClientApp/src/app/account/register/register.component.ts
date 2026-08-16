@@ -1,38 +1,47 @@
-import { Component } from '@angular/core';
-import { AsyncValidatorFn, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject } from '@angular/core';
+import {
+  AsyncValidatorFn,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { of, timer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { EMAIL_PATTERN } from 'src/app/shared/validators/email';
 import { AccountService } from '../account.service';
 import { TextInputComponent } from '../../shared/components/text-input/text-input.component';
-import { NgIf, NgFor } from '@angular/common';
+
 
 @Component({
     selector: 'app-register',
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
-    imports: [ReactiveFormsModule, TextInputComponent, NgIf, NgFor, RouterLink]
+    imports: [ReactiveFormsModule, TextInputComponent, RouterLink]
 })
 export class RegisterComponent {
-  registerForm = this.fb.group({
-    displayName: ['', [Validators.required]],
-    email: [
-      '',
-      [Validators.required, Validators.pattern(EMAIL_PATTERN)],
-      [this.validateEmailNotTaken()],
-    ],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+  private accountService = inject(AccountService);
+  private router = inject(Router);
+
+  readonly registerForm = new FormGroup({
+    displayName: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.pattern(EMAIL_PATTERN)],
+      asyncValidators: [this.validateEmailNotTaken()],
+    }),
+    password: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(6)],
+    }),
   });
 
   errors: string[] = [];
   submitting = false;
-
-  constructor(
-    private fb: FormBuilder,
-    private accountService: AccountService,
-    private router: Router
-  ) {}
 
   onSubmit(): void {
     if (this.registerForm.invalid || this.submitting) {

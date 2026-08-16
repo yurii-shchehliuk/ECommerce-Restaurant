@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { IProduct } from 'src/app/shared/models/product';
 import { BasketService } from 'src/app/basket/basket.service';
 import { RouterLink } from '@angular/router';
@@ -12,12 +12,11 @@ import { CurrencyPipe } from '@angular/common';
     imports: [RouterLink, IconComponent, CurrencyPipe]
 })
 export class ProductItemComponent {
-  @Input() product: IProduct;
+  readonly product = input.required<IProduct>();
 
-  constructor(private basketService: BasketService) { }
+  private basketService = inject(BasketService);
 
-  addItemToBasket() {
-    this.basketService.addItemToBasket(this.product);
+  addItemToBasket(): void {
+    this.basketService.addItemToBasket(this.product());
   }
-
 }

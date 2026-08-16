@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { environment } from 'src/environment';
-import { NgFor, NgIf } from '@angular/common';
+
 
 interface Probe {
   label: string;
@@ -22,9 +22,12 @@ interface Probe {
     selector: 'app-test-error',
     templateUrl: './test-error.component.html',
     styleUrls: ['./test-error.component.scss'],
-    imports: [NgFor, NgIf]
+    imports: []
 })
 export class TestErrorComponent {
+  private http = inject(HttpClient);
+  private toastr = inject(ToastService);
+
   private baseUrl = environment.identityApi.api;
 
   readonly statusProbes: Probe[] = [
@@ -54,8 +57,6 @@ export class TestErrorComponent {
 
   validationErrors: string[] = [];
   lastResult: { path: string; status: string; ok: boolean } | null = null;
-
-  constructor(private http: HttpClient, private toastr: ToastService) {}
 
   run(probe: Probe): void {
     this.validationErrors = [];

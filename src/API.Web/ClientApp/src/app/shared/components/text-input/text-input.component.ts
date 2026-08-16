@@ -1,6 +1,6 @@
-import { Component, ElementRef, Input, OnInit, Self, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild, inject } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, NgControl } from '@angular/forms';
-import { NgIf } from '@angular/common';
+
 
 let nextId = 0;
 
@@ -15,9 +15,11 @@ let nextId = 0;
     selector: 'app-text-input',
     templateUrl: './text-input.component.html',
     styleUrls: ['./text-input.component.scss'],
-    imports: [NgIf]
+    imports: []
 })
 export class TextInputComponent implements OnInit, ControlValueAccessor {
+  controlDir = inject(NgControl, { self: true });
+
   @ViewChild('input', { static: true }) input!: ElementRef<HTMLInputElement>;
 
   @Input() type = 'text';
@@ -26,7 +28,7 @@ export class TextInputComponent implements OnInit, ControlValueAccessor {
 
   readonly inputId = `text-input-${nextId++}`;
 
-  constructor(@Self() public controlDir: NgControl) {
+  constructor() {
     this.controlDir.valueAccessor = this;
   }
 

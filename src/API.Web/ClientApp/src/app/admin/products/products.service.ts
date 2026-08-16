@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environment';
 import { IPagination } from 'src/app/shared/models/pagination';
@@ -10,9 +10,9 @@ import { IPagination } from 'src/app/shared/models/pagination';
  */
 @Injectable({ providedIn: 'root' })
 export class AdminProductsService {
-  private baseUrl = `${environment.basketApi}products`;
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {}
+  private baseUrl = `${environment.basketApi}products`;
 
   getAll(pageSize = 50): Observable<IPagination> {
     return this.http.get<IPagination>(`${this.baseUrl}?pageIndex=1&pageSize=${pageSize}`);

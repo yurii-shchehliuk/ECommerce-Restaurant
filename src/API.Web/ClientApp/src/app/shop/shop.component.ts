@@ -1,10 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { IBrand } from '../shared/models/brand';
 import { IProduct } from '../shared/models/product';
 import { IType } from '../shared/models/productType';
 import { ShopParams } from '../shared/models/shopParams';
 import { ShopService } from './shop.service';
-import { NgFor, NgIf } from '@angular/common';
+
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { PagingHeaderComponent } from '../shared/components/paging-header/paging-header.component';
 import { ProductItemComponent } from './product-item/product-item.component';
@@ -14,9 +14,11 @@ import { PagerComponent } from '../shared/components/pager/pager.component';
     selector: 'app-shop',
     templateUrl: './shop.component.html',
     styleUrls: ['./shop.component.scss'],
-    imports: [NgFor, ReactiveFormsModule, PagingHeaderComponent, FormsModule, NgIf, ProductItemComponent, PagerComponent]
+    imports: [ReactiveFormsModule, PagingHeaderComponent, FormsModule, ProductItemComponent, PagerComponent]
 })
 export class ShopComponent implements OnInit {
+  private shopService = inject(ShopService);
+
   @ViewChild('search') searchTerm!: ElementRef<HTMLInputElement>;
 
   products: IProduct[] = [];
@@ -33,7 +35,7 @@ export class ShopComponent implements OnInit {
     { name: 'Price: high to low', value: 'priceDesc' },
   ];
 
-  constructor(private shopService: ShopService) {
+  constructor() {
     this.shopParams = this.shopService.getShopParams();
   }
 

@@ -1,15 +1,19 @@
 <div class="toast-host" aria-live="polite" aria-atomic="true">
-  <div *ngFor="let toast of toasts$ | async; trackBy: trackById" class="toast-host__item"
-       [class.toast-host__item--success]="toast.kind === 'success'"
-       [class.toast-host__item--error]="toast.kind === 'error'"
-       role="status">
-    <div class="toast-host__body">
-      <strong *ngIf="toast.title" class="d-block">{{ toast.title }}</strong>
-      <span>{{ toast.message }}</span>
+  @for (toast of toasts$ | async; track trackById($index, toast)) {
+    <div class="toast-host__item"
+      [class.toast-host__item--success]="toast.kind === 'success'"
+      [class.toast-host__item--error]="toast.kind === 'error'"
+      role="status">
+      <div class="toast-host__body">
+        @if (toast.title) {
+          <strong class="d-block">{{ toast.title }}</strong>
+        }
+        <span>{{ toast.message }}</span>
+      </div>
+      <button type="button" class="toast-host__close" (click)="dismiss(toast)"
+        aria-label="Dismiss notification">
+        <app-icon name="x" [size]="16" />
+      </button>
     </div>
-    <button type="button" class="toast-host__close" (click)="dismiss(toast)"
-            aria-label="Dismiss notification">
-      <app-icon name="x" [size]="16"></app-icon>
-    </button>
-  </div>
+  }
 </div>

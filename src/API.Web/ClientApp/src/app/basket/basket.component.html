@@ -1,27 +1,33 @@
 <div class="container my-5">
-  <ng-container *ngIf="(basket$ | async) as basket; else emptyBasket">
-    <ng-container *ngIf="basket.items.length; else emptyBasket">
+  @if ((basket$ | async); as basket) {
+    @if (basket.items.length) {
       <app-basket-summary [items]="basket.items" (increment)="incrementItemQuantity($event)"
-                          (decrement)="decrementItemQuantity($event)"
-                          (remove)="removeBasketItem($event)"></app-basket-summary>
-
+        (decrement)="decrementItemQuantity($event)"
+      (remove)="removeBasketItem($event)" />
       <div class="row justify-content-end mt-4">
         <div class="col-lg-5">
-          <app-order-totals *ngIf="(basketTotals$ | async) as totals"
-                            [shippingPrice]="totals.shipping" [subtotal]="totals.subtotal"
-                            [total]="totals.total"></app-order-totals>
+          @if ((basketTotals$ | async); as totals) {
+            <app-order-totals [shippingPrice]="totals.shipping" [subtotal]="totals.subtotal"
+            [total]="totals.total" />
+          }
           <a routerLink="/checkout" class="btn btn-primary w-100">Proceed to checkout</a>
         </div>
       </div>
-    </ng-container>
-  </ng-container>
-
-  <ng-template #emptyBasket>
+    } @else {
+      <div class="py-5 text-center">
+        <app-icon name="cart" [size]="48" class="text-secondary" />
+        <h2 class="h4 mt-3">Your basket is empty</h2>
+        <p class="text-muted">Add something from the menu and it will show up here.</p>
+        <a routerLink="/shop" class="btn btn-primary">Browse the menu</a>
+      </div>
+    }
+  } @else {
     <div class="py-5 text-center">
-      <app-icon name="cart" [size]="48" class="text-secondary"></app-icon>
+      <app-icon name="cart" [size]="48" class="text-secondary" />
       <h2 class="h4 mt-3">Your basket is empty</h2>
       <p class="text-muted">Add something from the menu and it will show up here.</p>
       <a routerLink="/shop" class="btn btn-primary">Browse the menu</a>
     </div>
-  </ng-template>
+  }
+
 </div>

@@ -1,8 +1,11 @@
-<div class="container mt-5">
-    <app-icon name="check-circle" [size]="64" class="text-success"></app-icon>
-    <h2>Thank you. Your order is confirmed</h2>
-    <p class="mb-4">Your order has not shipped yet, but this is to be expected as we are not a real store!</p>
-    <button *ngIf="order" routerLink="/orders/{{order?.id}}" class="btn btn-outline-success">View your order</button>
-    <button *ngIf="!order" routerLink="/orders" class="btn btn-outline-success">View your orders</button>
-
+<div class="container my-5 text-center">
+  <app-icon name="check-circle" [size]="64" class="text-success" />
+  <h1 class="h3 mt-3">Order confirmed</h1>
+  @if (order; as placed) {
+    <p class="text-muted">Order #{{ placed.id }} has been placed.</p>
+    <a [routerLink]="['/orders', placed.id]" class="btn btn-primary">View this order</a>
+  } @else {
+    <p class="text-muted">Your order has been placed.</p>
+    <a routerLink="/orders" class="btn btn-primary">View your orders</a>
+  }
 </div>

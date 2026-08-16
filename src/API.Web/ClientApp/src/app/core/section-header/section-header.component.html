@@ -1,15 +1,23 @@
-<section *ngIf="crumbs.length" class="bg-light border-bottom py-3">
-  <div class="container d-flex flex-wrap justify-content-between align-items-baseline gap-2">
-    <h1 class="h4 mb-0 text-capitalize">{{ title }}</h1>
-    <nav aria-label="Breadcrumb">
-      <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-        <li class="breadcrumb-item" *ngFor="let crumb of crumbs; let last = last"
-            [class.active]="last" [attr.aria-current]="last ? 'page' : null">
-          <a *ngIf="!last" [routerLink]="crumb.url" class="text-capitalize">{{ crumb.label }}</a>
-          <span *ngIf="last" class="text-capitalize">{{ crumb.label }}</span>
-        </li>
-      </ol>
-    </nav>
-  </div>
-</section>
+@if (crumbs.length) {
+  <section class="bg-light border-bottom py-3">
+    <div class="container d-flex flex-wrap justify-content-between align-items-baseline gap-2">
+      <h1 class="h4 mb-0 text-capitalize">{{ title }}</h1>
+      <nav aria-label="Breadcrumb">
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+          @for (crumb of crumbs; track crumb; let last = $last) {
+            <li class="breadcrumb-item"
+              [class.active]="last" [attr.aria-current]="last ? 'page' : null">
+              @if (!last) {
+                <a [routerLink]="crumb.url" class="text-capitalize">{{ crumb.label }}</a>
+              }
+              @if (last) {
+                <span class="text-capitalize">{{ crumb.label }}</span>
+              }
+            </li>
+          }
+        </ol>
+      </nav>
+    </div>
+  </section>
+}

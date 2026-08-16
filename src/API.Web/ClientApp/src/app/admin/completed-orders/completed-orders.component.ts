@@ -1,21 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { IOrder } from 'src/app/shared/models/order';
 import { CompletedOrdersService } from './completed-orders.service';
-import { NgIf, NgFor, CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-completed-orders',
     templateUrl: './completed-orders.component.html',
     styleUrls: ['./completed-orders.component.scss'],
-    imports: [NgIf, NgFor, RouterLink, CurrencyPipe, DatePipe]
+    imports: [RouterLink, CurrencyPipe, DatePipe]
 })
 export class CompletedOrdersComponent implements OnInit {
+  private service = inject(CompletedOrdersService);
+
   orders: IOrder[] = [];
   loading = true;
   error: string | null = null;
-
-  constructor(private service: CompletedOrdersService) {}
 
   ngOnInit(): void {
     this.service.getOrders().subscribe({

@@ -1,36 +1,45 @@
 <div class="container my-4" style="max-width: 44rem">
   <h1 class="h4">Chat</h1>
 
-  <p *ngIf="status === 'connecting'">Connecting&hellip;</p>
-  <p *ngIf="status === 'failed'" class="text-danger">
-    Could not reach the chat hub on API.Identity.
-  </p>
+  @if (status === 'connecting') {
+    <p>Connecting&hellip;</p>
+  }
+  @if (status === 'failed') {
+    <p class="text-danger">
+      Could not reach the chat hub on API.Identity.
+    </p>
+  }
 
-  <p *ngIf="!userName" class="text-muted">
-    <a routerLink="/account/login">Sign in</a> to post under your own name.
-  </p>
+  @if (!userName) {
+    <p class="text-muted">
+      <a routerLink="/account/login">Sign in</a> to post under your own name.
+    </p>
+  }
 
-  <ul class="list-unstyled" *ngIf="messages.length; else empty">
-    <li *ngFor="let message of messages" class="mb-2">
-      <div class="d-flex" [class.justify-content-end]="isMine(message)">
-        <div class="border rounded p-2">
-          <strong class="d-block small">{{ message.userName || 'Anonymous' }}</strong>
-          <span>{{ message.messageBody }}</span>
-          <span class="d-block small text-muted">{{ message.createdAt | date: 'shortTime' }}</span>
-        </div>
-      </div>
-    </li>
-  </ul>
-  <ng-template #empty>
+  @if (messages.length) {
+    <ul class="list-unstyled">
+      @for (message of messages; track message) {
+        <li class="mb-2">
+          <div class="d-flex" [class.justify-content-end]="isMine(message)">
+            <div class="border rounded p-2">
+              <strong class="d-block small">{{ message.userName || 'Anonymous' }}</strong>
+              <span>{{ message.messageBody }}</span>
+              <span class="d-block small text-muted">{{ message.createdAt | date: 'shortTime' }}</span>
+            </div>
+          </div>
+        </li>
+      }
+    </ul>
+  } @else {
     <p class="text-muted">No messages yet.</p>
-  </ng-template>
+  }
 
   <form class="d-flex gap-2" (ngSubmit)="send()">
     <label class="visually-hidden" for="chat-message">Message</label>
     <input id="chat-message" class="form-control" [(ngModel)]="draft" name="draft"
-           placeholder="Type a message" autocomplete="off" />
+      placeholder="Type a message" autocomplete="off" />
     <button type="submit" class="btn btn-primary" [disabled]="status !== 'connected'">
-      <app-icon name="send" [size]="16"></app-icon>
+      <app-icon name="send" [size]="16" />
       <span class="visually-hidden">Send</span>
     </button>
   </form>

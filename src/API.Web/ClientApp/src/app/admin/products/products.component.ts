@@ -1,20 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { IProduct } from 'src/app/shared/models/product';
 import { AdminProductsService } from './products.service';
-import { NgIf, NgFor, CurrencyPipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
     selector: 'app-admin-products',
     templateUrl: './products.component.html',
     styleUrls: ['./products.component.scss'],
-    imports: [NgIf, NgFor, CurrencyPipe]
+    imports: [CurrencyPipe]
 })
 export class ProductsComponent implements OnInit {
+  private service = inject(AdminProductsService);
+
   products: IProduct[] = [];
   loading = true;
   error: string | null = null;
-
-  constructor(private service: AdminProductsService) {}
 
   ngOnInit(): void {
     this.service.getAll().subscribe({

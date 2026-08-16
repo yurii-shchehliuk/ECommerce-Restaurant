@@ -1,15 +1,17 @@
 <nav aria-label="Checkout progress">
   <ol class="nav nav-pills nav-fill mb-4">
-    <li class="nav-item" *ngFor="let step of steps; let i = index">
-      <button type="button" class="nav-link w-100"
-              [class.active]="selectedIndex === i"
-              [disabled]="i > selectedIndex"
-              [attr.aria-current]="selectedIndex === i ? 'step' : null"
-              (click)="select(i)">
-        <span class="me-2">{{ i + 1 }}</span>{{ step.label }}
-      </button>
-    </li>
+    @for (step of steps; track step; let i = $index) {
+      <li class="nav-item">
+        <button type="button" class="nav-link w-100"
+          [class.active]="selectedIndex === i"
+          [disabled]="i > selectedIndex"
+          [attr.aria-current]="selectedIndex === i ? 'step' : null"
+          (click)="select(i)">
+          <span class="me-2">{{ i + 1 }}</span>{{ step.label }}
+        </button>
+      </li>
+    }
   </ol>
 </nav>
 
-<ng-container [ngTemplateOutlet]="selected ? selected.content : null"></ng-container>
+<ng-container [ngTemplateOutlet]="selected ? selected.content : null" />

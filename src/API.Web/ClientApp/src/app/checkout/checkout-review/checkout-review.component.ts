@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { CdkStepper, CdkStepperPrevious } from '@angular/cdk/stepper';
 import { Observable } from 'rxjs';
 import { BasketService } from 'src/app/basket/basket.service';
@@ -14,13 +14,13 @@ import { AsyncPipe } from '@angular/common';
     imports: [BasketSummaryComponent, CdkStepperPrevious, IconComponent, AsyncPipe]
 })
 export class CheckoutReviewComponent implements OnInit {
+  private basketService = inject(BasketService);
+
   @Input() appStepper!: CdkStepper;
 
   basket$!: Observable<IBasket | null>;
   creatingIntent = false;
   error: string | null = null;
-
-  constructor(private basketService: BasketService) {}
 
   ngOnInit(): void {
     this.basket$ = this.basketService.basket$;

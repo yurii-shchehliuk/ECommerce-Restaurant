@@ -4,25 +4,29 @@
       <h2 class="h6 text-uppercase">Sort</h2>
       <label class="visually-hidden" for="sort">Sort products</label>
       <select id="sort" class="form-select mb-4" (change)="onSortSelected($any($event.target).value)">
-        <option *ngFor="let option of sortOptions" [value]="option.value"
-                [selected]="shopParams.sort === option.value">{{ option.name }}</option>
+        @for (option of sortOptions; track option) {
+          <option [value]="option.value"
+          [selected]="shopParams.sort === option.value">{{ option.name }}</option>
+        }
       </select>
 
       <h2 class="h6 text-uppercase">Types</h2>
       <ul class="list-group mb-4">
-        <li *ngFor="let type of types">
-          <button type="button" class="list-group-item list-group-item-action w-100 text-start"
-                  [class.active]="type.id === shopParams.typeId"
-                  [attr.aria-pressed]="type.id === shopParams.typeId"
-                  (click)="onTypeSelected(type.id)">{{ type.name }}</button>
-        </li>
+        @for (type of types; track type) {
+          <li>
+            <button type="button" class="list-group-item list-group-item-action w-100 text-start"
+              [class.active]="type.id === shopParams.typeId"
+              [attr.aria-pressed]="type.id === shopParams.typeId"
+            (click)="onTypeSelected(type.id)">{{ type.name }}</button>
+          </li>
+        }
       </ul>
     </aside>
 
     <section class="col-lg-9">
       <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
         <app-paging-header [totalCount]="totalCount" [pageSize]="shopParams.pageSize"
-                           [pageNumber]="shopParams.pageNumber"></app-paging-header>
+        [pageNumber]="shopParams.pageNumber" />
 
         <form class="d-flex gap-2" (ngSubmit)="onSearch()">
           <label class="visually-hidden" for="search">Search products</label>
@@ -32,25 +36,35 @@
         </form>
       </div>
 
-      <p *ngIf="loading">Loading&hellip;</p>
-      <p *ngIf="error" class="text-danger">{{ error }}</p>
+      @if (loading) {
+        <p>Loading&hellip;</p>
+      }
+      @if (error) {
+        <p class="text-danger">{{ error }}</p>
+      }
 
-      <div class="row g-4" *ngIf="!loading && !error">
-        <div class="col-sm-6 col-xl-4" *ngFor="let item of products">
-          <app-product-item [product]="item"></app-product-item>
+      @if (!loading && !error) {
+        <div class="row g-4">
+          @for (item of products; track item) {
+            <div class="col-sm-6 col-xl-4">
+              <app-product-item [product]="item" />
+            </div>
+          }
         </div>
-      </div>
+      }
 
-      <div *ngIf="!loading && !error && !products.length" class="py-5 text-center">
-        <p class="mb-2">Nothing matches that search.</p>
-        <button type="button" class="btn btn-outline-primary" (click)="onReset()">
-          Clear filters
-        </button>
-      </div>
+      @if (!loading && !error && !products.length) {
+        <div class="py-5 text-center">
+          <p class="mb-2">Nothing matches that search.</p>
+          <button type="button" class="btn btn-outline-primary" (click)="onReset()">
+            Clear filters
+          </button>
+        </div>
+      }
 
       <div class="d-flex justify-content-center mt-4">
         <app-pager [pageSize]="shopParams.pageSize" [pageNumber]="shopParams.pageNumber"
-                   [totalCount]="totalCount" (pageChanged)="onPageChanged($event)"></app-pager>
+        [totalCount]="totalCount" (pageChanged)="onPageChanged($event)" />
       </div>
     </section>
   </div>

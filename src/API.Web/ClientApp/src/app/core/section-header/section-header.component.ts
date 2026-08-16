@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { Subscription, filter, startWith } from 'rxjs';
-import { NgIf, NgFor } from '@angular/common';
+
 
 export interface Crumb {
   label: string;
@@ -20,9 +20,11 @@ export interface Crumb {
     selector: 'app-section-header',
     templateUrl: './section-header.component.html',
     styleUrls: ['./section-header.component.scss'],
-    imports: [NgIf, RouterLink, NgFor]
+    imports: [RouterLink]
 })
 export class SectionHeaderComponent implements OnInit, OnDestroy {
+  private router = inject(Router);
+
   crumbs: Crumb[] = [];
 
   private subscription = new Subscription();
@@ -46,8 +48,6 @@ export class SectionHeaderComponent implements OnInit, OnDestroy {
     'not-found': 'Not found',
     'server-error': 'Server error',
   };
-
-  constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.subscription.add(

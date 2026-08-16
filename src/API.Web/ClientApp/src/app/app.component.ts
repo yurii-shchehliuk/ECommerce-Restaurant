@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AccountService } from './account/account.service';
 import { BasketService } from './basket/basket.service';
 import { BusyService } from './core/services/busy.service';
 import { NavBarComponent } from './core/nav-bar/nav-bar.component';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { SectionHeaderComponent } from './core/section-header/section-header.component';
 import { RouterOutlet } from '@angular/router';
 import { ToastHostComponent } from './core/toast-host/toast-host.component';
@@ -13,16 +13,16 @@ import { ToastHostComponent } from './core/toast-host/toast-host.component';
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
-    imports: [NavBarComponent, NgIf, SectionHeaderComponent, RouterOutlet, ToastHostComponent, AsyncPipe]
+    imports: [NavBarComponent, SectionHeaderComponent, RouterOutlet, ToastHostComponent, AsyncPipe]
 })
 export class AppComponent implements OnInit {
+  private basketService = inject(BasketService);
+  private accountService = inject(AccountService);
+  private busyService = inject(BusyService);
+
   busy$: Observable<boolean>;
 
-  constructor(
-    private basketService: BasketService,
-    private accountService: AccountService,
-    private busyService: BusyService
-  ) {
+  constructor() {
     this.busy$ = this.busyService.busy$;
   }
 

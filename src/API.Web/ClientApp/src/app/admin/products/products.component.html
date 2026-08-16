@@ -1,27 +1,37 @@
 <div class="container my-4">
   <h1 class="h4 mb-3">Products</h1>
 
-  <p *ngIf="loading">Loading&hellip;</p>
-  <p *ngIf="error" class="text-danger">{{ error }}</p>
+  @if (loading) {
+    <p>Loading&hellip;</p>
+  }
+  @if (error) {
+    <p class="text-danger">{{ error }}</p>
+  }
 
-  <table *ngIf="!loading && !error && products.length" class="table align-middle">
-    <thead>
-      <tr>
-        <th scope="col">Product</th>
-        <th scope="col">Type</th>
-        <th scope="col">Brand</th>
-        <th scope="col" class="text-end">Price</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let product of products">
-        <td>{{ product.name }}</td>
-        <td>{{ product.productType }}</td>
-        <td>{{ product.productBrand }}</td>
-        <td class="text-end">{{ product.price | currency }}</td>
-      </tr>
-    </tbody>
-  </table>
+  @if (!loading && !error && products.length) {
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th scope="col">Product</th>
+          <th scope="col">Type</th>
+          <th scope="col">Brand</th>
+          <th scope="col" class="text-end">Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (product of products; track product) {
+          <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.productType }}</td>
+            <td>{{ product.productBrand }}</td>
+            <td class="text-end">{{ product.price | currency }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
 
-  <p *ngIf="!loading && !error && !products.length">The catalogue is empty.</p>
+  @if (!loading && !error && !products.length) {
+    <p>The catalogue is empty.</p>
+  }
 </div>

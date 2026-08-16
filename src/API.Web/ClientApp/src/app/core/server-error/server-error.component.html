@@ -2,10 +2,12 @@
   <h1 class="h3">Something went wrong on the server</h1>
   <p class="text-muted">The request reached a service and it failed while handling it.</p>
 
-  <ng-container *ngIf="error">
+  @if (error) {
     <p class="text-danger">{{ error.message }}</p>
-    <pre *ngIf="error.details" class="bg-light border rounded p-3 small"><code>{{ error.details }}</code></pre>
-  </ng-container>
+    @if (error.details) {
+      <pre class="bg-light border rounded p-3 small"><code>{{ error.details }}</code></pre>
+    }
+  }
 
   <a routerLink="/" class="btn btn-outline-secondary">Back to the storefront</a>
 </div>

@@ -8,50 +8,63 @@
         Refreshes every 2s.
       </p>
     </div>
-    <span class="badge rounded-pill bg-success live" *ngIf="!error">
-      <span class="dot"></span> live
-    </span>
-    <span class="badge rounded-pill bg-danger" *ngIf="error">disconnected</span>
+    @if (error) {
+      <span class="badge rounded-pill bg-danger d-inline-flex align-items-center gap-1">
+        <app-icon name="alert" [size]="14" /> disconnected
+      </span>
+    } @else {
+      <span class="badge rounded-pill bg-success live">
+        <span class="dot"></span> live
+      </span>
+    }
   </div>
 
-  <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+  @if (error) {
+    <div class="alert alert-danger">{{ error }}</div>
+  }
 
-  <div class="alert alert-light border" *ngIf="loaded && !error && events.length === 0">
-    Nothing consumed yet. Place an order in the storefront and it will appear here.
-  </div>
+  @if (loaded && !error && events.length === 0) {
+    <div class="alert alert-light border">
+      Nothing consumed yet. Place an order in the storefront and it will appear here.
+    </div>
+  }
 
-  <div class="table-responsive" *ngIf="events.length > 0">
-    <table class="table table-hover align-middle mb-0 bg-white shadow-sm rounded">
-      <thead class="table-light">
-        <tr>
-          <th>Order</th>
-          <th>Buyer</th>
-          <th class="text-end">Total</th>
-          <th class="text-center">Items</th>
-          <th>Status</th>
-          <th>Published (UTC)</th>
-          <th>Consumed (UTC)</th>
-          <th class="text-end">Bus latency</th>
-          <th>Event</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let event of events; trackBy: trackByEventId">
-          <th scope="row"># {{ event.orderId }}</th>
-          <td>{{ event.buyerEmail }}</td>
-          <td class="text-end">{{ event.total | currency }}</td>
-          <td class="text-center">{{ event.itemCount }}</td>
-          <td>
-            <span class="badge bg-secondary">{{ event.status }}</span>
-          </td>
-          <td class="text-nowrap small">{{ asUtc(event.occurredAtUtc) | date: "HH:mm:ss.SSS":"UTC" }}</td>
-          <td class="text-nowrap small">{{ asUtc(event.receivedAtUtc) | date: "HH:mm:ss.SSS":"UTC" }}</td>
-          <td class="text-end text-nowrap">
-            <span class="badge bg-light text-dark border">{{ busLatencyMs(event) }} ms</span>
-          </td>
-          <td class="small text-muted">{{ shortId(event.eventId) }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  @if (events.length > 0) {
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0 bg-white shadow-sm rounded">
+        <thead class="table-light">
+          <tr>
+            <th>Order</th>
+            <th>Buyer</th>
+            <th class="text-end">Total</th>
+            <th class="text-center">Items</th>
+            <th>Status</th>
+            <th>Published (UTC)</th>
+            <th>Consumed (UTC)</th>
+            <th class="text-end">Bus latency</th>
+            <th>Event</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (event of events; track event.eventId) {
+            <tr>
+              <th scope="row"># {{ event.orderId }}</th>
+              <td>{{ event.buyerEmail }}</td>
+              <td class="text-end">{{ event.total | currency }}</td>
+              <td class="text-center">{{ event.itemCount }}</td>
+              <td>
+                <span class="badge bg-secondary">{{ event.status }}</span>
+              </td>
+              <td class="text-nowrap small">{{ asUtc(event.occurredAtUtc) | date: "HH:mm:ss.SSS":"UTC" }}</td>
+              <td class="text-nowrap small">{{ asUtc(event.receivedAtUtc) | date: "HH:mm:ss.SSS":"UTC" }}</td>
+              <td class="text-end text-nowrap">
+                <span class="badge bg-light text-dark border">{{ busLatencyMs(event) }} ms</span>
+              </td>
+              <td class="small text-muted">{{ shortId(event.eventId) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 </div>

@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Toast, ToastService } from '../services/toast.service';
-import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { IconComponent } from '../../shared/components/icon/icon.component';
 
 @Component({
@@ -9,16 +9,16 @@ import { IconComponent } from '../../shared/components/icon/icon.component';
     templateUrl: './toast-host.component.html',
     styleUrls: ['./toast-host.component.scss'],
     imports: [
-        NgFor,
-        NgIf,
-        IconComponent,
-        AsyncPipe,
-    ],
+    IconComponent,
+    AsyncPipe
+],
 })
 export class ToastHostComponent {
+  private toastService = inject(ToastService);
+
   toasts$: Observable<Toast[]>;
 
-  constructor(private toastService: ToastService) {
+  constructor() {
     this.toasts$ = this.toastService.toasts$;
   }
 

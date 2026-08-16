@@ -1,15 +1,20 @@
 <div class="container my-5">
-  <p *ngIf="loading">Loading&hellip;</p>
-  <p *ngIf="error" class="text-danger">{{ error }}</p>
+  @if (loading) {
+    <p>Loading&hellip;</p>
+  }
+  @if (error) {
+    <p class="text-danger">{{ error }}</p>
+  }
 
-  <div class="row g-4" *ngIf="order as detail">
-    <div class="col-lg-8">
-      <app-basket-summary [items]="detail.orderItems" [isBasket]="false" [isOrder]="true">
-      </app-basket-summary>
+  @if (order; as detail) {
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <app-basket-summary [items]="detail.orderItems" [editable]="false" />
+      </div>
+      <div class="col-lg-4">
+        <app-order-totals [shippingPrice]="detail.shippingPrice" [subtotal]="detail.subtotal"
+        [total]="detail.total" />
+      </div>
     </div>
-    <div class="col-lg-4">
-      <app-order-totals [shippingPrice]="detail.shippingPrice" [subtotal]="detail.subtotal"
-                        [total]="detail.total"></app-order-totals>
-    </div>
-  </div>
+  }
 </div>

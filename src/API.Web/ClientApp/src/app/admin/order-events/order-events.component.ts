@@ -1,30 +1,29 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Subscription, interval, startWith, switchMap } from 'rxjs';
+import { IconComponent } from '../../shared/components/icon/icon.component';
 import { OrderEventsService, ReceivedOrderEvent } from './order-events.service';
-import { NgIf, NgFor, CurrencyPipe, DatePipe } from '@angular/common';
 
 /**
  * Live view of what API.Admin has consumed off RabbitMQ.
  *
- * It polls rather than subscribing to anything: there is no server push from Admin
- * to the browser, and pretending otherwise would be the sort of claim this project
- * has been cleaned up to stop making. Two seconds is fast enough to watch a row
- * appear moments after a checkout.
+ * It polls, because there is no server push from Admin to the browser. Two seconds
+ * is fast enough to watch a row appear moments after a checkout, and the request is
+ * excluded from the global progress indicator so the page does not flicker.
  */
 @Component({
-    selector: 'app-order-events',
-    templateUrl: './order-events.component.html',
-    styleUrls: ['./order-events.component.scss'],
-    imports: [NgIf, NgFor, CurrencyPipe, DatePipe]
+  selector: 'app-order-events',
+  templateUrl: './order-events.component.html',
+  styleUrls: ['./order-events.component.scss'],
+  imports: [CurrencyPipe, DatePipe, IconComponent],
 })
 export class OrderEventsComponent implements OnInit, OnDestroy {
   events: ReceivedOrderEvent[] = [];
-  error: string = null;
+  error: string | null = null;
   loaded = false;
 
-  private subscription: Subscription;
-
-  constructor(private service: OrderEventsService) {}
+  private subscription?: Subscription;
+  private service = inject(OrderEventsService);
 
   ngOnInit(): void {
     this.subscription = interval(2000)
@@ -38,10 +37,9 @@ export class OrderEventsComponent implements OnInit, OnDestroy {
           this.error = null;
           this.loaded = true;
         },
-        error: (err) => {
+        error: () => {
           this.error = 'Could not reach API.Admin. Is the container running?';
           this.loaded = true;
-          console.log('getReceivedEvents', err);
         },
       });
   }
@@ -54,23 +52,23 @@ export class OrderEventsComponent implements OnInit, OnDestroy {
    * Milliseconds between API.Basket publishing the event and API.Admin consuming it.
    * This is the only number on the page that says anything about the bus itself.
    */
-  busLatencyMs(event: ReceivedOrderEvent): number {
+  busLatencyMs(event: ReceivedOrderEvent): number | null {
     const published = Date.parse(this.asUtc(event.occurredAtUtc));
     const consumed = Date.parse(this.asUtc(event.receivedAtUtc));
 
-    if (isNaN(published) || isNaN(consumed)) return null;
+    if (isNaN(published) || isNaN(consumed)) {
+      return null;
+    }
 
     return Math.max(0, Math.round(consumed - published));
   }
 
   /** The API serialises DateTime with no offset; these values are UTC by contract. */
   asUtc(value: string): string {
-    if (!value) return value;
+    if (!value) {
+      return value;
+    }
     return value.endsWith('Z') ? value : `${value}Z`;
-  }
-
-  trackByEventId(_index: number, event: ReceivedOrderEvent): string {
-    return event.eventId;
   }
 
   shortId(eventId: string): string {

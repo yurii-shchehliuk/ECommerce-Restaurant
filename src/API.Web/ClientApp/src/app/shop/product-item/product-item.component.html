@@ -1,15 +1,16 @@
 <article class="card h-100">
-  <a [routerLink]="['/shop', product.id]" class="text-decoration-none text-reset">
-    <img [src]="product.pictureUrl" [alt]="product.name" class="card-img-top" />
+  <a [routerLink]="['/shop', product().id]" class="text-decoration-none text-reset">
+    <img [src]="product().pictureUrl" [alt]="product().name" class="card-img-top" />
     <div class="card-body">
-      <h3 class="h6 mb-1">{{ product.name }}</h3>
-      <p class="mb-0">{{ product.price | currency }}</p>
+      <h3 class="h6 mb-1">{{ product().name }}</h3>
+      <p class="mb-0">{{ product().price | currency }}</p>
     </div>
   </a>
   <div class="card-footer bg-transparent border-0">
-    <button type="button" class="btn btn-outline-primary w-100 d-inline-flex align-items-center justify-content-center gap-2"
-            (click)="addItemToBasket()">
-      <app-icon name="cart" [size]="16"></app-icon> Add to basket
+    <button type="button"
+      class="btn btn-outline-primary w-100 d-inline-flex align-items-center justify-content-center gap-2"
+      (click)="addItemToBasket()">
+      <app-icon name="cart" [size]="16" /> Add to basket
     </button>
   </div>
 </article>

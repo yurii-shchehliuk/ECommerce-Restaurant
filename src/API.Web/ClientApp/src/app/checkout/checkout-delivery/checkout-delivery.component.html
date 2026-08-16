@@ -1,27 +1,34 @@
-<div class="mt-4" [formGroup]="checkoutForm">
-    <h4 class="mb-3">Choose your delivery method</h4>
-    <div class="row ms-5" formGroupName="deliveryForm">
-        <div class="col-6 form-group" *ngFor="let method of deliveryMethods">
-            <input type="radio"
-                id={{method.id}}
-                (click)="setShippingPrice(method)"
-                value={{method.id}}
-                formControlName="deliveryMethod"
-                class="form-check-input">
-            <label for="{{method.id}}" class="form-check-label">
-                <strong>{{method.shortName}} - {{method.price | currency}}</strong>
-                <br>
-                <span class="label-description">{{method.description}}</span>
-            </label>
+<div class="mt-4" [formGroup]="checkoutForm()">
+  <h2 class="h5 mb-3">Choose a delivery method</h2>
+
+  @if (error) {
+    <p class="text-danger">{{ error }}</p>
+  }
+
+  <fieldset formGroupName="deliveryForm" class="row g-3">
+    <legend class="visually-hidden">Delivery method</legend>
+    @for (method of deliveryMethods; track method.id) {
+      <div class="col-md-6">
+        <div class="form-check border rounded p-3 ps-5 h-100">
+          <input class="form-check-input" type="radio" [id]="'delivery-' + method.id"
+            [value]="method.id.toString()" formControlName="deliveryMethod"
+            (change)="setShippingPrice(method)" />
+          <label class="form-check-label" [for]="'delivery-' + method.id">
+            <strong>{{ method.shortName }} &mdash; {{ method.price | currency }}</strong>
+            <span class="d-block text-muted small">{{ method.description }}</span>
+          </label>
         </div>
-    </div>
+      </div>
+    }
+  </fieldset>
 </div>
 
-<div class="float-none d-flex justify-content-between flex-column flex-lg-row mb-5">
-    <button class="btn btn-outline-primary" cdkStepperPrevious>
-        <app-icon name="chevron-left" [size]="16"></app-icon> Back to address
-    </button>
-    <button [disabled]="checkoutForm.get('deliveryForm').invalid" class="btn btn-primary" cdkStepperNext>
-        Go to review <app-icon name="chevron-right" [size]="16"></app-icon>
-    </button>
+<div class="d-flex justify-content-between gap-2 my-4">
+  <button type="button" class="btn btn-outline-secondary" cdkStepperPrevious>
+    <app-icon name="chevron-left" [size]="16" /> Back to address
+  </button>
+  <button type="button" class="btn btn-primary"
+    [disabled]="checkoutForm().controls.deliveryForm.invalid" cdkStepperNext>
+    Go to review <app-icon name="chevron-right" [size]="16" />
+  </button>
 </div>

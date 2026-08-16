@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environment';
@@ -8,9 +8,9 @@ import { IOrder, IOrderToCreate } from '../shared/models/order';
 
 @Injectable({ providedIn: 'root' })
 export class CheckoutService {
-  private baseUrl = environment.basketApi;
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {}
+  private baseUrl = environment.basketApi;
 
   createOrder(order: IOrderToCreate): Observable<IOrder> {
     return this.http.post<IOrder>(`${this.baseUrl}orders`, order);

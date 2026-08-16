@@ -1,8 +1,8 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { MessageVM } from '../models/MessageVM';
 import { SignalRService } from '../signalr.service';
-import { NgIf, NgFor, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
@@ -17,9 +17,11 @@ import { RouterLink } from '@angular/router';
     selector: 'app-comment',
     templateUrl: './comment.component.html',
     styleUrls: ['./comment.component.scss'],
-    imports: [NgIf, ReactiveFormsModule, FormsModule, RouterLink, NgFor, DatePipe]
+    imports: [ReactiveFormsModule, FormsModule, RouterLink, DatePipe]
 })
 export class CommentComponent implements OnInit, OnDestroy {
+  private signalR = inject(SignalRService);
+
   @Input() productId!: string;
 
   comments: MessageVM[] = [];
@@ -28,8 +30,6 @@ export class CommentComponent implements OnInit, OnDestroy {
 
   private subscription = new Subscription();
   private incoming: MessageVM[] = [];
-
-  constructor(private signalR: SignalRService) {}
 
   ngOnInit(): void {
     this.userName = localStorage.getItem('user_name') ?? '';

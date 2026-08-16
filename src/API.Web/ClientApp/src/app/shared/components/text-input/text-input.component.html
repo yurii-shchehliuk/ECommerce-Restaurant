@@ -11,11 +11,21 @@
     [attr.autocomplete]="autocomplete"
     (input)="onChange($any($event.target).value)"
     (blur)="onTouched()"
-  />
-  <div class="invalid-feedback" [id]="inputId + '-error'" *ngIf="showError">
-    <span *ngIf="control?.errors?.['required']">{{ label }} is required</span>
-    <span *ngIf="control?.errors?.['pattern']">Enter a valid email address</span>
-    <span *ngIf="control?.errors?.['emailExists']">That email address is already registered</span>
-    <span *ngIf="control?.errors?.['minlength']">{{ label }} is too short</span>
-  </div>
+    />
+  @if (showError) {
+    <div class="invalid-feedback" [id]="inputId + '-error'">
+      @if (control?.errors?.['required']) {
+        <span>{{ label }} is required</span>
+      }
+      @if (control?.errors?.['pattern']) {
+        <span>Enter a valid email address</span>
+      }
+      @if (control?.errors?.['emailExists']) {
+        <span>That email address is already registered</span>
+      }
+      @if (control?.errors?.['minlength']) {
+        <span>{{ label }} is too short</span>
+      }
+    </div>
+  }
 </div>

@@ -1,55 +1,68 @@
-<div class="table-responsive" *ngIf="items.length">
-  <table class="table align-middle">
-    <caption class="visually-hidden">Items in this order</caption>
-    <thead>
-      <tr>
-        <th scope="col">Product</th>
-        <th scope="col" class="text-end">Price</th>
-        <th scope="col" class="text-center">Quantity</th>
-        <th scope="col" class="text-end">Total</th>
-        <th scope="col" *ngIf="isBasket"><span class="visually-hidden">Remove</span></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of items">
-        <th scope="row" class="fw-normal">
-          <div class="d-flex align-items-center gap-3">
-            <img [src]="item.pictureUrl" [alt]="item.productName" class="rounded"
-                 style="width: 56px; height: 56px; object-fit: cover" />
-            <div>
-              <a routerLink="/shop/{{ item.id || item.productId }}" class="fw-semibold">
-                {{ item.productName }}
-              </a>
-              <span *ngIf="item.type" class="d-block small text-muted">{{ item.type }}</span>
-            </div>
-          </div>
-        </th>
-        <td class="text-end">{{ item.price | currency }}</td>
-        <td class="text-center">
-          <div class="d-inline-flex align-items-center gap-2" *ngIf="isBasket; else plainQuantity">
-            <button type="button" class="btn btn-sm btn-outline-secondary"
-                    (click)="decrementItemQuantity(item)"
-                    [attr.aria-label]="'Remove one ' + item.productName">
-              <app-icon name="minus" [size]="14"></app-icon>
-            </button>
-            <span>{{ item.quantity }}</span>
-            <button type="button" class="btn btn-sm btn-outline-secondary"
-                    (click)="incrementItemQuantity(item)"
-                    [attr.aria-label]="'Add one ' + item.productName">
-              <app-icon name="plus" [size]="14"></app-icon>
-            </button>
-          </div>
-          <ng-template #plainQuantity>{{ item.quantity }}</ng-template>
-        </td>
-        <td class="text-end">{{ item.price * item.quantity | currency }}</td>
-        <td class="text-end" *ngIf="isBasket">
-          <button type="button" class="btn btn-sm btn-outline-danger"
-                  (click)="removeBasketItem(item)"
-                  [attr.aria-label]="'Remove ' + item.productName + ' from the basket'">
-            <app-icon name="trash" [size]="14"></app-icon>
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+@if (rows().length) {
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <caption class="visually-hidden">Line items</caption>
+      <thead>
+        <tr>
+          <th scope="col">Product</th>
+          <th scope="col" class="text-end">Price</th>
+          <th scope="col" class="text-center">Quantity</th>
+          <th scope="col" class="text-end">Total</th>
+          @if (editable()) {
+            <th scope="col"><span class="visually-hidden">Remove</span></th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.productId) {
+          <tr>
+            <th scope="row" class="fw-normal">
+              <div class="d-flex align-items-center gap-3">
+                <img [src]="row.pictureUrl" [alt]="row.productName" class="rounded"
+                  style="width: 56px; height: 56px; object-fit: cover" />
+                <div>
+                  <a [routerLink]="['/shop', row.productId]" class="fw-semibold">
+                    {{ row.productName }}
+                  </a>
+                  @if (row.type) {
+                    <span class="d-block small text-muted">{{ row.type }}</span>
+                  }
+                </div>
+              </div>
+            </th>
+            <td class="text-end">{{ row.price | currency }}</td>
+            <td class="text-center">
+              @if (editable()) {
+                <div class="d-inline-flex align-items-center gap-2">
+                  <button type="button" class="btn btn-sm btn-outline-secondary"
+                    (click)="decrementItemQuantity(row)"
+                    [attr.aria-label]="'Remove one ' + row.productName">
+                    <app-icon name="minus" [size]="14" />
+                  </button>
+                  <span>{{ row.quantity }}</span>
+                  <button type="button" class="btn btn-sm btn-outline-secondary"
+                    (click)="incrementItemQuantity(row)"
+                    [attr.aria-label]="'Add one ' + row.productName">
+                    <app-icon name="plus" [size]="14" />
+                  </button>
+                </div>
+              } @else {
+                {{ row.quantity }}
+              }
+            </td>
+            <td class="text-end">{{ row.price * row.quantity | currency }}</td>
+            @if (editable()) {
+              <td class="text-end">
+                <button type="button" class="btn btn-sm btn-outline-danger"
+                  (click)="removeBasketItem(row)"
+                  [attr.aria-label]="'Remove ' + row.productName + ' from the basket'">
+                  <app-icon name="trash" [size]="14" />
+                </button>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 /**
@@ -89,12 +89,12 @@ const PATHS: Record<IconName, string> = {
     styles: [':host{display:inline-flex;line-height:0}']
 })
 export class IconComponent {
+  private sanitizer = inject(DomSanitizer);
+
   /** Edge length in px. Icons are square. */
   @Input() size = 20;
 
   markup: SafeHtml = '';
-
-  constructor(private sanitizer: DomSanitizer) {}
 
   /**
    * Trusted because every value comes from the constant table above; the input is a

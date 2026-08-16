@@ -2,32 +2,42 @@
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h4 mb-0">All orders</h1>
     <button type="button" class="btn btn-outline-secondary" (click)="exportData()"
-            [disabled]="!orders.length">Export JSON</button>
+    [disabled]="!orders.length">Export JSON</button>
   </div>
 
-  <p *ngIf="loading">Loading&hellip;</p>
-  <p *ngIf="error" class="text-danger">{{ error }}</p>
+  @if (loading) {
+    <p>Loading&hellip;</p>
+  }
+  @if (error) {
+    <p class="text-danger">{{ error }}</p>
+  }
 
-  <table *ngIf="!loading && !error && orders.length" class="table align-middle">
-    <thead>
-      <tr>
-        <th scope="col">Order</th>
-        <th scope="col">Buyer</th>
-        <th scope="col">Placed</th>
-        <th scope="col">Status</th>
-        <th scope="col" class="text-end">Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let order of orders">
-        <td><a routerLink="/orders/{{ order.id }}">#{{ order.id }}</a></td>
-        <td>{{ order.buyerEmail }}</td>
-        <td>{{ order.orderDate | date: 'medium' }}</td>
-        <td>{{ order.status }}</td>
-        <td class="text-end">{{ order.total | currency }}</td>
-      </tr>
-    </tbody>
-  </table>
+  @if (!loading && !error && orders.length) {
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th scope="col">Order</th>
+          <th scope="col">Buyer</th>
+          <th scope="col">Placed</th>
+          <th scope="col">Status</th>
+          <th scope="col" class="text-end">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (order of orders; track order) {
+          <tr>
+            <td><a routerLink="/orders/{{ order.id }}">#{{ order.id }}</a></td>
+            <td>{{ order.buyerEmail }}</td>
+            <td>{{ order.orderDate | date: 'medium' }}</td>
+            <td>{{ order.status }}</td>
+            <td class="text-end">{{ order.total | currency }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
 
-  <p *ngIf="!loading && !error && !orders.length">No orders have been placed yet.</p>
+  @if (!loading && !error && !orders.length) {
+    <p>No orders have been placed yet.</p>
+  }
 </div>

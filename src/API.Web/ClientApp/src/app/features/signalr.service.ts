@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   HubConnection,
   HubConnectionBuilder,
@@ -20,11 +20,11 @@ import { environment } from 'src/environment';
  */
 @Injectable({ providedIn: 'root' })
 export class SignalRService {
+  private http = inject(HttpClient);
+
   private hubConnection: HubConnection | null = null;
   private allMessages = new Subject<MessageVM>();
   private groupMessages = new Subject<MessageVM>();
-
-  constructor(private http: HttpClient) {}
 
   get allMessagesObject$(): Observable<MessageVM> {
     return this.allMessages.asObservable();

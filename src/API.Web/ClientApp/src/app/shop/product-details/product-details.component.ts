@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BasketService } from 'src/app/basket/basket.service';
 import { IProduct } from 'src/app/shared/models/product';
 import { ShopService } from '../shop.service';
-import { NgIf, CurrencyPipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 import { IconComponent } from '../../shared/components/icon/icon.component';
 import { CommentComponent } from '../../features/comments/comment.component';
 
@@ -11,20 +11,18 @@ import { CommentComponent } from '../../features/comments/comment.component';
     selector: 'app-product-details',
     templateUrl: './product-details.component.html',
     styleUrls: ['./product-details.component.scss'],
-    imports: [NgIf, IconComponent, CommentComponent, CurrencyPipe]
+    imports: [IconComponent, CommentComponent, CurrencyPipe]
 })
 export class ProductDetailsComponent implements OnInit {
+  private shopService = inject(ShopService);
+  private route = inject(ActivatedRoute);
+  private basketService = inject(BasketService);
+
   product: IProduct | null = null;
   productId = '';
   quantity = 1;
   loading = true;
   error: string | null = null;
-
-  constructor(
-    private shopService: ShopService,
-    private route: ActivatedRoute,
-    private basketService: BasketService
-  ) {}
 
   ngOnInit(): void {
     this.productId = this.route.snapshot.paramMap.get('id') ?? '';

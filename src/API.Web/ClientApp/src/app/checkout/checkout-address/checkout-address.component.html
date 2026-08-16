@@ -1,41 +1,41 @@
-<div class="mt-4" [formGroup]="checkoutForm">
-    <div class="d-flex justify-content-between align-items-center">
-        <h4>Shipping address</h4>
-        <button 
-            (click)="saveUserAddress()" 
-            [disabled]="!checkoutForm.get('addressForm').valid || 
-                !checkoutForm.get('addressForm').dirty"
-            class="btn btn-outline-success mb-3">
-            Save as default address
-        </button>
+<div class="mt-4" [formGroup]="checkoutForm()">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <h2 class="h5 mb-0">Shipping address</h2>
+    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="saveUserAddress()"
+      [disabled]="checkoutForm().controls.addressForm.invalid ||
+                  !checkoutForm().controls.addressForm.dirty">
+      Save as default
+    </button>
+  </div>
+
+  <div class="row" formGroupName="addressForm">
+    <div class="col-md-6">
+      <app-text-input label="First name" autocomplete="given-name" formControlName="firstName" />
     </div>
-    <div class="row" formGroupName="addressForm">
-        <div class="form-group col-6">
-            <app-text-input [label]="'First Name'" formControlName="firstName"></app-text-input>
-        </div>
-        <div class="form-group col-6">
-            <app-text-input [label]="'Last Name'" formControlName="lastName"></app-text-input>
-        </div>
-        <div class="form-group col-6">
-            <app-text-input [label]="'Street'" formControlName="street"></app-text-input>
-        </div>
-        <div class="form-group col-6">
-            <app-text-input [label]="'City'" formControlName="city"></app-text-input>
-        </div>
-        <div class="form-group col-6">
-            <app-text-input [label]="'State'" formControlName="state"></app-text-input>
-        </div>
-        <div class="form-group col-6">
-            <app-text-input [label]="'Zip Code'" formControlName="zipcode"></app-text-input>
-        </div>
+    <div class="col-md-6">
+      <app-text-input label="Last name" autocomplete="family-name" formControlName="lastName" />
     </div>
+    <div class="col-12">
+      <app-text-input label="Street" autocomplete="address-line1" formControlName="street" />
+    </div>
+    <div class="col-md-6">
+      <app-text-input label="City" autocomplete="address-level2" formControlName="city" />
+    </div>
+    <div class="col-md-3">
+      <app-text-input label="State" autocomplete="address-level1" formControlName="state" />
+    </div>
+    <div class="col-md-3">
+      <app-text-input label="Zip code" autocomplete="postal-code" formControlName="zipcode" />
+    </div>
+  </div>
 </div>
 
-<div class="float-none d-flex justify-content-between flex-column flex-lg-row mb-5">
-    <button class="btn btn-outline-primary" routerLink="/basket">
-        <app-icon name="chevron-left" [size]="16"></app-icon> Back to basket
-    </button>
-    <button [disabled]="checkoutForm.get('addressForm').invalid" class="btn btn-primary" cdkStepperNext>
-        Go to delivery <app-icon name="chevron-right" [size]="16"></app-icon>
-    </button>
+<div class="d-flex justify-content-between gap-2 my-4">
+  <a class="btn btn-outline-secondary" routerLink="/basket">
+    <app-icon name="chevron-left" [size]="16" /> Back to basket
+  </a>
+  <button type="button" class="btn btn-primary"
+    [disabled]="checkoutForm().controls.addressForm.invalid" cdkStepperNext>
+    Go to delivery <app-icon name="chevron-right" [size]="16" />
+  </button>
 </div>

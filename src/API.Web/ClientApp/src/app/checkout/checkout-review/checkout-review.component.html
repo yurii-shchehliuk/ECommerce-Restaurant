@@ -1,16 +1,14 @@
 <div class="mt-4">
-    <app-basket-summary 
-        [isBasket]=false
-        [items]="(basket$ | async).items"
-    >
-    </app-basket-summary>
+    @if ((basket$ | async); as basket) {
+      <app-basket-summary [items]="basket.items" [editable]="false" />
+    }
 </div>
 
 <div class="float-none d-flex justify-content-between flex-column flex-lg-row mb-5">
     <button class="btn btn-outline-primary" cdkStepperPrevious>
-        <app-icon name="chevron-left" [size]="16"></app-icon> Back to delivery
+        <app-icon name="chevron-left" [size]="16" /> Back to delivery
     </button>
     <button class="btn btn-primary" (click)="createPaymentIntent()" >
-        Go to payment <app-icon name="chevron-right" [size]="16"></app-icon>
+        Go to payment <app-icon name="chevron-right" [size]="16" />
     </button>
 </div>

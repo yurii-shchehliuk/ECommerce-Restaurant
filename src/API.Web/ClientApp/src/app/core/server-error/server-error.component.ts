@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { NgIf } from '@angular/common';
+
 
 interface ServerErrorDetail {
   message?: string;
@@ -12,13 +12,15 @@ interface ServerErrorDetail {
     selector: 'app-server-error',
     templateUrl: './server-error.component.html',
     styleUrls: ['./server-error.component.scss'],
-    imports: [NgIf, RouterLink]
+    imports: [RouterLink]
 })
 export class ServerErrorComponent {
   /** Handed over by the error interceptor through router state, not fetched here. */
   readonly error: ServerErrorDetail | null;
 
-  constructor(router: Router) {
-    this.error = router.getCurrentNavigation()?.extras?.state?.['error'] ?? null;
+  constructor() {
+    const router = inject(Router);
+
+    this.error = router.currentNavigation()?.extras?.state?.['error'] ?? null;
   }
 }

@@ -1,28 +1,38 @@
 <div class="container my-5">
-  <p *ngIf="loading">Loading&hellip;</p>
-  <p *ngIf="error" class="text-danger">{{ error }}</p>
+  @if (loading) {
+    <p>Loading&hellip;</p>
+  }
+  @if (error) {
+    <p class="text-danger">{{ error }}</p>
+  }
 
-  <table *ngIf="!loading && !error && orders.length" class="table align-middle">
-    <thead>
-      <tr>
-        <th scope="col">Order</th>
-        <th scope="col">Placed</th>
-        <th scope="col">Status</th>
-        <th scope="col" class="text-end">Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let order of orders">
-        <td><a routerLink="/orders/{{ order.id }}">#{{ order.id }}</a></td>
-        <td>{{ order.orderDate | date: 'medium' }}</td>
-        <td>{{ order.status }}</td>
-        <td class="text-end">{{ order.total | currency }}</td>
-      </tr>
-    </tbody>
-  </table>
+  @if (!loading && !error && orders.length) {
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th scope="col">Order</th>
+          <th scope="col">Placed</th>
+          <th scope="col">Status</th>
+          <th scope="col" class="text-end">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (order of orders; track order) {
+          <tr>
+            <td><a routerLink="/orders/{{ order.id }}">#{{ order.id }}</a></td>
+            <td>{{ order.orderDate | date: 'medium' }}</td>
+            <td>{{ order.status }}</td>
+            <td class="text-end">{{ order.total | currency }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
 
-  <div *ngIf="!loading && !error && !orders.length">
-    <p>You have not placed an order yet.</p>
-    <a routerLink="/shop" class="btn btn-primary">Browse the menu</a>
-  </div>
+  @if (!loading && !error && !orders.length) {
+    <div>
+      <p>You have not placed an order yet.</p>
+      <a routerLink="/shop" class="btn btn-primary">Browse the menu</a>
+    </div>
+  }
 </div>

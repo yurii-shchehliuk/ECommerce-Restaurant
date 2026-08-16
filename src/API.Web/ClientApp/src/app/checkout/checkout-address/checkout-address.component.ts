@@ -1,33 +1,36 @@
-import { Component, Input } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject, input } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { CdkStepperNext } from '@angular/cdk/stepper';
 import { AccountService } from 'src/app/account/account.service';
 import { ToastService } from 'src/app/core/services/toast.service';
-import { IAddress } from 'src/app/shared/models/address';
-import { TextInputComponent } from '../../shared/components/text-input/text-input.component';
-import { RouterLink } from '@angular/router';
 import { IconComponent } from '../../shared/components/icon/icon.component';
-import { CdkStepperNext } from '@angular/cdk/stepper';
+import { TextInputComponent } from '../../shared/components/text-input/text-input.component';
+import { CheckoutForm } from '../checkout-form';
 
 @Component({
-    selector: 'app-checkout-address',
-    templateUrl: './checkout-address.component.html',
-    styleUrls: ['./checkout-address.component.scss'],
-    imports: [ReactiveFormsModule, TextInputComponent, RouterLink, IconComponent, CdkStepperNext]
+  selector: 'app-checkout-address',
+  templateUrl: './checkout-address.component.html',
+  styleUrls: ['./checkout-address.component.scss'],
+  imports: [ReactiveFormsModule, TextInputComponent, RouterLink, IconComponent, CdkStepperNext],
 })
 export class CheckoutAddressComponent {
-  @Input() checkoutForm: FormGroup;
+  readonly checkoutForm = input.required<CheckoutForm>();
 
-  constructor(private accountService: AccountService, private toastr: ToastService) { }
+  private accountService = inject(AccountService);
+  private toast = inject(ToastService);
 
-  saveUserAddress() {
-    this.accountService.updateUserAddress(this.checkoutForm.get('addressForm').value)
-      .subscribe((address: IAddress) => {
-        this.toastr.success('Address saved');
-        this.checkoutForm.get('addressForm').reset(address);
-      }, error => {
-        this.toastr.error(error.message);
-        console.log(error);
-      });
+  saveUserAddress(): void {
+    const addressForm = this.checkoutForm().controls.addressForm;
+
+    this.accountService.updateUserAddress(addressForm.getRawValue()).subscribe({
+      next: (address) => {
+        // Reset rather than patch, so the form returns to pristine and the
+        // save-as-default button correctly disables itself again.
+        addressForm.reset(address);
+        this.toast.success('Saved as your default address');
+      },
+      error: () => this.toast.error('That address could not be saved'),
+    });
   }
-
 }

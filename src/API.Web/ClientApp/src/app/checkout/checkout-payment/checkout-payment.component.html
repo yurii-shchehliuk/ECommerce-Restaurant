@@ -1,35 +1,45 @@
-<div class="mt-4" [formGroup]="checkoutForm">
-    <div class="row">
-        <div class="form-group col-12" formGroupName="paymentForm">
-            <app-text-input [label]="'Name on card'" formControlName="nameOnCard"></app-text-input>
-        </div>
-        <!-- 4242 4242 4242 4242 | 12/25 123-->
-        <div class="form-group col-6">
-            <div #cardNumber id="cardNumber" class="form-control py-3"></div>
-            <ng-container *ngIf="cardErrors">
-            <span class="text-danger">{{cardErrors}}</span>
-            </ng-container>
-        </div>
-        <div class="form-group col-3">
-            <div #cardExpiry class="form-control py-3"></div>
-        </div>
-        <div class="form-group col-3">
-            <div #cardCvc class="form-control py-3"></div>
-        </div>
+<div class="mt-4" [formGroup]="checkoutForm()">
+  @if (stripeUnavailable) {
+    <p class="text-danger">
+      Stripe.js did not load, so card details cannot be collected here. Orders can
+      still be placed against <code>POST /api/orders</code>.
+    </p>
+  }
+
+  <div class="row" formGroupName="paymentForm">
+    <div class="col-12">
+      <app-text-input label="Name on card" autocomplete="cc-name" formControlName="nameOnCard" />
     </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label class="form-label" for="cardNumber">Card number</label>
+      <div #cardNumber id="cardNumber" class="form-control py-3"></div>
+    </div>
+    <div class="col-6 col-md-3 mb-3">
+      <label class="form-label" for="cardExpiry">Expiry</label>
+      <div #cardExpiry id="cardExpiry" class="form-control py-3"></div>
+    </div>
+    <div class="col-6 col-md-3 mb-3">
+      <label class="form-label" for="cardCvc">CVC</label>
+      <div #cardCvc id="cardCvc" class="form-control py-3"></div>
+    </div>
+  </div>
+
+  @if (cardErrors) {
+    <p class="text-danger" role="alert">{{ cardErrors }}</p>
+  }
 </div>
 
-
-<div class="float-none d-flex justify-content-between flex-column flex-lg-row mb-5">
-    <button class="btn btn-outline-primary" cdkStepperPrevious>
-        <app-icon name="chevron-left" [size]="16"></app-icon> Back to review
-    </button>
-    <button [disabled]="loading
-        || checkoutForm.get('paymentForm').invalid
-        || !cardNumberValid
-        || !cardExpiryValid
-        || !cardCvcValid" class="btn btn-primary" (click)="submitOrder()" >
-        Submit order
-        <span *ngIf="loading" class="spinner-border spinner-border-sm ms-2" aria-hidden="true"></span>
-    </button>
+<div class="d-flex justify-content-between gap-2 my-4">
+  <button type="button" class="btn btn-outline-secondary" cdkStepperPrevious>
+    <app-icon name="chevron-left" [size]="16" /> Back to review
+  </button>
+  <button type="button" class="btn btn-primary" [disabled]="!canSubmit" (click)="submitOrder()">
+    Submit order
+    @if (loading) {
+      <span class="spinner-border spinner-border-sm ms-2" aria-hidden="true"></span>
+    }
+  </button>
 </div>

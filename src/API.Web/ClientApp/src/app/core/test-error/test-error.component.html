@@ -8,26 +8,36 @@
 
   <h2 class="h6 text-uppercase mt-4">Status handling</h2>
   <div class="d-flex flex-wrap gap-2">
-    <button *ngFor="let probe of statusProbes" type="button"
-            class="btn btn-outline-primary btn-sm" (click)="run(probe)"
-            [title]="probe.note">{{ probe.label }}</button>
+    @for (probe of statusProbes; track probe) {
+      <button type="button"
+        class="btn btn-outline-primary btn-sm" (click)="run(probe)"
+      [title]="probe.note">{{ probe.label }}</button>
+    }
   </div>
 
   <h2 class="h6 text-uppercase mt-4">Authorisation policies</h2>
   <div class="d-flex flex-wrap gap-2">
-    <button *ngFor="let probe of policyProbes" type="button"
-            class="btn btn-outline-secondary btn-sm" (click)="run(probe)"
-            [title]="probe.note">{{ probe.label }}</button>
+    @for (probe of policyProbes; track probe) {
+      <button type="button"
+        class="btn btn-outline-secondary btn-sm" (click)="run(probe)"
+      [title]="probe.note">{{ probe.label }}</button>
+    }
   </div>
 
-  <p class="mt-4" *ngIf="lastResult" aria-live="polite">
-    <code>{{ lastResult.path }}</code>
-    <span class="ms-2" [class.text-success]="lastResult.ok" [class.text-danger]="!lastResult.ok">
-      {{ lastResult.status }}
-    </span>
-  </p>
+  @if (lastResult) {
+    <p class="mt-4" aria-live="polite">
+      <code>{{ lastResult.path }}</code>
+      <span class="ms-2" [class.text-success]="lastResult.ok" [class.text-danger]="!lastResult.ok">
+        {{ lastResult.status }}
+      </span>
+    </p>
+  }
 
-  <ul class="text-danger" *ngIf="validationErrors.length">
-    <li *ngFor="let error of validationErrors">{{ error }}</li>
-  </ul>
+  @if (validationErrors.length) {
+    <ul class="text-danger">
+      @for (error of validationErrors; track error) {
+        <li>{{ error }}</li>
+      }
+    </ul>
+  }
 </div>

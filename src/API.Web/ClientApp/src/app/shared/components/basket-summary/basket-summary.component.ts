@@ -1,35 +1,64 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { IBasketItem } from '../../models/basket';
 import { IOrderItem } from '../../models/order';
-import { NgIf, NgFor, CurrencyPipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { IconComponent } from '../icon/icon.component';
 
+/**
+ * One row of the line-item table, whichever shape the caller passed in.
+ *
+ * A basket item keys the product by `id` and an order item by `productId`; both are
+ * projected onto this before the template sees them, so the template never has to
+ * ask which kind of list it is rendering.
+ */
+export interface SummaryRow {
+  productId: number;
+  productName: string;
+  pictureUrl: string;
+  price: number;
+  quantity: number;
+  type: string | null;
+  /** The original object, so an edit emits back exactly what the caller handed in. */
+  source: IBasketItem | IOrderItem;
+}
+
 @Component({
-    selector: 'app-basket-summary',
-    templateUrl: './basket-summary.component.html',
-    styleUrls: ['./basket-summary.component.scss'],
-    imports: [NgIf, NgFor, RouterLink, IconComponent, CurrencyPipe]
+  selector: 'app-basket-summary',
+  templateUrl: './basket-summary.component.html',
+  styleUrls: ['./basket-summary.component.scss'],
+  imports: [RouterLink, IconComponent, CurrencyPipe],
 })
 export class BasketSummaryComponent {
-  @Input() items: (IBasketItem | IOrderItem)[] = [];
-  /** Basket rows are editable; order rows are a record and must not be. */
-  @Input() isBasket = true;
-  @Input() isOrder = false;
+  readonly items = input<(IBasketItem | IOrderItem)[]>([]);
+  /** Basket rows are editable; order rows are a record of what happened and are not. */
+  readonly editable = input(true);
 
-  @Output() decrement = new EventEmitter<IBasketItem>();
-  @Output() increment = new EventEmitter<IBasketItem>();
-  @Output() remove = new EventEmitter<IBasketItem>();
+  readonly decrement = output<IBasketItem>();
+  readonly increment = output<IBasketItem>();
+  readonly remove = output<IBasketItem>();
 
-  decrementItemQuantity(item: IBasketItem): void {
-    this.decrement.emit(item);
+  readonly rows = computed<SummaryRow[]>(() =>
+    this.items().map((item) => ({
+      productId: 'productId' in item ? item.productId : item.id,
+      productName: item.productName,
+      pictureUrl: item.pictureUrl,
+      price: item.price,
+      quantity: item.quantity,
+      type: 'type' in item ? item.type : null,
+      source: item,
+    }))
+  );
+
+  decrementItemQuantity(row: SummaryRow): void {
+    this.decrement.emit(row.source as IBasketItem);
   }
 
-  incrementItemQuantity(item: IBasketItem): void {
-    this.increment.emit(item);
+  incrementItemQuantity(row: SummaryRow): void {
+    this.increment.emit(row.source as IBasketItem);
   }
 
-  removeBasketItem(item: IBasketItem): void {
-    this.remove.emit(item);
+  removeBasketItem(row: SummaryRow): void {
+    this.remove.emit(row.source as IBasketItem);
   }
 }

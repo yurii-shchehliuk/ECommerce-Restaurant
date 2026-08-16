@@ -3,18 +3,22 @@
 
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
     <app-text-input formControlName="displayName" label="Display name"
-                    autocomplete="nickname"></app-text-input>
+    autocomplete="nickname" />
     <app-text-input formControlName="email" label="Email address" type="email"
-                    autocomplete="email"></app-text-input>
+    autocomplete="email" />
     <app-text-input formControlName="password" label="Password" type="password"
-                    autocomplete="new-password"></app-text-input>
+    autocomplete="new-password" />
 
-    <ul class="text-danger list-unstyled" *ngIf="errors.length">
-      <li *ngFor="let error of errors">{{ error }}</li>
-    </ul>
+    @if (errors.length) {
+      <ul class="text-danger list-unstyled">
+        @for (error of errors; track error) {
+          <li>{{ error }}</li>
+        }
+      </ul>
+    }
 
     <button type="submit" class="btn btn-primary w-100"
-            [disabled]="registerForm.invalid || submitting">
+      [disabled]="registerForm.invalid || submitting">
       {{ submitting ? 'Creating…' : 'Create account' }}
     </button>
   </form>

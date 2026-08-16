@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, ReplaySubject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -9,12 +9,13 @@ import { ILoginCredentials, IRegisterDetails, IUser } from '../shared/models/use
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
+  private http = inject(HttpClient);
+  private router = inject(Router);
+
   private baseUrl = environment.identityApi.api;
   private currentUserSource = new ReplaySubject<IUser | null>(1);
 
   readonly currentUser$ = this.currentUserSource.asObservable();
-
-  constructor(private http: HttpClient, private router: Router) {}
 
   /**
    * Called once at start-up with whatever is in local storage. A missing token is the

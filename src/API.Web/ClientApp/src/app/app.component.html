@@ -1,15 +1,17 @@
-<app-nav-bar></app-nav-bar>
+<app-nav-bar />
 
 <div class="app-progress" role="status" aria-live="polite">
-  <div class="app-progress__bar" *ngIf="busy$ | async">
-    <span class="visually-hidden">Loading</span>
-  </div>
+  @if (busy$ | async) {
+    <div class="app-progress__bar">
+      <span class="visually-hidden">Loading</span>
+    </div>
+  }
 </div>
 
-<app-section-header></app-section-header>
+<app-section-header />
 
 <main id="main">
-  <router-outlet></router-outlet>
+  <router-outlet />
 </main>
 
-<app-toast-host></app-toast-host>
+<app-toast-host />

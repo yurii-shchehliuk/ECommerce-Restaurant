@@ -3,11 +3,13 @@
 
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
     <app-text-input formControlName="email" label="Email address" type="email"
-                    autocomplete="email"></app-text-input>
+    autocomplete="email" />
     <app-text-input formControlName="password" label="Password" type="password"
-                    autocomplete="current-password"></app-text-input>
+    autocomplete="current-password" />
 
-    <p class="text-danger" *ngIf="error">{{ error }}</p>
+    @if (error) {
+      <p class="text-danger">{{ error }}</p>
+    }
 
     <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid || submitting">
       {{ submitting ? 'Signing in…' : 'Sign in' }}

@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NgIf, NgFor } from '@angular/common';
+import { Component, input, output } from '@angular/core';
+
 import { IconComponent } from '../icon/icon.component';
 
 /**
@@ -14,25 +14,23 @@ import { IconComponent } from '../icon/icon.component';
     selector: 'app-pager',
     templateUrl: './pager.component.html',
     styleUrls: ['./pager.component.scss'],
-    imports: [NgIf, IconComponent, NgFor]
+    imports: [IconComponent]
 })
 export class PagerComponent {
-  @Input() totalCount = 0;
-  @Input() pageSize = 6;
-  @Input() pageNumber = 1;
-  @Output() pageChanged = new EventEmitter<number>();
+  readonly totalCount = input(0);
+  readonly pageSize = input(9);
+  readonly pageNumber = input(1);
+  readonly pageChanged = output<number>();
 
   get totalPages(): number {
-    if (!this.pageSize) {
-      return 0;
-    }
-    return Math.ceil(this.totalCount / this.pageSize);
+    const size = this.pageSize();
+    return size ? Math.ceil(this.totalCount() / size) : 0;
   }
 
   /** Page numbers to render; `null` is an ellipsis gap. */
   get pages(): (number | null)[] {
     const total = this.totalPages;
-    const current = this.pageNumber;
+    const current = this.pageNumber();
 
     if (total <= 7) {
       return Array.from({ length: total }, (_, i) => i + 1);
@@ -68,7 +66,7 @@ export class PagerComponent {
   }
 
   go(page: number): void {
-    if (page < 1 || page > this.totalPages || page === this.pageNumber) {
+    if (page < 1 || page > this.totalPages || page === this.pageNumber()) {
       return;
     }
     this.pageChanged.emit(page);

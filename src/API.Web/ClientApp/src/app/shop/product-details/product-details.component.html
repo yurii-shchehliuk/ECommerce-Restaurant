@@ -1,35 +1,40 @@
 <div class="container my-5">
-  <p *ngIf="loading">Loading&hellip;</p>
-  <p *ngIf="error" class="text-danger">{{ error }}</p>
+  @if (loading) {
+    <p>Loading&hellip;</p>
+  }
+  @if (error) {
+    <p class="text-danger">{{ error }}</p>
+  }
 
-  <div class="row g-4" *ngIf="product as item">
-    <div class="col-md-6">
-      <img [src]="item.pictureUrl" [alt]="item.name" class="img-fluid rounded" />
-    </div>
-
-    <div class="col-md-6">
-      <h1 class="h3">{{ item.name }}</h1>
-      <p class="fs-3 mb-4">{{ item.price | currency }}</p>
-
-      <div class="d-flex align-items-center gap-2 mb-4">
-        <button type="button" class="btn btn-outline-secondary" (click)="decrementQuantity()"
-                [disabled]="quantity <= 1" aria-label="Decrease quantity">
-          <app-icon name="minus" [size]="16"></app-icon>
-        </button>
-        <span aria-live="polite" class="px-2">{{ quantity }}</span>
-        <button type="button" class="btn btn-outline-secondary" (click)="incrementQuantity()"
-                aria-label="Increase quantity">
-          <app-icon name="plus" [size]="16"></app-icon>
-        </button>
-        <button type="button" class="btn btn-primary ms-3" (click)="addItemToBasket()">
-          Add to basket
-        </button>
+  @if (product; as item) {
+    <div class="row g-4">
+      <div class="col-md-6">
+        <img [src]="item.pictureUrl" [alt]="item.name" class="img-fluid rounded" />
       </div>
-
-      <h2 class="h6 text-uppercase">Description</h2>
-      <p>{{ item.description }}</p>
+      <div class="col-md-6">
+        <h1 class="h3">{{ item.name }}</h1>
+        <p class="fs-3 mb-4">{{ item.price | currency }}</p>
+        <div class="d-flex align-items-center gap-2 mb-4">
+          <button type="button" class="btn btn-outline-secondary" (click)="decrementQuantity()"
+            [disabled]="quantity <= 1" aria-label="Decrease quantity">
+            <app-icon name="minus" [size]="16" />
+          </button>
+          <span aria-live="polite" class="px-2">{{ quantity }}</span>
+          <button type="button" class="btn btn-outline-secondary" (click)="incrementQuantity()"
+            aria-label="Increase quantity">
+            <app-icon name="plus" [size]="16" />
+          </button>
+          <button type="button" class="btn btn-primary ms-3" (click)="addItemToBasket()">
+            Add to basket
+          </button>
+        </div>
+        <h2 class="h6 text-uppercase">Description</h2>
+        <p>{{ item.description }}</p>
+      </div>
     </div>
-  </div>
+  }
 
-  <app-comment *ngIf="product" [productId]="productId"></app-comment>
+  @if (product) {
+    <app-comment [productId]="productId" />
+  }
 </div>
