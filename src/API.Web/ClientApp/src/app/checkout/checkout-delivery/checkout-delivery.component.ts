@@ -5,9 +5,10 @@ import { IDeliveryMethod } from 'src/app/shared/models/deliveryMethod';
 import { BasketService } from 'src/app/basket/basket.service';
 
 @Component({
-  selector: 'app-checkout-delivery',
-  templateUrl: './checkout-delivery.component.html',
-  styleUrls: ['./checkout-delivery.component.scss']
+    selector: 'app-checkout-delivery',
+    templateUrl: './checkout-delivery.component.html',
+    styleUrls: ['./checkout-delivery.component.scss'],
+    standalone: false
 })
 export class CheckoutDeliveryComponent implements OnInit {
   @Input() checkoutForm: FormGroup;

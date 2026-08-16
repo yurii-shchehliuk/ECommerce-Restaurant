@@ -18,9 +18,10 @@ interface Probe {
  * Admin-only, and linked from the account menu rather than the main navigation.
  */
 @Component({
-  selector: 'app-test-error',
-  templateUrl: './test-error.component.html',
-  styleUrls: ['./test-error.component.scss'],
+    selector: 'app-test-error',
+    templateUrl: './test-error.component.html',
+    styleUrls: ['./test-error.component.scss'],
+    standalone: false
 })
 export class TestErrorComponent {
   private baseUrl = environment.identityApi.api;

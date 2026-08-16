@@ -1,9 +1,10 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'app-order-totals',
-  templateUrl: './order-totals.component.html',
-  styleUrls: ['./order-totals.component.scss']
+    selector: 'app-order-totals',
+    templateUrl: './order-totals.component.html',
+    styleUrls: ['./order-totals.component.scss'],
+    standalone: false
 })
 export class OrderTotalsComponent {
   @Input() shippingPrice: number;

@@ -5,9 +5,10 @@ import { ToastrService } from 'ngx-toastr';
 import { IAddress } from 'src/app/shared/models/address';
 
 @Component({
-  selector: 'app-checkout-address',
-  templateUrl: './checkout-address.component.html',
-  styleUrls: ['./checkout-address.component.scss']
+    selector: 'app-checkout-address',
+    templateUrl: './checkout-address.component.html',
+    styleUrls: ['./checkout-address.component.scss'],
+    standalone: false
 })
 export class CheckoutAddressComponent {
   @Input() checkoutForm: FormGroup;

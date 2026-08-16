@@ -17,9 +17,10 @@ import { CheckoutService } from '../checkout.service';
 import { StripeElement, StripeElementChangeEvent, Stripe } from '../stripe';
 
 @Component({
-  selector: 'app-checkout-payment',
-  templateUrl: './checkout-payment.component.html',
-  styleUrls: ['./checkout-payment.component.scss'],
+    selector: 'app-checkout-payment',
+    templateUrl: './checkout-payment.component.html',
+    styleUrls: ['./checkout-payment.component.scss'],
+    standalone: false
 })
 export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
   @Input() checkoutForm!: FormGroup;

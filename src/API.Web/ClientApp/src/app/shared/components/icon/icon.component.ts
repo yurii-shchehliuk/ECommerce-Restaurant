@@ -71,9 +71,9 @@ const PATHS: Record<IconName, string> = {
 };
 
 @Component({
-  selector: 'app-icon',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<svg
+    selector: 'app-icon',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    template: `<svg
     [attr.width]="size"
     [attr.height]="size"
     viewBox="0 0 24 24"
@@ -86,7 +86,8 @@ const PATHS: Record<IconName, string> = {
     focusable="false"
     [innerHTML]="markup"
   ></svg>`,
-  styles: [':host{display:inline-flex;line-height:0}'],
+    styles: [':host{display:inline-flex;line-height:0}'],
+    standalone: false
 })
 export class IconComponent {
   /** Edge length in px. Icons are square. */

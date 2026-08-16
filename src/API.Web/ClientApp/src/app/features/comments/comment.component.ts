@@ -11,9 +11,10 @@ import { SignalRService } from '../signalr.service';
  * replaces its list on each push rather than appending to it.
  */
 @Component({
-  selector: 'app-comment',
-  templateUrl: './comment.component.html',
-  styleUrls: ['./comment.component.scss'],
+    selector: 'app-comment',
+    templateUrl: './comment.component.html',
+    styleUrls: ['./comment.component.scss'],
+    standalone: false
 })
 export class CommentComponent implements OnInit, OnDestroy {
   @Input() productId!: string;

@@ -4,9 +4,10 @@ import { IOrder } from 'src/app/shared/models/order';
 import { OrdersService } from '../orders.service';
 
 @Component({
-  selector: 'app-order-detailed',
-  templateUrl: './order-detailed.component.html',
-  styleUrls: ['./order-detailed.component.scss'],
+    selector: 'app-order-detailed',
+    templateUrl: './order-detailed.component.html',
+    styleUrls: ['./order-detailed.component.scss'],
+    standalone: false
 })
 export class OrderDetailedComponent implements OnInit {
   order: IOrder | null = null;

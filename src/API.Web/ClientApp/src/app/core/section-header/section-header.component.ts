@@ -16,9 +16,10 @@ export interface Crumb {
  * record.
  */
 @Component({
-  selector: 'app-section-header',
-  templateUrl: './section-header.component.html',
-  styleUrls: ['./section-header.component.scss'],
+    selector: 'app-section-header',
+    templateUrl: './section-header.component.html',
+    styleUrls: ['./section-header.component.scss'],
+    standalone: false
 })
 export class SectionHeaderComponent implements OnInit, OnDestroy {
   crumbs: Crumb[] = [];

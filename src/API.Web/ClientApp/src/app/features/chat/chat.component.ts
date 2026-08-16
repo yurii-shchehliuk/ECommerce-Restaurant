@@ -4,9 +4,10 @@ import { MessageVM } from '../models/MessageVM';
 import { SignalRService } from '../signalr.service';
 
 @Component({
-  selector: 'app-chat',
-  templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.scss'],
+    selector: 'app-chat',
+    templateUrl: './chat.component.html',
+    styleUrls: ['./chat.component.scss'],
+    standalone: false
 })
 export class ChatComponent implements OnInit, OnDestroy {
   messages: MessageVM[] = [];

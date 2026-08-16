@@ -3,9 +3,10 @@ import { IProduct } from 'src/app/shared/models/product';
 import { AdminProductsService } from './products.service';
 
 @Component({
-  selector: 'app-admin-products',
-  templateUrl: './products.component.html',
-  styleUrls: ['./products.component.scss'],
+    selector: 'app-admin-products',
+    templateUrl: './products.component.html',
+    styleUrls: ['./products.component.scss'],
+    standalone: false
 })
 export class ProductsComponent implements OnInit {
   products: IProduct[] = [];

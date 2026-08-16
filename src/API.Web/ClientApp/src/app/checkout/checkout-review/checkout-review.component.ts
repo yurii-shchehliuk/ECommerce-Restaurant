@@ -5,9 +5,10 @@ import { BasketService } from 'src/app/basket/basket.service';
 import { IBasket } from 'src/app/shared/models/basket';
 
 @Component({
-  selector: 'app-checkout-review',
-  templateUrl: './checkout-review.component.html',
-  styleUrls: ['./checkout-review.component.scss'],
+    selector: 'app-checkout-review',
+    templateUrl: './checkout-review.component.html',
+    styleUrls: ['./checkout-review.component.scss'],
+    standalone: false
 })
 export class CheckoutReviewComponent implements OnInit {
   @Input() appStepper!: CdkStepper;

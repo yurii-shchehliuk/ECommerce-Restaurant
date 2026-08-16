@@ -5,9 +5,10 @@ import { BasketService } from './basket/basket.service';
 import { BusyService } from './core/services/busy.service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: false
 })
 export class AppComponent implements OnInit {
   busy$: Observable<boolean>;

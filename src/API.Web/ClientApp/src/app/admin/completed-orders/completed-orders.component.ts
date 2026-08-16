@@ -3,9 +3,10 @@ import { IOrder } from 'src/app/shared/models/order';
 import { CompletedOrdersService } from './completed-orders.service';
 
 @Component({
-  selector: 'app-completed-orders',
-  templateUrl: './completed-orders.component.html',
-  styleUrls: ['./completed-orders.component.scss'],
+    selector: 'app-completed-orders',
+    templateUrl: './completed-orders.component.html',
+    styleUrls: ['./completed-orders.component.scss'],
+    standalone: false
 })
 export class CompletedOrdersComponent implements OnInit {
   orders: IOrder[] = [];

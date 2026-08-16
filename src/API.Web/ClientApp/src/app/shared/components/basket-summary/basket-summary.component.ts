@@ -3,9 +3,10 @@ import { IBasketItem } from '../../models/basket';
 import { IOrderItem } from '../../models/order';
 
 @Component({
-  selector: 'app-basket-summary',
-  templateUrl: './basket-summary.component.html',
-  styleUrls: ['./basket-summary.component.scss'],
+    selector: 'app-basket-summary',
+    templateUrl: './basket-summary.component.html',
+    styleUrls: ['./basket-summary.component.scss'],
+    standalone: false
 })
 export class BasketSummaryComponent {
   @Input() items: (IBasketItem | IOrderItem)[] = [];

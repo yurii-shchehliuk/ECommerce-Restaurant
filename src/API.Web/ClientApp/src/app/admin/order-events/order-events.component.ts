@@ -11,9 +11,10 @@ import { OrderEventsService, ReceivedOrderEvent } from './order-events.service';
  * appear moments after a checkout.
  */
 @Component({
-  selector: 'app-order-events',
-  templateUrl: './order-events.component.html',
-  styleUrls: ['./order-events.component.scss'],
+    selector: 'app-order-events',
+    templateUrl: './order-events.component.html',
+    styleUrls: ['./order-events.component.scss'],
+    standalone: false
 })
 export class OrderEventsComponent implements OnInit, OnDestroy {
   events: ReceivedOrderEvent[] = [];
