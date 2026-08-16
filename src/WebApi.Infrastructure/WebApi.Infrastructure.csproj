@@ -20,6 +20,7 @@
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\EventBus.Messages\EventBus.Messages.csproj" />
 		<ProjectReference Include="..\WebApi.Db.Identity\WebApi.Db.Identity.csproj" />
 		<ProjectReference Include="..\WebApi.Db.Store\WebApi.Db.Store.csproj" />
 		<ProjectReference Include="..\WebApi.Domain\WebApi.Domain.csproj" />

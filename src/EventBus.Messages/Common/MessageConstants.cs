@@ -1,13 +1,18 @@
-﻿namespace EventBus.Messages.Common
+namespace EventBus.Messages.Common
 {
-    public class MessageConstants
+    public static class MessageConstants
     {
-        public const string queueName = "owlet.order.received";
-        public const string exchangeName = "owlet.order.exchange";
-        public const string basketCheckoutQueue = "basketcheckout-queue";
-        // Fallback for local development only. Real hosts come from the "RabbitMqHost"
-        // configuration key (appsettings / environment / user-secrets), never from here.
-        public const string RabbitMqHost = "amqp://guest:guest@localhost:5672";
-        public const string JsonMimeType = "application/json";
+        /// <summary>
+        /// The receive endpoint API.Admin binds. MassTransit creates the queue, the
+        /// fanout exchange named after the message type, and the binding between them.
+        /// </summary>
+        public const string OrderPlacedQueue = "owlet-order-placed";
+
+        /// <summary>
+        /// Configuration key holding the broker address. Either a full AMQP URI
+        /// (<c>amqp://user:pass@host:5672</c>) or a bare host name, which is expanded
+        /// to <c>amqp://guest:guest@{host}:5672</c> for local development.
+        /// </summary>
+        public const string RabbitMqHostKey = "RabbitMqHost";
     }
 }

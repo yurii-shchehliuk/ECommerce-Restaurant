@@ -1,3 +1,4 @@
+using EventBus.Messages;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -5,6 +6,7 @@ using StackExchange.Redis;
 using System.Linq;
 using WebApi.Db.Store;
 using WebApi.Domain.Core;
+using WebApi.Domain.Interfaces.Integration;
 using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Domain.Interfaces.Services;
 using WebApi.Infrastructure.Repositories;
@@ -26,7 +28,12 @@ namespace WebApi.Infrastructure.StartupExtensions.Basket
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            //services.AddSingleton<IOrderProcessingNotification, MessageNotification>();
+            /// MassTransit-RabbitMQ, producer side.
+            /// Registers the bus (hosted, started by MassTransit itself) and the
+            /// adapter OrderService publishes through.
+            services.AddOrderEventPublishing(_config);
+            services.AddScoped<IOrderProcessingNotification, OrderEventPublisher>();
+
             /// Redis
             services.AddSingleton<IResponseCacheService, ResponseCacheService>();
             services.AddSingleton<IConnectionMultiplexer>(c =>
@@ -37,25 +44,6 @@ namespace WebApi.Infrastructure.StartupExtensions.Basket
                 return ConnectionMultiplexer.Connect(configuration);
             });
             services.AddScoped<IBasketRepository, BasketContext>();
-
-            // IDistributedCache
-            //services.AddStackExchangeRedisCache(o =>
-            //    o.Configuration = _config.GetConnectionString("Redis")
-            //);
-            //services.AddHostedService<RedisSubscriber>();
-
-            /// MassTransit-RabbitMQ
-            //services.AddMassTransit(config =>
-            //{
-            //    config.UsingRabbitMq((ctx, cfg) =>
-            //    {
-            //        cfg.Host(_config.GetValue<string>("RabbitMqHost"));
-            //    });
-            //});
-            // deprecated
-            //services.AddMassTransitHostedService();
-
-            //services.AddHostedService<MessageWorker>();
 
             services.Configure<ApiBehaviorOptions>(options =>
             {

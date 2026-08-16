@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Domain.Entities.OrderAggregate;
 using WebApi.Domain.Entities.Store;
+using WebApi.Domain.Interfaces.Integration;
 using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Domain.Interfaces.Services;
 using WebApi.Domain.Specifications;
@@ -14,14 +15,17 @@ namespace WebApi.Infrastructure.Services
         private readonly IBasketRepository _basketRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPaymentService _paymentService;
-        //private readonly IOrderProcessingNotification _orderProcessingNotification;
+        private readonly IOrderProcessingNotification _orderProcessingNotification;
+
         public OrderService(IBasketRepository basketRepo,
                             IUnitOfWork unitOfWork,
-                            IPaymentService paymentService)
+                            IPaymentService paymentService,
+                            IOrderProcessingNotification orderProcessingNotification)
         {
             _paymentService = paymentService;
             _unitOfWork = unitOfWork;
             _basketRepo = basketRepo;
+            _orderProcessingNotification = orderProcessingNotification;
         }
 
         public async Task<Order> CreateOrderAsync(string buyerEmail, int deliveryMethodId, string basketId, Address shippingAddress)
@@ -58,12 +62,21 @@ namespace WebApi.Infrastructure.Services
             // create order
             var order = new Order(items, buyerEmail, shippingAddress, deliveryMethod, subtotal, basket.PaymentIntentId);
             await _unitOfWork.Repository<Order>().AddAsync(order);
-            //_orderProcessingNotification.OrderReceived(order, buyerEmail, basket.PaymentIntentId);
 
             // save to db
             var result = await _unitOfWork.Complete();
 
             if (result <= 0) return null;
+
+            // Announce it only once it is durable. Publishing before the commit would
+            // let Admin record an order that a failed transaction then rolled back.
+            //
+            // Known gap, and the reason this is not yet correct rather than merely
+            // working: the commit and the publish are two operations with no
+            // transaction across them. A crash here loses the event silently. The fix
+            // is a transactional outbox — see src/EventBus.Messages/readme.md.
+            await _orderProcessingNotification.OrderPlacedAsync(order, buyerEmail, basket.PaymentIntentId);
+
             // return order
             return order;
         }

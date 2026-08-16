@@ -1,7 +1,10 @@
+using EventBus.Messages;
+using EventBus.Messages.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebApi.Domain.Interfaces.Repositories;
 using WebApi.Infrastructure.Repositories;
+using WebApi.Infrastructure.Services;
 
 namespace WebApi.Infrastructure.StartupExtensions.Admin
 {
@@ -14,25 +17,13 @@ namespace WebApi.Infrastructure.StartupExtensions.Admin
             services.AddStoreDb(_config);
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-            //services.AddTransient<IProductRepository, ProductRepository>();
 
-            /// MassTransit-RabbitMQ
-            //services.AddMassTransit(config =>
-            //{
-            //    config.UsingRabbitMq((ctx, cfg) =>
-            //    {
-            //        cfg.Host(_config.GetValue<string>("RabbitMqHost"));
-            //        cfg.ReceiveEndpoint(MessageConstants.basketCheckoutQueue, c =>
-            //        {
-            //            c.ConfigureConsumer<OrderReceivedConsumer>(ctx);
-            //        });
-
-            //    });
-
-            //    config.AddConsumer<OrderReceivedConsumer>();
-            //});
-            // deprecated
-            //services.AddMassTransitHostedService();
+            /// MassTransit-RabbitMQ, consumer side.
+            /// AddOrderEventConsuming binds OrderPlacedConsumer to a durable queue;
+            /// OrderEventSink is the side effect it performs, scoped so it gets a
+            /// StoreContext per message.
+            services.AddOrderEventConsuming(_config);
+            services.AddScoped<IOrderEventSink, OrderEventSink>();
 
             return services;
         }

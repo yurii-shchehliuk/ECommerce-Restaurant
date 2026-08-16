@@ -20,6 +20,12 @@ namespace WebApi.Db.Store
         public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
         public DbSet<Comment> Comments { get; set; }
 
+        /// <summary>
+        /// Written by API.Admin's <c>OrderPlacedConsumer</c>, not by the storefront.
+        /// It is the durable record that the bus actually delivered something.
+        /// </summary>
+        public DbSet<ReceivedOrderEvent> ReceivedOrderEvents { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
