@@ -271,18 +271,6 @@
     background: var(--color-surface-sunken);
   }
 
-  .btn-danger {
-    background: transparent;
-    border-color: var(--color-line-strong);
-    color: var(--color-danger-500);
-  }
-
-  .btn-danger:not(:disabled):hover {
-    background: var(--color-danger-500);
-    border-color: var(--color-danger-500);
-    color: #fff;
-  }
-
   .btn-sm {
     padding: 0.3125rem 0.625rem;
     font-size: 0.8125rem;
@@ -583,13 +571,6 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 1rem;
-  }
-
-  .page__title {
-    margin: 0.375rem 0 0.5rem;
-    font-size: var(--text-title);
-    font-weight: 750;
-    letter-spacing: -0.028em;
   }
 
   .page__lede {

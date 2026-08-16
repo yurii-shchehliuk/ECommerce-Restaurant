@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-export type ToastKind = 'success' | 'error' | 'info';
+export type ToastKind = 'success' | 'error';
 
 export interface Toast {
   id: number;
@@ -31,10 +31,6 @@ export class ToastService {
 
   error(message: string, title?: string): void {
     this.push('error', message, title);
-  }
-
-  info(message: string, title?: string): void {
-    this.push('info', message, title);
   }
 
   dismiss(id: number): void {

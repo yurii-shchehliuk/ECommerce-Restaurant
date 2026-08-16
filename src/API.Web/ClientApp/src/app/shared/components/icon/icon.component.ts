@@ -32,14 +32,9 @@ export type IconName =
   | 'moon'
   | 'activity'
   | 'download'
-  | 'filter'
   | 'inbox'
   | 'refresh'
-  | 'truck'
-  | 'credit-card'
-  | 'shield'
   | 'contrast'
-  | 'clock'
   | 'arrow-right';
 
 const PATHS: Record<IconName, string> = {
@@ -65,14 +60,9 @@ const PATHS: Record<IconName, string> = {
   moon: '<path d="M20 14.2A8.4 8.4 0 0 1 9.8 4a8.4 8.4 0 1 0 10.2 10.2Z"/>',
   activity: '<path d="M3 12h4l3 8 4-16 3 8h4"/>',
   download: '<path d="M12 3v12M7.5 10.5 12 15l4.5-4.5M4 20h16"/>',
-  filter: '<path d="M3 5h18l-7 8v6l-4 2v-8L3 5Z"/>',
   inbox: '<path d="M3 13h5l1.5 3h5L16 13h5"/><path d="M5.4 5h13.2l2.4 8v5a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 18v-5l2.4-8Z"/>',
   refresh: '<path d="M20 6v5h-5M4 18v-5h5"/><path d="M19.3 11a7.5 7.5 0 0 0-13-3.2L4 11m0 2a7.5 7.5 0 0 0 13 3.2l2.3-3.2"/>',
-  truck: '<path d="M3 6h11v11H3zM14 9h4l3 3.2V17h-7"/><circle cx="7" cy="18.5" r="1.7"/><circle cx="17.5" cy="18.5" r="1.7"/>',
-  'credit-card': '<rect x="2.5" y="5" width="19" height="14" rx="2.2"/><path d="M2.5 10h19M6 15h3"/>',
-  shield: '<path d="M12 3 5 6v5.5c0 4.2 2.8 7.6 7 9.5 4.2-1.9 7-5.3 7-9.5V6l-7-3Z"/><path d="m9 12 2.2 2.2L15.5 10"/>',
   contrast: '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor" stroke="none"/>',
-  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5.4l3.4 2"/>',
   'arrow-right': '<path d="M4 12h15M13 6l6 6-6 6"/>',
 };
 

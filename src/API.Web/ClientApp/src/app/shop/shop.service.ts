@@ -3,7 +3,6 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { environment } from 'src/environment';
-import { IBrand } from '../shared/models/brand';
 import { IPagination } from '../shared/models/pagination';
 import { IProduct } from '../shared/models/product';
 import { IType } from '../shared/models/productType';
@@ -23,7 +22,6 @@ export class ShopService {
   private baseUrl = `${environment.basketApi}products`;
 
   private products: IProduct[] = [];
-  private brands: IBrand[] = [];
   private types: IType[] = [];
   private pagination: IPagination = { pageIndex: 1, pageSize: 9, count: 0, data: [] };
   private shopParams = new ShopParams();
@@ -78,14 +76,6 @@ export class ShopService {
   getProduct(id: number): Observable<IProduct> {
     const cached = this.products.find((product) => product.id === id);
     return cached ? of(cached) : this.http.get<IProduct>(`${this.baseUrl}/${id}`);
-  }
-
-  getBrands(): Observable<IBrand[]> {
-    return this.brands.length
-      ? of(this.brands)
-      : this.http
-          .get<IBrand[]>(`${this.baseUrl}/brands`)
-          .pipe(map((brands) => (this.brands = brands)));
   }
 
   getTypes(): Observable<IType[]> {

@@ -3,7 +3,7 @@
     <div class="toast" [class.toast--success]="toast.kind === 'success'"
       [class.toast--error]="toast.kind === 'error'" role="status">
       <app-icon class="toast__icon" [size]="18"
-        [name]="toast.kind === 'success' ? 'check-circle' : toast.kind === 'error' ? 'alert' : 'inbox'" />
+        [name]="toast.kind === 'success' ? 'check-circle' : 'alert'" />
 
       <div class="toast__body">
         @if (toast.title) {
