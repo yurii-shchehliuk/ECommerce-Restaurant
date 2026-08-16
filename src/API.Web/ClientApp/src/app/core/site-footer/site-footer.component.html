@@ -1,0 +1,31 @@
+<footer class="site-footer">
+  <div class="shell site-footer__inner">
+    <div class="site-footer__brand">
+      <p class="site-footer__word">owlet</p>
+      <p class="site-footer__line">
+        A storefront on four independent services. Sign in with one, browse another,
+        and watch the third find out about your order.
+      </p>
+      <p class="site-footer__links">
+        <a routerLink="/shop">Menu</a>
+        <a routerLink="/orders">Orders</a>
+        <a routerLink="/admin/order-events">Order events</a>
+      </p>
+    </div>
+
+    <div class="site-footer__services">
+      <p class="eyebrow">Behind the gateway</p>
+      <dl class="service-list figure">
+        @for (service of services; track service.name) {
+          <div class="service-list__row">
+            <dt>{{ service.name }}</dt>
+            <dd>
+              <span class="service-list__prefix">{{ service.prefix }}</span>
+              <span class="service-list__role">{{ service.role }}</span>
+            </dd>
+          </div>
+        }
+      </dl>
+    </div>
+  </div>
+</footer>

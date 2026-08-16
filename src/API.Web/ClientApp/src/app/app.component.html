@@ -1,10 +1,22 @@
-<ngx-spinner>
-    <h3>Loading...</h3>
-</ngx-spinner>
+<a class="skip-link" href="#main">Skip to content</a>
 
-<app-nav-bar></app-nav-bar>
-<app-section-header></app-section-header>
+<app-nav-bar />
 
-<div>
-    <router-outlet></router-outlet>
+<!-- The header's underline doubles as the request indicator: one element, two
+     jobs, and no layout shift when a request starts. -->
+<div class="wire" role="status" aria-live="polite">
+  @if (busy()) {
+    <span class="wire__pulse"></span>
+    <span class="sr-only">Loading</span>
+  }
 </div>
+
+<app-section-header />
+
+<main id="main" tabindex="-1">
+  <router-outlet />
+</main>
+
+<app-site-footer />
+
+<app-toast-host />

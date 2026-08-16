@@ -1,0 +1,33 @@
+.step-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.step-head .step-heading {
+  margin-bottom: 0;
+}
+
+.address-grid {
+  display: grid;
+  gap: 0 1rem;
+  margin-top: 1.25rem;
+}
+
+.address-grid__pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1rem;
+}
+
+@media (min-width: 40rem) {
+  .address-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .address-grid__full {
+    grid-column: 1 / -1;
+  }
+}

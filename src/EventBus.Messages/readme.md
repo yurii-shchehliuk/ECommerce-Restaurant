@@ -14,13 +14,13 @@ EventBusExtensions.cs  AddOrderEventPublishing() / AddOrderEventConsuming()
 
 ## Why there is no ProjectReference
 
-This project deliberately references no other project in the solution. The
-contract used to be `OrderMessageDTO`, which sat in `WebApi.Domain` and embedded
-the whole `Order` **entity** — so any change to a persistence model was also,
-invisibly, a change to the public wire format, and adding a navigation property
-could have started serialising a lazily-loaded object graph onto a queue.
-`OrderPlaced` is flat, carries only primitives, and cannot move unless someone
-edits this assembly.
+This project deliberately references no other project in the solution. A contract
+that lives in the domain assembly and embeds an entity makes every change to a
+persistence model also, invisibly, a change to the public wire format — one added
+navigation property is enough to start serialising a lazily-loaded object graph
+onto a queue. `OrderPlaced` is flat, carries only primitives, and cannot move
+unless someone edits this assembly. `TheContractsAssembly_DependsOnNoDomainProject`
+fails the build if a reference is ever added.
 
 ## Topology
 
@@ -35,11 +35,10 @@ MassTransit over RabbitMQ.
   idempotent. The one in `WebApi.Infrastructure` enforces this with a unique
   index on `EventId` and returns `false` for a duplicate.
 
-## What is still missing
+## Next
 
-There is no transactional outbox. `OrderService` commits the order and then
-publishes; a crash in between loses the event. Doing it properly means
-MassTransit's EF Core outbox writing the message into `appdb` inside the same
-`SaveChanges` as the order, with a delivery service draining it. That is the
-next change to this project, and until it exists the failure mode is documented
-rather than fixed.
+A transactional outbox. `OrderService` commits the order and then publishes;
+those are two operations with no transaction across them, so a crash in the gap
+loses the event. MassTransit's EF Core outbox — writing the message into `appdb`
+inside the same `SaveChanges` as the order, with a delivery service draining it —
+closes that window, and is the next change to this project.

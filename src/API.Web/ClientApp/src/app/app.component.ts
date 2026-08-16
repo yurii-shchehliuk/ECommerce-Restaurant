@@ -1,50 +1,49 @@
-import { Component, OnInit } from '@angular/core';
-import { BasketService } from './basket/basket.service';
+import { Component, OnInit, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterOutlet } from '@angular/router';
 import { AccountService } from './account/account.service';
-import { MessageVM } from './features/models/MessageVM';
-import { SignalRService } from './features/signalr.service';
+import { BasketService } from './basket/basket.service';
+import { BusyService } from './core/services/busy.service';
+import { NavBarComponent } from './core/nav-bar/nav-bar.component';
+import { SectionHeaderComponent } from './core/section-header/section-header.component';
+import { SiteFooterComponent } from './core/site-footer/site-footer.component';
+import { ToastHostComponent } from './core/toast-host/toast-host.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  styleUrls: ['./app.component.css'],
+  imports: [
+    NavBarComponent,
+    SectionHeaderComponent,
+    SiteFooterComponent,
+    ToastHostComponent,
+    RouterOutlet,
+  ],
 })
 export class AppComponent implements OnInit {
-  title = 'Shop';
-  constructor(
-    private basketService: BasketService,
-    private accountService: AccountService,
-  ) {}
+  private basketService = inject(BasketService);
+  private accountService = inject(AccountService);
+
+  readonly busy = toSignal(inject(BusyService).busy$, { initialValue: false });
 
   ngOnInit(): void {
-    this.loadBasket();
-    this.loadCurrentUser();
-
+    this.restoreSession();
+    this.restoreBasket();
   }
 
-  loadCurrentUser() {
-    const token = localStorage.getItem('token');
-    this.accountService.loadCurrentUser(token).subscribe(
-      () => {
-        console.log('loaded user');
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+  /** A stale or forged token is not an error worth showing; it just means signed out. */
+  private restoreSession(): void {
+    this.accountService.loadCurrentUser(localStorage.getItem('token')).subscribe({
+      error: () => undefined,
+    });
   }
 
-  loadBasket() {
+  private restoreBasket(): void {
     const basketId = localStorage.getItem('basket_id');
-    if (basketId) {
-      this.basketService.getBasket(basketId).subscribe(
-        () => {
-          console.log('initialised basket');
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
+    if (!basketId) {
+      return;
     }
+    this.basketService.getBasket(basketId).subscribe({ error: () => undefined });
   }
 }

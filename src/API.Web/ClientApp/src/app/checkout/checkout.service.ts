@@ -1,25 +1,24 @@
-import { Injectable } from '@angular/core';
-import { environment } from 'src/environment';
 import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {IDeliveryMethod} from '../shared/models/deliveryMethod';
-import { IOrderToCreate } from '../shared/models/order';
+import { environment } from 'src/environment';
+import { IDeliveryMethod } from '../shared/models/deliveryMethod';
+import { IOrder, IOrderToCreate } from '../shared/models/order';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class CheckoutService {
-  baseUrl = environment.basketApi;
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) { }
+  private baseUrl = environment.basketApi;
 
-  creatOrder(order: IOrderToCreate) {
-    return this.http.post(this.baseUrl + 'orders', order);
+  createOrder(order: IOrderToCreate): Observable<IOrder> {
+    return this.http.post<IOrder>(`${this.baseUrl}orders`, order);
   }
 
-  getDeliveryMethods() {
-    return this.http.get(this.baseUrl + 'orders/deliveryMethods').pipe(
-      map((dm: IDeliveryMethod[]) => dm.sort((a, b) => b.price - a.price))
-    );
+  getDeliveryMethods(): Observable<IDeliveryMethod[]> {
+    return this.http
+      .get<IDeliveryMethod[]>(`${this.baseUrl}orders/deliveryMethods`)
+      .pipe(map((methods) => [...methods].sort((a, b) => b.price - a.price)));
   }
 }

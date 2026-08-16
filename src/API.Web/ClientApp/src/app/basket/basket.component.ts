@@ -1,34 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IBasket, IBasketItem, IBasketTotals } from '../shared/models/basket';
 import { BasketService } from './basket.service';
+import { AsyncPipe } from '@angular/common';
+import { BasketSummaryComponent } from '../shared/components/basket-summary/basket-summary.component';
+import { OrderTotalsComponent } from '../shared/components/order-totals/order-totals.component';
+import { RouterLink } from '@angular/router';
+import { IconComponent } from '../shared/components/icon/icon.component';
 
 @Component({
-  selector: 'app-basket',
-  templateUrl: './basket.component.html',
-  styleUrls: ['./basket.component.scss']
+    selector: 'app-basket',
+    templateUrl: './basket.component.html',
+    styleUrls: ['./basket.component.css'],
+    imports: [BasketSummaryComponent, OrderTotalsComponent, RouterLink, IconComponent, AsyncPipe]
 })
-export class BasketComponent implements OnInit {
-  basket$: Observable<IBasket>;
-  basketTotals$: Observable<IBasketTotals>;
+export class BasketComponent {
+  private basketService = inject(BasketService);
 
-  constructor(private basketService: BasketService) { }
+  readonly basket$: Observable<IBasket | null> = this.basketService.basket$;
+  readonly basketTotals$: Observable<IBasketTotals | null> = this.basketService.basketTotal$;
 
-  ngOnInit() {
-    this.basket$ = this.basketService.basket$;
-    this.basketTotals$ = this.basketService.basketTotal$;
-  }
-
-  removeBasketItem(item: IBasketItem) {
+  removeBasketItem(item: IBasketItem): void {
     this.basketService.removeItemFromBasket(item);
   }
 
-  incrementItemQuantity(item: IBasketItem) {
+  incrementItemQuantity(item: IBasketItem): void {
     this.basketService.incrementItemQuantity(item);
   }
 
-  decrementItemQuantity(item: IBasketItem) {
+  decrementItemQuantity(item: IBasketItem): void {
     this.basketService.decrementItemQuantity(item);
   }
-
 }

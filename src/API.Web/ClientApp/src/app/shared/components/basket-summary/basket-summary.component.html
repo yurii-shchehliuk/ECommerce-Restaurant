@@ -1,68 +1,45 @@
-<ng-container *ngIf="items.length > 0">
-    <div class="table-responsive">
-        <table class="table table-borderless">
-            <thead [class.thead-light]="isBasket || isOrder" class="border-0 py-2">
-                <tr>
-                    <th scope="col">
-                        <div class="p-2 px-3 text-uppercase">Product</div>
-                    </th>
-                    <th scope="col">
-                        <div class="py-2 text-uppercase">Price</div>
-                    </th>
-                    <th scope="col">
-                        <div class="py-2 text-uppercase">Quantity</div>
-                    </th>
-                    <th scope="col">
-                        <div class="py-2 text-uppercase">Total</div>
-                    </th>
-                    <th *ngIf="isBasket" scope="col" class="border-0">
-                        <div class="py-2 text-uppercase">Remove</div>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let item of items" class="border-0">
-                    <th scope="row">
-                        <div class="p-0">
-                            <img src="{{item.pictureUrl}}" alt="{{item.productName}}"
-                                class="img-fluid" style="max-height: 50px;">
-                            <div class="ml-3 d-inline-block align-middle">
-                                <h5 class="mb-0">
-                                    <a routerLink="/shop/{{item.id || item.productId}}"
-                                        class="text-dark">{{item.productName}}</a>
-                                </h5>
-                                <span
-                                    *ngIf="item.type"
-                                    class="text-muted font-weight-normal font-italic d-block">
-                                    Type: {{item.type}}
-                                </span>
-                            </div>
+@if (rows().length) {
+  <ul class="lines">
+    @for (row of rows(); track row.productId) {
+      <li class="line">
+        <img class="line__image" [src]="row.pictureUrl" [alt]="row.productName" loading="lazy" />
 
-                        </div>
-                    </th>
-                    <td class="align-middle"><strong>{{item.price | currency}}</strong></td>
-                    <td class="align-middle">
-                        <div class="d-flex align-items-center"
-                            [class.justify-content-center]="!isBasket">
-                            <i *ngIf="isBasket" (click)="decrementItemQuantity(item)" class="fa fa-minus-circle text-warning me-2"
-                                style="cursor: pointer; font-size: 2em;"></i>
-                            <span class="font-weight-bold" style="font-size: 1.5em;">
-                                {{item.quantity}}
-                            </span>
-                            <i *ngIf="isBasket" (click)="incrementItemQuantity(item)" class="fa fa-plus-circle text-warning mx-2"
-                                style="cursor: pointer; font-size: 2em;"></i>
-                        </div>
-                    </td>
-                    <td class="align-middle">
-                        <strong>{{item.price * item.quantity | currency}}</strong></td>
-                    <td class="align-middle text-center">
-                        <a class="text-danger">
-                            <i *ngIf="isBasket"  (click)="removeBasketItem(item)" class="fa fa-trash" style="font-size: 2em; cursor: pointer;"></i>
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</ng-container>
+        <div class="line__main">
+          <a class="line__name" [routerLink]="['/shop', row.productId]">{{ row.productName }}</a>
+          @if (row.type) {
+            <p class="line__meta">{{ row.type }}</p>
+          }
+          <p class="line__unit figure">{{ row.price | currency }} each</p>
+        </div>
 
+        <div class="line__qty">
+          @if (editable()) {
+            <div class="qty" role="group"
+              [attr.aria-label]="'Quantity of ' + row.productName">
+              <button type="button" class="qty__btn" (click)="decrementItemQuantity(row)"
+                [attr.aria-label]="'Remove one ' + row.productName">
+                <app-icon name="minus" [size]="14" />
+              </button>
+              <span class="qty__value figure">{{ row.quantity }}</span>
+              <button type="button" class="qty__btn" (click)="incrementItemQuantity(row)"
+                [attr.aria-label]="'Add one ' + row.productName">
+                <app-icon name="plus" [size]="14" />
+              </button>
+            </div>
+          } @else {
+            <span class="line__count figure">&times;{{ row.quantity }}</span>
+          }
+        </div>
+
+        <p class="line__total figure">{{ row.price * row.quantity | currency }}</p>
+
+        @if (editable()) {
+          <button type="button" class="line__remove" (click)="removeBasketItem(row)"
+            [attr.aria-label]="'Remove ' + row.productName + ' from the basket'">
+            <app-icon name="trash" [size]="16" />
+          </button>
+        }
+      </li>
+    }
+  </ul>
+}

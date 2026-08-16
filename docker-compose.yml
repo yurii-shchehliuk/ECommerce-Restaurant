@@ -4,11 +4,9 @@
 #     cp src/WebApi.Domain/Common.env.template src/WebApi.Domain/Common.env
 #     docker compose up --build
 #
-# These files live next to Owlet.sln on purpose. They used to live in docker/ while
-# declaring `context: .` and Dockerfiles that COPY from `src/...`, so they only worked
-# if you first copied them up a directory — which the docker/README.md told you to do,
-# alongside a .dockerignore that did not exist. Now the build context is the directory
-# the compose file is in, and `.env` is picked up from the same place.
+# These files live next to Owlet.sln on purpose: every Dockerfile COPYs from
+# `src/...`, so the build context has to be the repository root, and Docker resolves
+# it relative to the compose file. `.env` is picked up from the same place.
 #
 # `version:` is omitted deliberately: it is obsolete in the Compose spec, and the
 # `depends_on: condition: service_healthy` used below is not available under the old
@@ -46,9 +44,8 @@ services:
       - ASPNETCORE_URLS=http://*:80
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
       # Composed from SA_PASSWORD so the database password exists in exactly one
-      # place. It used to be written into .env AND into both connection strings in
-      # Common.env, and getting one of the three wrong produced a login failure that
-      # looked like a schema problem.
+      # place. Duplicating it across .env and the connection strings in Common.env
+      # turns one stale copy into a login failure that looks like a schema problem.
       - ConnectionStrings__IdentityConnection=Server=owletsql;Database=identitydb;User Id=sa;Password=${SA_PASSWORD};MultipleActiveResultSets=true;TrustServerCertificate=True
       - ConnectionStrings__DefaultConnection=Server=owletsql;Database=appdb;User Id=sa;Password=${SA_PASSWORD};MultipleActiveResultSets=true;TrustServerCertificate=True
     ports:
@@ -149,8 +146,8 @@ services:
     volumes:
       - sqldata:/var/opt/mssql
     healthcheck:
-      # depends_on used to order container *start* only, so the APIs raced SQL Server's
-      # 30-second cold start and lost. This is the readiness gate that was missing.
+      # The readiness gate. `depends_on` on its own orders container *start* only,
+      # which the APIs would win against SQL Server's 30-second cold start.
       #
       # Note the path and the -C: current mssql:2019-latest images ship
       # /opt/mssql-tools18, not /opt/mssql-tools, and the v18 sqlcmd encrypts by

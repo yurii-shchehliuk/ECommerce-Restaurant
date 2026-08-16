@@ -1,0 +1,28 @@
+.server-error__message {
+  margin: 1.5rem 0 0.75rem;
+  font-weight: 600;
+  color: var(--color-danger-500);
+}
+
+.server-error__details {
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-raised);
+}
+
+.server-error__details summary {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.server-error__details pre {
+  margin: 0;
+  padding: 0 1rem 1rem;
+  overflow-x: auto;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--color-body-muted);
+}

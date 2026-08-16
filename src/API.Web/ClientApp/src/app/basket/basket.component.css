@@ -1,0 +1,41 @@
+.basket {
+  padding-block: 2.5rem var(--spacing-section);
+}
+
+.basket__grid {
+  display: grid;
+  gap: 2rem;
+  align-items: start;
+}
+
+.basket__items {
+  min-width: 0;
+}
+
+.basket__side {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.basket__checkout {
+  width: 100%;
+}
+
+.basket__note {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--color-body-faint);
+}
+
+@media (min-width: 60rem) {
+  .basket__grid {
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    gap: 2.5rem;
+  }
+
+  .basket__side {
+    position: sticky;
+    top: 5rem;
+  }
+}

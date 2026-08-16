@@ -1,62 +1,59 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { CdkStep } from '@angular/cdk/stepper';
+import { Observable } from 'rxjs';
 import { AccountService } from '../account/account.service';
 import { BasketService } from '../basket/basket.service';
-import { Observable } from 'rxjs';
 import { IBasketTotals } from '../shared/models/basket';
+import { OrderTotalsComponent } from '../shared/components/order-totals/order-totals.component';
+import { StepperComponent } from '../shared/components/stepper/stepper.component';
+import { CheckoutAddressComponent } from './checkout-address/checkout-address.component';
+import { CheckoutDeliveryComponent } from './checkout-delivery/checkout-delivery.component';
+import { CheckoutPaymentComponent } from './checkout-payment/checkout-payment.component';
+import { CheckoutReviewComponent } from './checkout-review/checkout-review.component';
+import { CheckoutForm, createCheckoutForm } from './checkout-form';
 
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.component.html',
-  styleUrls: ['./checkout.component.scss']
+  styleUrls: ['./checkout.component.css'],
+  imports: [
+    StepperComponent,
+    CdkStep,
+    CheckoutAddressComponent,
+    CheckoutDeliveryComponent,
+    CheckoutReviewComponent,
+    CheckoutPaymentComponent,
+    OrderTotalsComponent,
+    AsyncPipe,
+  ],
 })
 export class CheckoutComponent implements OnInit {
-  basketTotals$: Observable<IBasketTotals>;
-  checkoutForm: FormGroup;
+  private accountService = inject(AccountService);
+  private basketService = inject(BasketService);
 
-  constructor(private fb: FormBuilder, private accountService: AccountService, private basketService: BasketService) { }
+  readonly checkoutForm: CheckoutForm = createCheckoutForm();
+  readonly basketTotals$: Observable<IBasketTotals | null> = this.basketService.basketTotal$;
 
-  ngOnInit() {
-    this.createCheckoutForm();
-    this.getAddressFormValues();
-    this.getDeliveryMethodValue();
-    this.basketTotals$ = this.basketService.basketTotal$;
+  ngOnInit(): void {
+    this.prefillAddress();
+    this.prefillDeliveryMethod();
   }
 
-  createCheckoutForm() {
-    this.checkoutForm = this.fb.group({
-      addressForm: this.fb.group({
-        firstName: [null, Validators.required],
-        lastName: [null, Validators.required],
-        street: [null, Validators.required],
-        city: [null, Validators.required],
-        state: [null, Validators.required],
-        zipcode: [null, Validators.required],
-      }),
-      deliveryForm: this.fb.group({
-        deliveryMethod: [null, Validators.required]
-      }),
-      paymentForm: this.fb.group({
-        nameOnCard: [null, Validators.required]
-      })
+  /** A saved default address is a convenience, so failing to read one is silent. */
+  private prefillAddress(): void {
+    this.accountService.getUserAddress().subscribe({
+      next: (address) => address && this.checkoutForm.controls.addressForm.patchValue(address),
+      error: () => undefined,
     });
   }
 
-  getAddressFormValues() {
-    this.accountService.getUserAddress().subscribe(address => {
-      if (address) {
-        this.checkoutForm.get('addressForm').patchValue(address);
-      }
-    }, error => {
-      console.log(error);
-    });
-  }
-
-  getDeliveryMethodValue() {
-    const basket = this.basketService.getCurrentBasketValue();
-    if (basket.deliveryMethodId !== null) {
-      this.checkoutForm.get('deliveryForm').get('deliveryMethod').patchValue(basket.deliveryMethodId.toString());
+  private prefillDeliveryMethod(): void {
+    const deliveryMethodId = this.basketService.getCurrentBasketValue()?.deliveryMethodId;
+    if (deliveryMethodId != null) {
+      this.checkoutForm.controls.deliveryForm.controls.deliveryMethod.setValue(
+        String(deliveryMethodId)
+      );
     }
   }
-
 }

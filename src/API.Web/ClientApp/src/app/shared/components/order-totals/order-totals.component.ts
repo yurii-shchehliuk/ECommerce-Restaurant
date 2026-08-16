@@ -1,18 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-order-totals',
   templateUrl: './order-totals.component.html',
-  styleUrls: ['./order-totals.component.scss']
+  styleUrls: ['./order-totals.component.css'],
+  imports: [CurrencyPipe],
 })
-export class OrderTotalsComponent implements OnInit {
-  @Input() shippingPrice: number;
-  @Input() subtotal: number;
-  @Input() total: number;
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+export class OrderTotalsComponent {
+  readonly shippingPrice = input(0);
+  readonly subtotal = input(0);
+  readonly total = input(0);
 }

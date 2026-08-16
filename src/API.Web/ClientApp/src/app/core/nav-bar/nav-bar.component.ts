@@ -1,51 +1,71 @@
-import { Component, OnInit } from '@angular/core';
-import { BasketService } from 'src/app/basket/basket.service';
-import { Observable } from 'rxjs';
-import { IBasket } from 'src/app/shared/models/basket';
-import { IUser } from 'src/app/shared/models/user';
+import { Component, ElementRef, HostListener, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AccountService } from 'src/app/account/account.service';
-import { AuthenticateDialogComponent } from '../dialogs/authenticate-dialog/authenticate-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
+import { BasketService } from 'src/app/basket/basket.service';
+import { IconComponent } from '../../shared/components/icon/icon.component';
+import { ThemeService } from '../services/theme.service';
 
 @Component({
   selector: 'app-nav-bar',
   templateUrl: './nav-bar.component.html',
-  styleUrls: ['./nav-bar.component.scss'],
+  styleUrls: ['./nav-bar.component.css'],
+  imports: [RouterLink, RouterLinkActive, IconComponent],
 })
-export class NavBarComponent implements OnInit {
-  basket$: Observable<IBasket>;
-  currentUser$: Observable<IUser>;
+export class NavBarComponent {
+  private host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private accountService = inject(AccountService);
+  private theme = inject(ThemeService);
 
-  constructor(
-    private basketService: BasketService,
-    private accountService: AccountService,
-    public dialog: MatDialog) { }
+  readonly basket = toSignal(inject(BasketService).basket$, { initialValue: null });
+  readonly user = toSignal(this.accountService.currentUser$, { initialValue: null });
 
-  ngOnInit() {
-    this.basket$ = this.basketService.basket$;
-    this.currentUser$ = this.accountService.currentUser$;
-    // (this.currentUser$.subscribe({
-    //   next: (res) => {
-    //     console.log(res);
-    //   },
-    //   error: (res) => {
-    //     console.log(res);
-    //   },
-    //   complete: () => {
-    //     console.log("sds");
-    //   }
-    // }));
+  readonly itemCount = computed(
+    () => this.basket()?.items.reduce((total, item) => total + item.quantity, 0) ?? 0
+  );
 
+  readonly themePreference = this.theme.preference;
+  readonly themeIcon = computed(() => {
+    const preference = this.themePreference();
+    return preference === 'dark' ? 'moon' : preference === 'light' ? 'sun' : 'contrast';
+  });
+
+  readonly menuOpen = signal(false);
+  readonly accountOpen = signal(false);
+
+  toggleMenu(): void {
+    this.menuOpen.update((open) => !open);
+    this.accountOpen.set(false);
   }
 
-  authenticateDialog() {
-    const dialogRef = this.dialog.open(AuthenticateDialogComponent);
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-    });
+  toggleAccount(): void {
+    this.accountOpen.update((open) => !open);
   }
 
-  logout() {
+  closeAll(): void {
+    this.menuOpen.set(false);
+    this.accountOpen.set(false);
+  }
+
+  cycleTheme(): void {
+    this.theme.cycle();
+  }
+
+  signOut(): void {
+    this.closeAll();
     this.accountService.logout();
+  }
+
+  /** A menu that stays open after you click past it is the usual bug here. */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (!this.host.nativeElement.contains(event.target as Node)) {
+      this.closeAll();
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.closeAll();
   }
 }

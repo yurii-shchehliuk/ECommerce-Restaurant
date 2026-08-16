@@ -1,42 +1,45 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@aspnet/signalr';
+import { Component, OnInit, inject } from '@angular/core';
+import { IOrder } from 'src/app/shared/models/order';
+import { CurrencyPipe, DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { IconComponent } from '../../shared/components/icon/icon.component';
 import { CompletedOrdersService } from './completed-orders.service';
 
 @Component({
-  selector: 'app-completed-orders',
-  templateUrl: './completed-orders.component.html',
-  styleUrls: ['./completed-orders.component.scss'],
+    selector: 'app-completed-orders',
+    templateUrl: './completed-orders.component.html',
+    imports: [RouterLink, CurrencyPipe, DatePipe, IconComponent]
 })
 export class CompletedOrdersComponent implements OnInit {
-  orders: any;
-  constructor(private service: CompletedOrdersService) { }
+  private service = inject(CompletedOrdersService);
+
+  orders: IOrder[] = [];
+  loading = true;
+  error: string | null = null;
 
   ngOnInit(): void {
-    this.service.getOrders().subscribe(
-      (res) => {
-        this.orders = res;
+    this.service.getOrders().subscribe({
+      next: (orders) => {
+        this.orders = orders ?? [];
+        this.loading = false;
       },
-      (err) => {
-        console.log('getOrders', err);
-      }
-    );
-  }
-  exportData() {
-    const blob = new Blob([JSON.stringify(this.orders, null, 2)], {
-      type: 'application/json',
+      error: () => {
+        this.error = 'Could not reach API.Basket.';
+        this.loading = false;
+      },
     });
-    this.download(blob, 'fileName.json');
   }
-  download(blob, filename) {
-    const a = document.createElement('a');
+
+  /** Client-side export, so it works without an endpoint that does not exist. */
+  exportData(): void {
+    const blob = new Blob([JSON.stringify(this.orders, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    }, 0);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'orders.json';
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(url);
   }
 }

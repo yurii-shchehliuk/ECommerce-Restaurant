@@ -1,113 +1,96 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { IPagination, Pagination } from '../shared/models/pagination';
-import { IBrand } from '../shared/models/brand';
-import { IType } from '../shared/models/productType';
-import { map, delay } from 'rxjs/operators';
-import { ShopParams } from '../shared/models/shopParams';
-import { IProduct } from '../shared/models/product';
-import { of } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { environment } from 'src/environment';
+import { IBrand } from '../shared/models/brand';
+import { IPagination } from '../shared/models/pagination';
+import { IProduct } from '../shared/models/product';
+import { IType } from '../shared/models/productType';
+import { ShopParams } from '../shared/models/shopParams';
 
-@Injectable({
-  providedIn: 'root'
-})
+/**
+ * The catalogue, plus a small cache.
+ *
+ * Products already fetched are kept so paging back to a visited page and opening a
+ * product from the grid do not re-request what the client already has. The cache is
+ * dropped whenever a filter, sort or search changes, because it is keyed only by
+ * page and would otherwise serve results from the previous query.
+ */
+@Injectable({ providedIn: 'root' })
 export class ShopService {
-  baseUrl = environment.basketApi;
+  private http = inject(HttpClient);
+  private baseUrl = `${environment.basketApi}products`;
 
-  products: IProduct[] = [];
-  brands: IBrand[] = [];
-  types: IType[] = [];
-  pagination = new Pagination();
-  shopParams = new ShopParams();
+  private products: IProduct[] = [];
+  private brands: IBrand[] = [];
+  private types: IType[] = [];
+  private pagination: IPagination = { pageIndex: 1, pageSize: 9, count: 0, data: [] };
+  private shopParams = new ShopParams();
 
-  constructor(private http: HttpClient) { }
+  getShopParams(): ShopParams {
+    return this.shopParams;
+  }
 
-  getProducts(useCache: boolean) {
-    if (useCache === false) {
+  setShopParams(params: ShopParams): void {
+    this.shopParams = params;
+  }
+
+  getProducts(useCache: boolean): Observable<IPagination> {
+    if (!useCache) {
       this.products = [];
     }
 
-    if (this.products.length > 0 && useCache === true) {
+    if (useCache && this.products.length > 0) {
       const pagesReceived = Math.ceil(this.products.length / this.shopParams.pageSize);
-
       if (this.shopParams.pageNumber <= pagesReceived) {
-        this.pagination.data =
-          this.products.slice((this.shopParams.pageNumber - 1) * this.shopParams.pageSize,
-            this.shopParams.pageNumber * this.shopParams.pageSize);
-
-        return of(this.pagination);
+        const start = (this.shopParams.pageNumber - 1) * this.shopParams.pageSize;
+        return of({
+          ...this.pagination,
+          data: this.products.slice(start, start + this.shopParams.pageSize),
+        });
       }
     }
 
-    let params = new HttpParams();
+    let params = new HttpParams()
+      .append('sort', this.shopParams.sort)
+      .append('pageIndex', this.shopParams.pageNumber)
+      .append('pageSize', this.shopParams.pageSize);
 
     if (this.shopParams.brandId !== 0) {
-      params = params.append('brandId', this.shopParams.brandId.toString());
+      params = params.append('brandId', this.shopParams.brandId);
     }
-
     if (this.shopParams.typeId !== 0) {
-      params = params.append('typeId', this.shopParams.typeId.toString());
+      params = params.append('typeId', this.shopParams.typeId);
     }
-
     if (this.shopParams.search) {
       params = params.append('search', this.shopParams.search);
     }
 
-    params = params.append('sort', this.shopParams.sort);
-    params = params.append('pageIndex', this.shopParams.pageNumber.toString());
-    params = params.append('pageSize', this.shopParams.pageSize.toString());
-
-    return this.http.get<IPagination>(this.baseUrl + 'products', { observe: 'response', params })
-      .pipe(
-        map(response => {
-          this.products = [...this.products, ...response.body.data];
-          this.pagination = response.body;
-          return this.pagination;
-        })
-      );
-  }
-
-  getShopParams() {
-    return this.shopParams;
-  }
-
-  setShopParams(params: ShopParams) {
-    this.shopParams = params;
-  }
-
-  getProduct(id: number) {
-    const product = this.products.find(p => p.id === id);
-
-    if (product) {
-      return of(product);
-    }
-    const head = new HttpHeaders();
-    head.set('productId', id.toString());
-    return this.http.get<IProduct>(this.baseUrl + 'products/' + id, { headers: head });
-  }
-
-  getBrands() {
-    if (this.brands.length > 0) {
-      return of(this.brands);
-    }
-    return this.http.get<IBrand[]>(this.baseUrl + 'products/brands').pipe(
-      map(response => {
-        this.brands = response;
-        return response;
+    return this.http.get<IPagination>(this.baseUrl, { params }).pipe(
+      tap((page) => {
+        this.products = [...this.products, ...page.data];
+        this.pagination = page;
       })
     );
   }
 
-  getTypes() {
-    if (this.types.length > 0) {
-      return of(this.types);
-    }
-    return this.http.get<IType[]>(this.baseUrl + 'products/types').pipe(
-      map(response => {
-        this.types = response;
-        return response;
-      })
-    );
+  getProduct(id: number): Observable<IProduct> {
+    const cached = this.products.find((product) => product.id === id);
+    return cached ? of(cached) : this.http.get<IProduct>(`${this.baseUrl}/${id}`);
+  }
+
+  getBrands(): Observable<IBrand[]> {
+    return this.brands.length
+      ? of(this.brands)
+      : this.http
+          .get<IBrand[]>(`${this.baseUrl}/brands`)
+          .pipe(map((brands) => (this.brands = brands)));
+  }
+
+  getTypes(): Observable<IType[]> {
+    return this.types.length
+      ? of(this.types)
+      : this.http.get<IType[]>(`${this.baseUrl}/types`).pipe(map((types) => (this.types = types)));
   }
 }

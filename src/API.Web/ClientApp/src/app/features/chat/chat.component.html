@@ -1,49 +1,54 @@
-<div class="container">
-  <h3 class="text-center chat_header">Chat in group {{message.groupName}}</h3>
-  <div class="messaging">
-    <div class="inbox_msg">
-      <div class="mesgs">
-        <div class="msg_history">
-          <div *ngFor="let msg of messageList">
-            <!-- income messages -->
-            <div class="incoming_msg" *ngIf="msg.userName !== message.userName">
-              <div class="incoming_msg_img"></div>
-              <div class="received_msg">
-                <div class="received_withd_msg">
-                  <span class="time_date">
-                    {{ msg.userName }}
-                  </span>
-                  <p>
-                    {{ msg.messageBody }}
-                  </p>
-                  <span class="time_date">
-                    {{ msg.createdAt | date: "medium" }}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <!-- outcome messages -->
-            <div class="outgoing_msg" *ngIf="msg.userName === message.userName">
-              <div class="sent_msg">
-                <p>
-                  {{ msg.messageBody }}
-                </p>
-                <span class="time_date"> {{ msg.createdAt | date: "medium" }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="type_msg">
-          <div class="input_msg_write">
-            <input type="text" class="write_msg" [(ngModel)]="message.messageBody" (keydown.enter)="sendMessage()"
-              placeholder="Type a message" />
-            <button class="msg_send_btn" type="button" (click)="sendMessage()">
-              <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
-            </button>
-            <!-- <input type="text" placeholder="Your name" class="name-box"  [(ngModel)]="message.userName" /> -->
-          </div>
-        </div>
-      </div>
+<div class="shell page chat">
+  <header class="page__head page__head--split">
+    <div>
+      <p class="page__lede">
+        Messages are posted to <code>API.Identity</code> over HTTP and arrive back over
+        its SignalR hub, so every connected browser sees the same thread.
+      </p>
     </div>
+
+    @switch (status) {
+      @case ('connected') {
+        <span class="pill pill--live"><span class="beacon" aria-hidden="true"></span> connected</span>
+      }
+      @case ('failed') {
+        <span class="pill pill--down">
+          <app-icon name="alert" [size]="13" /> hub unreachable
+        </span>
+      }
+      @default {
+        <span class="pill">connecting…</span>
+      }
+    }
+  </header>
+
+  @if (!userName) {
+    <p class="chat__hint">
+      <a routerLink="/account/login">Sign in</a> to post under your own name.
+    </p>
+  }
+
+  <div class="chat__thread" role="log" aria-live="polite" aria-label="Messages">
+    @for (message of messages; track $index) {
+      <article class="bubble" [class.bubble--mine]="isMine(message)">
+        <p class="bubble__who">{{ message.userName || 'Anonymous' }}</p>
+        <p class="bubble__text">{{ message.messageBody }}</p>
+        <p class="bubble__time figure">{{ message.createdAt | date: 'HH:mm' }}</p>
+      </article>
+    } @empty {
+      <div class="state state--center">
+        <app-icon name="send" [size]="26" />
+        <p class="state__title">No messages yet</p>
+      </div>
+    }
   </div>
+
+  <form class="chat__compose" (ngSubmit)="send()">
+    <label class="sr-only" for="chat-message">Message</label>
+    <input id="chat-message" class="field-control" [(ngModel)]="draft" name="draft"
+      placeholder="Say something" autocomplete="off" [disabled]="status !== 'connected'" />
+    <button type="submit" class="btn btn-primary" [disabled]="status !== 'connected' || !draft.trim()">
+      <app-icon name="send" [size]="16" /> Send
+    </button>
+  </form>
 </div>

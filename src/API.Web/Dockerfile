@@ -1,13 +1,11 @@
-# API.Web — ASP.NET Core host that serves the Angular 15 single-page app.
+# API.Web — ASP.NET Core host that serves the Angular single-page app.
 #
 # Three stages: build the SPA with the Angular CLI, publish the .NET host, then
-# assemble both into the runtime image. The image used to contain neither `npm` nor
-# a built bundle, while the host was configured to launch `ng serve` at runtime, so
-# the container could not serve the client at all. It can now.
+# assemble both into the runtime image, so the runtime image needs no Node.js.
 #
 # Build context is the repository root.
 
-FROM node:18-alpine AS clientbuild
+FROM node:24-alpine AS clientbuild
 WORKDIR /client
 # package.json and the lock file first, so `npm ci` is cached independently of source.
 COPY ["src/API.Web/ClientApp/package.json", "src/API.Web/ClientApp/package-lock.json", "./"]
@@ -36,7 +34,8 @@ RUN dotnet publish "API.Web.csproj" -c Release -o /app/publish /p:UseAppHost=fal
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-# AddSpaStaticFiles(RootPath = "wwwroot/dist") resolves relative to the content root.
+# AddSpaStaticFiles(RootPath = "wwwroot/dist") resolves relative to the content root,
+# which is why angular.json pins outputPath.browser to "" and keeps dist/ flat.
 COPY --from=clientbuild /client/dist ./wwwroot/dist
 EXPOSE 80
 ENTRYPOINT ["dotnet", "API.Web.dll"]

@@ -1,11 +1,10 @@
 # Architecture notes
 
 Companion to the [README](../README.md). The longer version: what the projects
-are, why the boundaries fall where they do, and where the design is deliberate
-versus where it is still unfinished.
+are, why the boundaries fall where they do, and what each design decision buys.
 
-Everything here was checked against the source, and the runtime claims were
-checked against a running stack. Where something is not wired up, it says so.
+Everything here is checked against the source, and the runtime figures against a
+running stack.
 
 ---
 
@@ -25,6 +24,8 @@ src/
   WebApi.Db.Identity/    AppIdentityDbContext, its migration, identity seeding
   WebApi.Db.Store/       StoreContext + migration, BasketContext (Redis), seed data
   EventBus.Messages/     wire contracts, the consumer, and both bus registrations
+
+  API.Web/ClientApp/     the Angular 20 client, built into the API.Web image
 
   nginx/                 the gateway
 tests/
@@ -56,11 +57,6 @@ adding a service is cheap and consistent, but the services are coupled through a
 common assembly and cannot be versioned or deployed truly independently. For a
 system of this size that was the right trade. At ten services it would not be.
 
-A dead Autofac container module used to live here too — `MediatorConfiguration`,
-`AutofacDependencyResolver` and a hand-rolled `Mediator` in `WebApi.Domain.Core`,
-none of which anything ever installed, alongside the MediatR that actually
-dispatches. It has been deleted.
-
 ---
 
 ## 2. Authentication
@@ -77,17 +73,14 @@ The claim list is assembled by the caller,
 roles from `UserManager` — and passed in, so `TokenService` stays a signing
 concern only.
 
-Two real defects, both still open and both covered in the README's "What is still
-wrong": the shipped key was 128 bits against an algorithm requiring 512, and
-`Expires = DateTime.Now.AddDays(7)` uses local time where JWT `exp` is defined in
-UTC.
+HS512 requires a key at least as large as the algorithm's hash output — 512 bits,
+64 bytes. `docs/running.md` covers generating one; the token library's own floor
+is lower than the algorithm's requirement, so the size is a configuration
+responsibility rather than something it will reject for you.
 
 **Validation.** `CommonExtensions.AddCommonIdentity` registers `AddJwtBearer` with
 the same symmetric key and issuer, `ValidateAudience = false`, plus the role and
-claim policies. `API.Basket`, `API.Admin` **and now `API.Web`** call it. `API.Web`
-previously called `UseAuthentication()`/`UseAuthorization()` with no scheme
-registered at all and carried a `Token` configuration section nothing read — dead
-pipeline that reads like working security.
+claim policies. `API.Basket`, `API.Admin` and `API.Web` all call it.
 
 Identity configures its own `JwtBearer` separately because it needs an
 `OnMessageReceived` hook to pull `access_token` off the query string for SignalR.
@@ -96,14 +89,6 @@ Identity configures its own `JwtBearer` separately because it needs an
 authenticate a request, so Identity can be down and an already-signed-in user can
 still use their basket. The cost is that a token cannot be revoked before it
 expires, and with a 7-day lifetime and no refresh flow that is a long window.
-
-**Registration used to be impossible.** The register action carried
-`[ValidateAntiForgeryToken]`, whose filter is only registered by
-`AddControllersWithViews()`. `API.Identity` calls `AddControllers()`, so every
-registration request failed with `No service for type
-ValidateAntiforgeryTokenAuthorizationFilter has been registered` — a 500. The
-attribute was also the wrong tool: anti-forgery defends cookie-authenticated form
-posts, and this is an anonymous JSON endpoint on a bearer-token API.
 
 ---
 
@@ -140,21 +125,17 @@ first written. The class is unfortunately named `BasketContext` and sits in
 (`WebApi.Domain/Specifications/`) so `Include`s, filters, sorting and paging
 compose without the repository growing a method per query.
 
-One specification had a real bug. `OrderByPaymentIntentIdSpecification` compares
-`PaymentIntentId` for equality, so given a null intent it matches every order that
-also has a null intent. Without Stripe configured every basket has a null intent,
-so the second checkout after a fresh start found the *first* order ever placed,
-tried to delete it and called `CreateOrUpdatePaymentIntent(null)`. `OrderService`
-now skips the lookup entirely when there is no payment intent, with tests on both
-branches.
+`OrderByPaymentIntentIdSpecification` matches on `PaymentIntentId` equality, which
+is only meaningful when an intent exists: without Stripe configured every basket
+carries a null intent, and a null-matches-null lookup would find an unrelated
+order. `OrderService` skips the lookup entirely when there is no payment intent,
+with tests on both branches.
 
 **Schema creation.** Migrations are committed —
 `WebApi.Db.Identity/Migrations/` (9 tables) and `WebApi.Db.Store/Migrations/`
-(8 tables). Start-up calls `MigrateAsync()` and nothing else; the previous code
-called `EnsureCreatedAsync()` *and* `MigrateAsync()`, which are mutually exclusive
-strategies, because `EnsureCreated` builds the schema from the model without
-writing `__EFMigrationsHistory` and then `Migrate` tries to create tables that
-already exist.
+(8 tables). Start-up calls `MigrateAsync()` and nothing else. `EnsureCreated` is
+deliberately not in the picture: it builds the schema from the model without
+writing `__EFMigrationsHistory`, and the two strategies cannot be mixed.
 
 Migrations are generated from the data projects through
 `IDesignTimeDbContextFactory`, not through a web host, so regenerating one does
@@ -191,8 +172,6 @@ why the demo places its order through the same API the wizard calls.
 
 ## 5. Messaging
 
-This section used to be titled "the unfinished part". It is finished.
-
 **What runs.** `API.Basket` publishes `OrderPlaced` through MassTransit;
 `API.Admin` consumes it from the durable queue `owlet-order-placed`.
 
@@ -206,14 +185,15 @@ src/EventBus.Messages/
   EventBusExtensions.cs           AddOrderEventPublishing / AddOrderEventConsuming
 ```
 
-**Why this project references nothing.** The old contract, `OrderMessageDTO`, sat
-in `WebApi.Domain` and embedded the whole `Order` **entity**, so any change to a
-persistence model was invisibly a change to the public wire format, and adding a
-navigation property could have started serialising an object graph onto a queue.
-`EventBus.Messages` now has no `ProjectReference` at all, and a test asserts it:
-`TheContractsAssembly_DependsOnNoDomainProject`. The mapping from domain to
-contract lives in `WebApi.Infrastructure/Services/OrderEventPublisher.cs`, the one
-place that legitimately knows about both.
+**Why this project references nothing.** `EventBus.Messages` has no
+`ProjectReference` at all, and a test asserts it:
+`TheContractsAssembly_DependsOnNoDomainProject`. A contract that sits in the
+domain assembly and embeds an entity makes every persistence change an invisible
+change to the public wire format, with one added navigation property enough to
+start serialising an object graph onto a queue. `OrderPlaced` is flat and carries
+primitives only. The mapping from domain to contract lives in
+`WebApi.Infrastructure/Services/OrderEventPublisher.cs`, the one place that
+legitimately knows about both.
 
 **Ordering.** `OrderService` publishes only after `IUnitOfWork.Complete()`
 succeeds. Publishing first would let Admin record an order that a failed
@@ -236,37 +216,25 @@ checkout still succeeds, the queue holds the message (`messages 1, consumers 0`)
 and the event is consumed 14.3 seconds later when Admin returns — the length of
 the outage.
 
-**What was there before.** A raw `RabbitMQ.Client` publisher, an
-`EventingBasicConsumer` background service, and `OrderReceivedConsumer`, which
-extended `DefaultBasicConsumer` (RabbitMQ.Client) while exposing
-`Consume(ConsumeContext<T>)` (MassTransit) without implementing `IConsumer<T>` —
-half-migrated between two libraries and dispatchable by neither. None of it was
-referenced by any project, the registrations were commented out, and
-`MassTransit.RabbitMQ` was not even a package reference, so the commented-out code
-could not have compiled. All of it is deleted.
-
-**What is still missing: the outbox.** Committing the order and publishing the
-event are two operations with no transaction across them. A crash between them
-loses the event silently. MassTransit's EF Core outbox — writing the message into
-`appdb` inside the same `SaveChanges` as the order, with a delivery service
-draining it — is the fix, and it has not been done.
+**Next: the outbox.** Committing the order and publishing the event are two
+operations with no transaction across them, so a crash in the gap loses the
+event. MassTransit's EF Core outbox — writing the message into `appdb` inside the
+same `SaveChanges` as the order, with a delivery service draining it — closes
+that window.
 
 ---
 
 ## 6. Logging
 
-Serilog on all four services. `API.Admin` had none at all before; it does now.
-Each `Program.cs` enriches with a `Service` property, writes to the console, and
-writes to Seq at `Seq:ServerUrl` from configuration — the URL used to be a string
-literal in code, so changing the sink meant recompiling.
+Serilog on all four services. Each `Program.cs` enriches with a `Service`
+property, writes to the console, and writes to Seq at `Seq:ServerUrl` from
+configuration, so changing the sink is a configuration edit rather than a
+recompile. `ReadFrom.Configuration(ctx.Configuration)` reads a `Serilog` section
+from every `appsettings.json`.
 
-`ReadFrom.Configuration(ctx.Configuration)` now finds a `Serilog` section in every
-`appsettings.json`; previously no such section existed anywhere, so the call read
-nothing.
-
-**Still missing: correlation IDs.** Four services' logs land in one Seq instance,
-which is most of the value, but nothing ties the lines from one checkout together.
-A correlation ID on the request pipeline, propagated through outbound calls and
+**Next: correlation IDs.** Four services' logs land in one Seq instance, which is
+most of the value, but nothing ties the lines from one checkout together. A
+correlation ID on the request pipeline, propagated through outbound calls and
 message headers, is the highest-value remaining change here.
 
 ---
@@ -287,49 +255,100 @@ so `/svc/basket/api/products` reaches Basket as `/api/products`. The WebSocket
 upgrade is passed through for SignalR.
 
 The `/svc` segment is not decoration. The Angular router owns `/basket`, `/admin`,
-`/orders`, `/shop`, `/account` and `/checkout`, so bare `/basket/` and `/admin/`
-locations collided with real client-side routes: nginx answered a deep link to
-`/basket` with a 301 to `/basket/` and handed it to `API.Basket`, which 404s.
-Measured before the change: `/basket` and `/admin` returned 301. After: 200.
+`/orders`, `/shop`, `/account` and `/checkout`. Bare `/basket/` and `/admin/`
+locations would collide with those client-side routes — nginx would answer a deep
+link to `/basket` with a 301 to `/basket/` and hand it to `API.Basket`, which
+404s. Under the `/svc` prefix both deep links return 200.
 
 Because the production bundle uses those relative prefixes, the browser talks to
 one origin and CORS does no work in production. The permissive CORS policy remains
 for the `ng serve` development path, where the client is on :4200 and the services
 are on their own ports.
 
-Before this, nginx declared upstreams for the SPA and the basket and commented
-both out; only `api.identity` was routed. It was a reverse proxy in front of one
-service.
-
-**The SPA.** `src/API.Web/Dockerfile` has a `node:18-alpine` stage that runs
+**The SPA.** `src/API.Web/Dockerfile` has a `node:24-alpine` stage that runs
 `npm ci` and `ng build --configuration production` and copies the output into
 `wwwroot/dist`. `UseAngular` serves that with `UseSpaStaticFiles()` outside
-Development and proxies to the Angular CLI dev server inside it.
+Development and proxies to the Angular CLI dev server inside it. The production
+configuration swaps `src/environment.ts` for `src/environment.prod.ts`, whose
+URLs are all gateway-relative, so the deployed bundle is single-origin.
 
-Previously the image contained neither Node.js nor a bundle while the host was
-configured to launch `ng serve` at runtime, `UseSpaStaticFiles()` was never
-called, and `wwwroot/dist` did not exist — so the container could not serve the
-client at all. `angular.json` also pointed its `fileReplacements` at
-`src/environments/environment.ts`, a path that does not exist, so the production
-build failed outright; and the file it swapped in had a flatter shape than the
-code reads.
+`AddSpaStaticFiles(RootPath = "wwwroot/dist")` expects a flat directory, which is
+why `angular.json` pins `outputPath.browser` to `""`: the v20 application builder
+would otherwise emit `dist/browser/`.
 
 **Compose.** `docker-compose.yml` sits next to `Owlet.sln`, because the build
 context is the repository root and Docker resolves it relative to the compose
 file. It defines all four services, the gateway, SQL Server 2019, Redis 6,
 RabbitMQ 3, Seq, smtp4dev and redis-commander. SQL Server, Redis and RabbitMQ have
-health checks and the services depend on `service_healthy`, so container *start*
-order is no longer confused with readiness. `DatabaseInitializer` retries on top of
-that, for the non-Docker path where there is no health check at all.
+health checks and the services depend on `service_healthy`, so a service starts
+against a dependency that is ready rather than merely started.
+`DatabaseInitializer` retries on top of that, for the non-Docker path where there
+is no health check at all.
 
-Two health-check details worth knowing, because both fail silently in the
-copy-pasted version: current `mssql:2019-latest` images ship
+Two health-check details worth knowing: current `mssql:2019-latest` images ship
 `/opt/mssql-tools18`, not `/opt/mssql-tools`, and the v18 `sqlcmd` encrypts by
 default and so rejects the container's self-signed certificate without `-C`.
 
 ---
 
-## 8. If I rebuilt it today
+## 8. The client
+
+`src/API.Web/ClientApp`, Angular 20, standalone throughout - there are no
+NgModules. Every component declares the directives and pipes its own template
+uses, so what a template can reach is visible in the file beside it.
+
+**Routing and loading.** `app.routes.ts` lazily loads everything except the
+landing page, through `loadComponent` for a single view and `loadChildren` for an
+area's own `*.routes.ts`. Routes carry `title`, which the router applies to
+`document.title`, and may carry `data: { chrome: false }` to suppress the page
+title bar - used by the centred single-purpose pages, which would otherwise carry
+a second `h1`.
+
+**State.** Services hold observables; components read them with `toSignal` or the
+`async` pipe. Signal inputs are used where a component is a leaf that renders
+what it is given. There is no state-management library: the only cross-component
+state is the basket and the signed-in user, and each is one service with one
+subject.
+
+| Concern | Where |
+|---|---|
+| Basket, and the totals derived from it | `basket/basket.service.ts` |
+| Signed-in user and the token | `account/account.service.ts` |
+| Catalogue, and the page cache over it | `shop/shop.service.ts` |
+| In-flight request count | `core/services/busy.service.ts` |
+| Light / dark preference | `core/services/theme.service.ts` |
+| Notifications | `core/services/toast.service.ts` |
+
+**Design tokens.** `src/styles.css` declares the palette, the type scale, the
+radii, the shadows and the spacing rhythm in a single Tailwind v4 `@theme` block.
+The dark theme remaps those tokens and nothing else; no component is aware that
+it exists. Three states - light, dark, and follow the system - because an
+explicit choice has to be able to win against the system preference in both
+directions, which a boolean cannot express.
+
+**Dependencies.** Eight at runtime: the six `@angular/*` packages the application
+actually imports, `@microsoft/signalr` for the chat hub, and `rxjs`. Tailwind is
+a build dependency. `@angular/cdk` is the only component library, and only for
+`CdkStepper`, which supplies the checkout wizard's state machine and no styling.
+
+**Contracts the client has to honour.** Two are worth naming because getting
+either wrong produces a 400 that reads like something else:
+
+- `BasketItem` requires `pictureUrl`, `brand` and `type` on every line, so
+  `BasketService.toBasketItem` sends all three.
+- `RegisterVM` requires `ConfirmPassword` and constrains `Password` with a regular
+  expression. `shared/validators/password.ts` mirrors that rule so the answer
+  arrives under the field rather than as a server error.
+
+**Tests.** Karma and Jasmine, 77 specs, `npm run test:ci` to run them headless.
+They cover the pager's windowing, the basket service's guards and its
+re-pricing-from-the-response rule, the catalogue cache, the breadcrumb
+derivation, the theme preference, toast de-duplication, the password rules and
+the order-event latency scaling.
+
+---
+
+## 9. If I rebuilt it today
 
 - .NET 8 or 10, minimal APIs, and .NET Aspire instead of hand-rolled Compose
   wiring.
@@ -340,5 +359,5 @@ default and so rejects the container's self-signed certificate without `-C`.
   hold the key that mints tokens.
 - Short-lived access tokens plus a real refresh flow, instead of a 7-day token.
 - Correlation IDs through the pipeline and the message headers.
-- Contract tests per message type, of the kind `OrderPlacedContractTest` now
-  provides for the only message that exists.
+- Contract tests per message type, of the kind `OrderPlacedContractTest` provides
+  for the only message that exists.

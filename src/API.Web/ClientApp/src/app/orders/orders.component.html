@@ -1,27 +1,53 @@
-<div class="container mt-5">
-  <div class="row">
-    <div class="col-12">
-      <table class="table table-hover" style="cursor: pointer">
-        <thead class="thead-light">
+<div class="shell page">
+  @if (loading) {
+    <div class="skeleton__lines card" aria-hidden="true">
+      <span class="skeleton__line"></span>
+      <span class="skeleton__line"></span>
+      <span class="skeleton__line skeleton__line--short"></span>
+    </div>
+    <p class="sr-only" role="status">Loading your orders</p>
+  } @else if (error) {
+    <div class="state state--error" role="alert">
+      <app-icon name="alert" [size]="22" />
+      <div>
+        <p class="state__title">{{ error }}</p>
+        <p class="state__body">API.Basket owns the order history and did not answer.</p>
+      </div>
+    </div>
+  } @else if (!orders.length) {
+    <div class="state state--center">
+      <app-icon name="receipt" [size]="28" />
+      <div>
+        <p class="state__title">No orders yet</p>
+        <p class="state__body">When you place one it will be listed here.</p>
+      </div>
+      <a routerLink="/shop" class="btn btn-accent">Browse the menu</a>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table class="data-table">
+        <caption class="sr-only">Your orders, most recent first</caption>
+        <thead>
           <tr>
-            <th>Order</th>
-            <th>Date</th>
-            <th>Total</th>
-            <th>Status</th>
+            <th scope="col">Order</th>
+            <th scope="col">Placed</th>
+            <th scope="col">Status</th>
+            <th scope="col" class="num">Total</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let order of orders" routerLink="/orders/{{ order.id }}">
-            <th># {{ order.id }}</th>
-            <td>{{ order.orderDate | date: "medium" }}</td>
-            <td>{{ order.total | currency }}</td>
-            <td>{{ order.status }}</td>
-          </tr>
+          @for (order of orders; track order.id) {
+            <tr>
+              <th scope="row">
+                <a class="figure" [routerLink]="['/orders', order.id]">#{{ order.id }}</a>
+              </th>
+              <td>{{ order.orderDate | date: 'd MMM y, HH:mm' }}</td>
+              <td><span class="pill">{{ order.status }}</span></td>
+              <td class="num figure">{{ order.total | currency }}</td>
+            </tr>
+          }
         </tbody>
       </table>
     </div>
-    <button class="btn btn-light">
-      <a routerLink="/features/chat"> Chat </a>
-    </button>
-  </div>
+  }
 </div>

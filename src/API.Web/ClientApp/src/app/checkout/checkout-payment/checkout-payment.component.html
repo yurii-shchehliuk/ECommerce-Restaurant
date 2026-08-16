@@ -1,35 +1,51 @@
-<div class="mt-4" [formGroup]="checkoutForm">
-    <div class="row">
-        <div class="form-group col-12" formGroupName="paymentForm">
-            <app-text-input [label]="'Name on card'" formControlName="nameOnCard"></app-text-input>
-        </div>
-        <!-- 4242 4242 4242 4242 | 12/25 123-->
-        <div class="form-group col-6">
-            <div #cardNumber id="cardNumber" class="form-control py-3"></div>
-            <ng-container *ngIf="cardErrors">
-            <span class="text-danger">{{cardErrors}}</span>
-            </ng-container>
-        </div>
-        <div class="form-group col-3">
-            <div #cardExpiry class="form-control py-3"></div>
-        </div>
-        <div class="form-group col-3">
-            <div #cardCvc class="form-control py-3"></div>
-        </div>
+<div [formGroup]="checkoutForm()">
+  <h2 class="step-heading">Payment</h2>
+
+  @if (stripeUnavailable) {
+    <div class="state state--error" role="alert">
+      <app-icon name="alert" [size]="20" />
+      <div>
+        <p class="state__title">Stripe.js did not load</p>
+        <p class="state__body">
+          Card details cannot be collected here. Orders can still be placed against
+          <code>POST /api/orders</code>, which is the endpoint this step calls.
+        </p>
+      </div>
     </div>
+  }
+
+  <div formGroupName="paymentForm">
+    <app-text-input label="Name on card" autocomplete="cc-name" formControlName="nameOnCard" />
+  </div>
+
+  <div class="card-fields">
+    <div class="card-fields__number">
+      <span class="field-label" id="card-number-label">Card number</span>
+      <div #cardNumber class="field-control card-slot" aria-labelledby="card-number-label"></div>
+    </div>
+    <div>
+      <span class="field-label" id="card-expiry-label">Expiry</span>
+      <div #cardExpiry class="field-control card-slot" aria-labelledby="card-expiry-label"></div>
+    </div>
+    <div>
+      <span class="field-label" id="card-cvc-label">CVC</span>
+      <div #cardCvc class="field-control card-slot" aria-labelledby="card-cvc-label"></div>
+    </div>
+  </div>
+
+  @if (cardErrors) {
+    <p class="field-error" role="alert">{{ cardErrors }}</p>
+  }
 </div>
 
-
-<div class="float-none d-flex justify-content-between flex-column flex-lg-row mb-5">
-    <button class="btn btn-outline-primary" cdkStepperPrevious>
-        <i class="fa fa-angle-left"></i> Back to Review
-    </button>
-    <button [disabled]="loading
-        || checkoutForm.get('paymentForm').invalid
-        || !cardNumberValid
-        || !cardExpiryValid
-        || !cardCvcValid" class="btn btn-primary" (click)="submitOrder()" >
-        Submit Order <i class="fa fa-angle-right"></i>
-        <i *ngIf="loading" class="fa fa-spinner fa-spin"></i>
-    </button>
+<div class="step-actions">
+  <button type="button" class="btn btn-ghost" cdkStepperPrevious>
+    <app-icon name="chevron-left" [size]="16" /> Back to review
+  </button>
+  <button type="button" class="btn btn-accent" [disabled]="!canSubmit" (click)="submitOrder()">
+    {{ loading ? 'Placing the order…' : 'Place the order' }}
+    @if (!loading) {
+      <app-icon name="arrow-right" [size]="16" />
+    }
+  </button>
 </div>

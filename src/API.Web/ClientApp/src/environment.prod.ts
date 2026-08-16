@@ -15,13 +15,12 @@
 // the CORS configuration unnecessary in production rather than merely permissive.
 // See src/nginx/nginx.local.conf.
 //
-// The old version of this file was never used: angular.json pointed its
-// fileReplacements at src/environments/environment.ts, a path that does not exist,
-// so `ng build --configuration production` failed outright. It also had a flatter
-// shape than the code expects (environment.identityApi.api), so it would have thrown
-// at runtime if it ever had been used.
 export const environment = {
   production: true,
+  /** Stripe publishable test key. Publishable keys are safe in a client bundle;
+   *  the secret key lives only in API.Basket's configuration. */
+  stripePublishableKey:
+    'pk_test_51KoUd9JYz8ovjrojZ0XrlL1jcNHH2uHULciK9nXWbrBGeBRT7NovFO5a38ncqfEg9NKBiG8OPfaKFWKcm9Pr7OqZ00pYxWvWx4',
   adminApi: '/svc/admin/api/',
   baseApi: {
     web: '/api/',
@@ -32,8 +31,4 @@ export const environment = {
     api: '/svc/identity/api/',
     chat: '/svc/identity/chatsocket'
   }
-};
-
-export const store = {
-  product: "product"
 };

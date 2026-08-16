@@ -1,21 +1,51 @@
-<div class="container mt-5">
-    <div class="row" *ngIf="order">
-        <div class="col-8">
-            <app-basket-summary
-                [items]="order.orderItems"
-                [isBasket]="false"
-                [isOrder]="true"
-            >
-            </app-basket-summary>
-        </div>
-        <div class="col-4">
-                <app-order-totals
-                    [shippingPrice]="order.shippingPrice"
-                    [subtotal]="order.subtotal"
-                    [total]="order.total"
-                >
-                </app-order-totals
-                >
-        </div>
+<div class="shell page">
+  @if (loading) {
+    <div class="skeleton__lines card" aria-hidden="true">
+      <span class="skeleton__line"></span>
+      <span class="skeleton__line skeleton__line--short"></span>
     </div>
+    <p class="sr-only" role="status">Loading this order</p>
+  } @else if (error) {
+    <div class="state state--error" role="alert">
+      <app-icon name="alert" [size]="22" />
+      <div>
+        <p class="state__title">{{ error }}</p>
+        <p class="state__body">It may belong to a different account.</p>
+      </div>
+      <a routerLink="/orders" class="btn btn-ghost btn-sm">Back to your orders</a>
+    </div>
+  } @else if (order; as detail) {
+    <dl class="order-facts">
+      <div>
+        <dt>Status</dt>
+        <dd><span class="pill">{{ detail.status }}</span></dd>
+      </div>
+      <div>
+        <dt>Placed</dt>
+        <dd>{{ detail.orderDate | date: 'd MMM y, HH:mm' }}</dd>
+      </div>
+      <div>
+        <dt>Delivery</dt>
+        <dd>{{ detail.deliveryMethod }}</dd>
+      </div>
+      <div>
+        <dt>Ship to</dt>
+        <dd>
+          {{ detail.shipToAddress.firstName }} {{ detail.shipToAddress.lastName }},
+          {{ detail.shipToAddress.street }}, {{ detail.shipToAddress.city }}
+          {{ detail.shipToAddress.zipcode }}
+        </dd>
+      </div>
+    </dl>
+
+    <div class="order-grid">
+      <div class="order-grid__items">
+        <app-basket-summary [items]="detail.orderItems" [editable]="false" />
+      </div>
+      <aside>
+        <app-order-totals [shippingPrice]="detail.shippingPrice" [subtotal]="detail.subtotal"
+          [total]="detail.total" />
+      </aside>
+    </div>
+  }
 </div>

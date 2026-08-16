@@ -1,0 +1,211 @@
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  /* Wrapping is what lets the mobile nav, which is width:100%, drop onto its own
+     row beneath the brand instead of trying to squeeze in beside it. */
+  flex-wrap: wrap;
+  gap: 0 1rem;
+  min-height: 3.75rem;
+}
+
+/* Brand ------------------------------------------------------------------- */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-moss-500);
+  text-decoration: none;
+  margin-right: auto;
+}
+
+.brand__mark {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex: none;
+}
+
+.brand__eye {
+  fill: var(--color-surface);
+}
+
+.brand__pupil {
+  fill: var(--color-ink-900);
+}
+
+.brand__beak {
+  fill: var(--color-ember-500);
+}
+
+.brand__word {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  color: var(--color-body);
+}
+
+/* Navigation -------------------------------------------------------------- */
+.site-header__burger {
+  display: inline-flex;
+}
+
+.site-header__nav {
+  display: none;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  padding-block: 0.5rem 1rem;
+  border-top: 1px solid var(--color-line);
+  order: 3;
+}
+
+.site-header__nav.is-open {
+  display: flex;
+}
+
+.site-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.site-nav a {
+  display: block;
+  padding: 0.5rem 0.625rem;
+  border-radius: var(--radius-control);
+  color: var(--color-body-muted);
+  text-decoration: none;
+  font-weight: 550;
+  font-size: 0.9375rem;
+}
+
+.site-nav a:hover {
+  color: var(--color-body);
+  background: var(--color-surface-sunken);
+}
+
+.site-nav a.is-active {
+  color: var(--color-body);
+  /* Mixed from the brand token rather than hard-coded, so it tracks the theme. */
+  background: color-mix(in srgb, var(--color-moss-500) 14%, transparent);
+}
+
+.site-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+}
+
+/* Basket ------------------------------------------------------------------ */
+.basket-link {
+  position: relative;
+  text-decoration: none;
+}
+
+.basket-link__count {
+  position: absolute;
+  top: -0.125rem;
+  right: -0.125rem;
+  min-width: 1.125rem;
+  height: 1.125rem;
+  padding: 0 0.25rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-ember-500);
+  color: var(--color-ink-950);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1.125rem;
+  text-align: center;
+}
+
+/* Account menu ------------------------------------------------------------ */
+.account {
+  position: relative;
+}
+
+.account__name {
+  max-width: 9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account__menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  z-index: 50;
+  min-width: 14rem;
+  list-style: none;
+  margin: 0;
+  padding: 0.375rem;
+  box-shadow: var(--shadow-overlay);
+}
+
+.account__menu a,
+.account__menu button {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+  padding: 0.5rem 0.625rem;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--color-body);
+  font: inherit;
+  font-size: 0.9375rem;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.account__menu a:hover,
+.account__menu button:hover {
+  background: var(--color-surface-sunken);
+}
+
+.account__section {
+  margin-top: 0.375rem;
+  padding-top: 0.375rem;
+  border-top: 1px solid var(--color-line);
+}
+
+.account__section .eyebrow {
+  display: block;
+  padding: 0.375rem 0.625rem 0.125rem;
+}
+
+/* Desktop ----------------------------------------------------------------- */
+@media (min-width: 48rem) {
+  .site-header__burger {
+    display: none;
+  }
+
+  .site-header__nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+    width: auto;
+    padding-block: 0;
+    border-top: 0;
+    order: initial;
+  }
+
+  .site-nav {
+    flex-direction: row;
+    gap: 0.25rem;
+  }
+}

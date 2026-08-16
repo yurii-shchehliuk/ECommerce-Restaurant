@@ -1,20 +1,17 @@
-<div class="bg-light px-4 text-uppercase font-weight-bold" style="padding: 1.20em;">
-    Order Summary
-</div>
-<div class="p-4">
-    <p class="font-italic mb-4">Shipping costs will be added depending on choices made during checkout</p>
-    <ul class="list-unstyled mb-4">
-        <li class="d-flex justify-content-between py-3 border-bottom">
-            <strong class="text-muted">Order subtotal</strong>
-            <strong>{{subtotal | currency}}</strong>
-        </li>
-        <li class="d-flex justify-content-between py-3 border-bottom">
-            <strong class="text-muted">Shipping and handling</strong>
-            <strong>{{shippingPrice | currency}}</strong>
-        </li>
-        <li class="d-flex justify-content-between py-3 border-bottom">
-            <strong class="text-muted">Total</strong>
-            <strong>{{total | currency}}</strong>
-        </li>
-    </ul>
-</div>
+<section class="totals card">
+  <h2 class="totals__heading">Order summary</h2>
+  <dl class="totals__list">
+    <div class="totals__row">
+      <dt>Subtotal</dt>
+      <dd class="figure">{{ subtotal() | currency }}</dd>
+    </div>
+    <div class="totals__row">
+      <dt>Shipping</dt>
+      <dd class="figure">{{ shippingPrice() | currency }}</dd>
+    </div>
+    <div class="totals__row totals__row--sum">
+      <dt>Total</dt>
+      <dd class="figure">{{ total() | currency }}</dd>
+    </div>
+  </dl>
+</section>

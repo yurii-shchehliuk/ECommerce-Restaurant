@@ -1,0 +1,139 @@
+/* A list, not a table.
+   These rows are goods rather than records, and a table would force horizontal
+   scrolling on a phone for content that reflows perfectly well. The admin
+   screens, which really are records, use .data-table instead. */
+.lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-raised);
+  overflow: hidden;
+}
+
+.line {
+  display: grid;
+  grid-template-areas:
+    'image main remove'
+    'image qty total';
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.5rem 0.875rem;
+  padding: 0.875rem;
+}
+
+.line + .line {
+  border-top: 1px solid var(--color-line);
+}
+
+.line__image {
+  grid-area: image;
+  width: 4rem;
+  height: 4rem;
+  border-radius: var(--radius-control);
+  object-fit: cover;
+  background: var(--color-surface-sunken);
+}
+
+.line__main {
+  grid-area: main;
+  min-width: 0;
+}
+
+.line__name {
+  color: var(--color-body);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.line__name:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.line__meta {
+  margin: 0.125rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--color-body-faint);
+}
+
+.line__unit {
+  margin: 0.1875rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--color-body-muted);
+}
+
+.line__qty {
+  grid-area: qty;
+}
+
+.line__count {
+  color: var(--color-body-muted);
+  font-weight: 600;
+}
+
+.line__total {
+  grid-area: total;
+  margin: 0;
+  font-weight: 650;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.line__remove {
+  grid-area: remove;
+  justify-self: end;
+  border: 0;
+  background: none;
+  padding: 0.25rem;
+  line-height: 0;
+  color: var(--color-body-faint);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+
+.line__remove:hover {
+  color: var(--color-danger-500);
+  background: color-mix(in srgb, var(--color-danger-500) 10%, transparent);
+}
+
+.qty {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-control);
+  overflow: hidden;
+}
+
+.qty__btn {
+  display: grid;
+  place-items: center;
+  width: 1.875rem;
+  height: 1.875rem;
+  border: 0;
+  background: transparent;
+  color: var(--color-body);
+  cursor: pointer;
+}
+
+.qty__btn:hover {
+  background: var(--color-surface-sunken);
+}
+
+.qty__value {
+  min-width: 1.875rem;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+@media (min-width: 40rem) {
+  .line {
+    grid-template-areas: 'image main qty total remove';
+    grid-template-columns: auto 1fr auto 6rem auto;
+    gap: 1rem;
+    padding: 1rem 1.125rem;
+  }
+}

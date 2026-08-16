@@ -1,0 +1,10 @@
+.count {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-body-muted);
+}
+
+.count .figure {
+  color: var(--color-body);
+  font-weight: 600;
+}

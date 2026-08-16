@@ -1,0 +1,29 @@
+.card-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1rem;
+}
+
+.card-fields__number {
+  grid-column: 1 / -1;
+}
+
+/* Stripe mounts an iframe inside these, so they are sized rather than styled: the
+   input chrome is ours, the field inside it is Stripe's. */
+.card-slot {
+  padding-block: 0.75rem;
+}
+
+.card-fields .field-label {
+  display: block;
+}
+
+@media (min-width: 40rem) {
+  .card-fields {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+
+  .card-fields__number {
+    grid-column: auto;
+  }
+}

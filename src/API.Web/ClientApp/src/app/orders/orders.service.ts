@@ -1,20 +1,20 @@
-import { Injectable } from '@angular/core';
-import { environment } from 'src/environment';
 import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environment';
+import { IOrder } from '../shared/models/order';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class OrdersService {
-  baseUrl = environment.basketApi;
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) { }
+  private baseUrl = environment.basketApi;
 
-  getOrdersForUser() {
-    return this.http.get(this.baseUrl + 'orders');
+  getOrdersForUser(): Observable<IOrder[]> {
+    return this.http.get<IOrder[]>(`${this.baseUrl}orders`);
   }
 
-  getOrderDetailed(id: number) {
-    return this.http.get(this.baseUrl + 'orders/' + id);
+  getOrderDetailed(id: number): Observable<IOrder> {
+    return this.http.get<IOrder>(`${this.baseUrl}orders/${id}`);
   }
 }

@@ -1,14 +1,28 @@
-<div class="d-flex justify-content-center mt-5">
-  <div class="col-3">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="text-center mb-4">
-        <h1 class="h3 mb-3 font-weight-normal">Login</h1>
-      </div>
+<div class="shell">
+  <div class="narrow-page">
+    <h1 class="step-heading">Sign in</h1>
 
-      <app-text-input formControlName="email" [label]="'Email Address'"></app-text-input>
-      <app-text-input formControlName="password" [label]="'Password'" [type]="'password'"></app-text-input>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+      <app-text-input formControlName="email" label="Email address" type="email"
+        autocomplete="email" />
+      <app-text-input formControlName="password" label="Password" type="password"
+        autocomplete="current-password" />
 
-      <button [disabled]="loginForm.invalid" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      @if (error) {
+        <div class="state state--error" role="alert">
+          <app-icon name="alert" [size]="18" />
+          <p class="state__title">{{ error }}</p>
+        </div>
+      }
+
+      <button type="submit" class="btn btn-primary auth__submit"
+        [disabled]="loginForm.invalid || submitting">
+        {{ submitting ? 'Signing in…' : 'Sign in' }}
+      </button>
     </form>
+
+    <p class="auth__alt">
+      No account yet? <a routerLink="/account/register">Create one</a>.
+    </p>
   </div>
 </div>

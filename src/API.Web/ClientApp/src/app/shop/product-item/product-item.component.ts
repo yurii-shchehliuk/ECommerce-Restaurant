@@ -1,22 +1,22 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { IProduct } from 'src/app/shared/models/product';
 import { BasketService } from 'src/app/basket/basket.service';
+import { RouterLink } from '@angular/router';
+import { IconComponent } from '../../shared/components/icon/icon.component';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-product-item',
-  templateUrl: './product-item.component.html',
-  styleUrls: ['./product-item.component.scss']
+    selector: 'app-product-item',
+    templateUrl: './product-item.component.html',
+    styleUrls: ['./product-item.component.css'],
+    imports: [RouterLink, IconComponent, CurrencyPipe]
 })
-export class ProductItemComponent implements OnInit {
-  @Input() product: IProduct;
+export class ProductItemComponent {
+  readonly product = input.required<IProduct>();
 
-  constructor(private basketService: BasketService) { }
+  private basketService = inject(BasketService);
 
-  ngOnInit() {
+  addItemToBasket(): void {
+    this.basketService.addItemToBasket(this.product());
   }
-
-  addItemToBasket() {
-    this.basketService.addItemToBasket(this.product);
-  }
-
 }

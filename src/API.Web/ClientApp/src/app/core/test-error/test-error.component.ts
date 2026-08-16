@@ -1,140 +1,76 @@
-import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Component, inject } from '@angular/core';
+import { ToastService } from 'src/app/core/services/toast.service';
 import { environment } from 'src/environment';
-import { ToastrService } from 'ngx-toastr';
 
+
+interface Probe {
+  label: string;
+  path: string;
+  /** What the endpoint is there to demonstrate. */
+  note: string;
+}
+
+/**
+ * Exercises API.Identity's `BuggyController` so the error pipeline can be seen
+ * working: the interceptor turns each status into a toast, a redirect or a
+ * rethrown validation payload, and this page is how you check that it still does.
+ *
+ * Admin-only, and linked from the account menu rather than the main navigation.
+ */
 @Component({
-  selector: 'app-test-error',
-  templateUrl: './test-error.component.html',
-  styleUrls: ['./test-error.component.scss']
+    selector: 'app-test-error',
+    templateUrl: './test-error.component.html',
+    styleUrls: ['./test-error.component.css'],
+    imports: []
 })
-export class TestErrorComponent implements OnInit {
+export class TestErrorComponent {
+  private http = inject(HttpClient);
+  private toastr = inject(ToastService);
 
-  // baseUrl = environment.baseApi.web;
-  baseUrl = environment.identityApi.api;
-  validationErrors: any;
+  private baseUrl = environment.identityApi.api;
 
-  constructor(private http: HttpClient, private toastr: ToastrService) { }
+  readonly statusProbes: Probe[] = [
+    { label: '400', path: 'buggy/badrequest', note: 'toast' },
+    { label: '400 validation', path: 'badrequest/fortytwo', note: 'field errors below' },
+    { label: '401', path: 'buggy/AuthorizedAccess', note: 'toast when signed out' },
+    { label: '404', path: 'buggy/notfound', note: 'redirect to /not-found' },
+    { label: '500', path: 'buggy/servererror', note: 'redirect to /server-error' },
+  ];
 
-  ngOnInit() {
-  }
-  //#region access tests
-  getOnlySuperAdminChecker() {
-    this.http.get(this.baseUrl + 'buggy/OnlySuperAdminChecker').subscribe(response => {
-      this.toastrSuccess();
-    }, error => {
-      this.toastrError(error);
-    });
-  }
-  getAdmin_Create_Edit_DeleteAccess_Or_SuperAdmin() {
-    this.http.get(this.baseUrl + 'buggy/Admin_Create_Edit_DeleteAccess_Or_SuperAdmin').subscribe(response => {
-      this.toastrSuccess();
-    }, error => {
-      this.toastrError(error);
-    });
-  }
-  getAdmin_Create_Edit_DeleteAccess() {
-    this.http.get(this.baseUrl + 'buggy/Admin_Create_Edit_DeleteAccess').subscribe(response => {
-      this.toastrSuccess();
-    }, error => {
-      this.toastrError(error);
-    });
-  }
-  getAdmin_CreateAccess() {
-    this.http.get(this.baseUrl + 'buggy/Admin_CreateAccess').subscribe(response => {
-      this.toastrSuccess();
-    }, error => {
-      this.toastrError(error);
-    });
-  }
-  getPolicyAccess() {
-    this.http.get(this.baseUrl + 'buggy/PolicyAccess').subscribe(response => {
-      this.toastrSuccess();
-    }, error => {
-      this.toastrError(error);
-    });
-  }
-  getUser_Admin_Access() {
-    this.http.get(this.baseUrl + 'buggy/User_Admin_Access').subscribe(response => {
-      this.toastrSuccess();
-    }, error => {
-      this.toastrError(error);
-    });
-  }
-  getAdminAccess() {
-    this.http.get(this.baseUrl + 'buggy/AdminAccess').subscribe(response => {
-      this.toastrSuccess();
-    }, error => {
-      this.toastrError(error);
-    });
-  }
-  getUserAccess() {
-    this.http.get(this.baseUrl + 'buggy/UserAccess').subscribe(response => {
-      this.toastrSuccess();
-    }, error => {
-      this.toastrError(error);
-    });
-  }
-  getAuthorizedAccess() {
-    this.http.get(this.baseUrl + 'buggy/AuthorizedAccess').subscribe(response => {
-      this.toastrSuccess();
-    }, error => {
-      this.toastrError(error);
-    });
-  }
-  getAllAccess() {
-    this.http.get(this.baseUrl + 'Buggy/AllAccess').subscribe(response => {
-      this.toastrSuccess();
-    }, error => {
-      this.toastrError(error);
-    });
-  }
-  //#endregion
+  readonly policyProbes: Probe[] = [
+    { label: 'Anonymous', path: 'Buggy/AllAccess', note: 'no policy' },
+    { label: 'Authenticated', path: 'buggy/AuthorizedAccess', note: '[Authorize]' },
+    { label: 'User role', path: 'buggy/UserAccess', note: 'Roles = User' },
+    { label: 'Admin role', path: 'buggy/AdminAccess', note: 'Roles = Admin' },
+    { label: 'User or Admin', path: 'buggy/User_Admin_Access', note: 'Roles = User,Admin' },
+    { label: 'Policy', path: 'buggy/PolicyAccess', note: 'named policy' },
+    { label: 'Create claim', path: 'buggy/Admin_CreateAccess', note: 'claim-based' },
+    { label: 'CRUD claims', path: 'buggy/Admin_Create_Edit_DeleteAccess', note: 'claim-based' },
+    {
+      label: 'CRUD or super admin',
+      path: 'buggy/Admin_Create_Edit_DeleteAccess_Or_SuperAdmin',
+      note: 'claim or requirement',
+    },
+    { label: 'Super admin', path: 'buggy/OnlySuperAdminChecker', note: 'requirement handler' },
+  ];
 
-  //#region tequest tests
+  validationErrors: string[] = [];
+  lastResult: { path: string; status: string; ok: boolean } | null = null;
 
-  get404Error() {
-    this.http.get(this.baseUrl + 'buggy/notfound').subscribe(response => {
-      this.toastrSuccess();
-    }, error => {
-      this.toastrError(error);
+  run(probe: Probe): void {
+    this.validationErrors = [];
+
+    this.http.get(this.baseUrl + probe.path).subscribe({
+      next: () => {
+        this.lastResult = { path: probe.path, status: '200 OK', ok: true };
+        this.toastr.success(probe.path, '200 OK');
+      },
+      error: (error) => {
+        const status = error?.statusCode ?? error?.status ?? 'error';
+        this.lastResult = { path: probe.path, status: String(status), ok: false };
+        this.validationErrors = error?.errors ?? [];
+      },
     });
   }
-
-  get500Error() {
-    this.http.get(this.baseUrl + 'buggy/servererror').subscribe(response => {
-      this.toastrSuccess();
-    }, error => {
-      this.toastrError(error);
-    });
-  }
-
-  get400Error() {
-    this.http.get(this.baseUrl + 'buggy/badrequest').subscribe(response => {
-      this.toastrSuccess();
-    }, error => {
-      this.toastrError(error);
-    });
-  }
-
-  get400ValidationError() {
-    this.http.get(this.baseUrl + 'badrequest/fortytwo').subscribe(response => {
-      this.toastrSuccess();
-    }, error => {
-      this.toastrError(error);
-      this.validationErrors = error.errors;
-    });
-  }
-
-  //#region 
-
-  private toastrError(error: any) {
-    this.toastr.error(error.message);
-    // this.validationErrors = error.errors;
-  }
-
-  private toastrSuccess() {
-    this.toastr.success("Success access");
-  }
-
 }

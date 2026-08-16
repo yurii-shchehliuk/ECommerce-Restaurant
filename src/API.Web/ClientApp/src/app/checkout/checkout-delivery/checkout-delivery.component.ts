@@ -1,30 +1,36 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { CheckoutService } from '../checkout.service';
-import { IDeliveryMethod } from 'src/app/shared/models/deliveryMethod';
+import { Component, OnInit, inject, input } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CdkStepperNext, CdkStepperPrevious } from '@angular/cdk/stepper';
 import { BasketService } from 'src/app/basket/basket.service';
+import { IDeliveryMethod } from 'src/app/shared/models/deliveryMethod';
+import { IconComponent } from '../../shared/components/icon/icon.component';
+import { CheckoutForm } from '../checkout-form';
+import { CheckoutService } from '../checkout.service';
 
 @Component({
   selector: 'app-checkout-delivery',
   templateUrl: './checkout-delivery.component.html',
-  styleUrls: ['./checkout-delivery.component.scss']
+  styleUrls: ['./checkout-delivery.component.css'],
+  imports: [ReactiveFormsModule, CdkStepperPrevious, IconComponent, CdkStepperNext, CurrencyPipe],
 })
 export class CheckoutDeliveryComponent implements OnInit {
-  @Input() checkoutForm: FormGroup;
-  deliveryMethods: IDeliveryMethod[];
+  readonly checkoutForm = input.required<CheckoutForm>();
 
-  constructor(private checkoutService: CheckoutService, private basketService: BasketService) { }
+  deliveryMethods: IDeliveryMethod[] = [];
+  error: string | null = null;
 
-  ngOnInit() {
-    this.checkoutService.getDeliveryMethods().subscribe((dm: IDeliveryMethod[]) => {
-      this.deliveryMethods = dm;
-    }, error => {
-      console.log(error);
+  private checkoutService = inject(CheckoutService);
+  private basketService = inject(BasketService);
+
+  ngOnInit(): void {
+    this.checkoutService.getDeliveryMethods().subscribe({
+      next: (methods) => (this.deliveryMethods = methods),
+      error: () => (this.error = 'Delivery options could not be loaded.'),
     });
   }
 
-  setShippingPrice(deliveryMethod: IDeliveryMethod) {
-    this.basketService.setShippingPrice(deliveryMethod);
+  setShippingPrice(method: IDeliveryMethod): void {
+    this.basketService.setShippingPrice(method);
   }
-
 }

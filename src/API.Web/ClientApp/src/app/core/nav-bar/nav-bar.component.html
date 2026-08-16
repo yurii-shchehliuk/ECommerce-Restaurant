@@ -1,86 +1,127 @@
-<div
-  class="d-flex flex-column flex-md-row align-items-center justify-content-between px-md-4 bg-white border-bottom shadow-sm sticky">
-  <img src="/assets/images/logo_main.png" style="max-height: 70px;" alt="logo" class="logo me-5" routerLink="/">
-  <nav class="my-2 my-md-0 me-md-3 text-uppercase" style="font-size: larger;">
-    <a class="p-2" [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
-    <a class="p-2" routerLink="/shop" routerLinkActive="active">Shop</a>
-    <!-- Reads API.Admin's record of what it consumed off RabbitMQ. Unauthenticated,
-         like the endpoint behind it; see API.Admin/Controllers/OrderEventsController. -->
-    <a class="p-2" routerLink="/admin/order-events" routerLinkActive="active">Order events</a>
-    <ng-container *ngIf="(currentUser$ | async) && (currentUser$ | async).isAdmin">
-      <a class="p-2" routerLink="/test-error" routerLinkActive="active">test-error</a>
-    </ng-container>
-  </nav>
-  <div class="d-flex align-items-center">
-    <a routerLink="/basket" class="position-relative">
-      <button mat-button><i class="fa fa-shopping-cart fa-2x text-dark"></i></button>
-      <div *ngIf="(basket$ | async)" class="cart-no">{{(basket$ | async).items.length}}</div>
+<header class="site-header">
+  <div class="shell site-header__inner">
+    <a routerLink="/" class="brand" (click)="closeAll()" aria-label="Owlet, home">
+      <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <rect x="1" y="3" width="30" height="26" rx="11" fill="currentColor" />
+        <circle cx="11" cy="14" r="4.6" class="brand__eye" />
+        <circle cx="21" cy="14" r="4.6" class="brand__eye" />
+        <circle cx="11" cy="14" r="1.9" class="brand__pupil" />
+        <circle cx="21" cy="14" r="1.9" class="brand__pupil" />
+        <path d="M16 19.4 18.2 23h-4.4Z" class="brand__beak" />
+      </svg>
+      <span class="brand__word">owlet</span>
     </a>
 
-    <!-- logged out -->
-    <ng-container *ngIf="(currentUser$ | async) === null">
-      <!-- <button mat-button class="me-5 "><i class="fa fa-user-o fa-2x" (click)="authenticateDialog()"></i></button> -->
-      <a routerLink="/account/login" class="btn btn-outline-secondary me-2">Login</a>
-      <a routerLink="/account/register" class="btn btn-outline-secondary me-3">Sign up</a>
-    </ng-container>
+    <button type="button" class="btn btn-quiet site-header__burger" (click)="toggleMenu()"
+      [attr.aria-expanded]="menuOpen()" aria-controls="primary-nav"
+      [attr.aria-label]="menuOpen() ? 'Close menu' : 'Open menu'">
+      <app-icon [name]="menuOpen() ? 'x' : 'menu'" />
+    </button>
 
-    <!-- user logged in -->
-    <ng-container *ngIf="(currentUser$ | async) && !(currentUser$ | async).isAdmin">
-      <div class="dropdown ms-3 me-5" dropdown>
-        <a class="dropdown-toggle" style="cursor: pointer" dropdownToggle>
-          <strong>Welcome {{(currentUser$ | async).displayName}}</strong>
+    <nav id="primary-nav" class="site-header__nav" [class.is-open]="menuOpen()"
+      aria-label="Primary">
+      <ul class="site-nav">
+        <li>
+          <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }"
+            (click)="closeAll()">Home</a>
+        </li>
+        <li>
+          <a routerLink="/shop" routerLinkActive="is-active" (click)="closeAll()">Menu</a>
+        </li>
+        <li>
+          <!-- Reads API.Admin's record of what it consumed off RabbitMQ. Unauthenticated,
+               like the endpoint behind it; see API.Admin/Controllers/OrderEventsController. -->
+          <a routerLink="/admin/order-events" routerLinkActive="is-active" (click)="closeAll()">
+            Order events
+          </a>
+        </li>
+      </ul>
+
+      <div class="site-header__actions">
+        <button type="button" class="btn btn-quiet" (click)="cycleTheme()"
+          [attr.aria-label]="'Theme: ' + themePreference() + '. Switch theme.'">
+          <app-icon [name]="themeIcon()" [size]="18" />
+        </button>
+
+        <a routerLink="/basket" class="btn btn-quiet basket-link" (click)="closeAll()"
+          [attr.aria-label]="itemCount() === 1 ? 'Basket, 1 item' : 'Basket, ' + itemCount() + ' items'">
+          <app-icon name="cart" [size]="18" />
+          @if (itemCount()) {
+            <span class="basket-link__count figure">{{ itemCount() }}</span>
+          }
         </a>
-        <div class="dropdown-menu dropdown-menu-right" style="cursor: pointer;" *dropdownMenu>
-          <a routerLink="/basket" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-shopping-cart me-3"></i> View Basket
+
+        @if (user(); as signedIn) {
+          <div class="account">
+            <button type="button" class="btn btn-ghost btn-sm account__trigger"
+              (click)="toggleAccount()" [attr.aria-expanded]="accountOpen()"
+              aria-controls="account-menu">
+              <app-icon name="user" [size]="16" />
+              <span class="account__name">{{ signedIn.displayName }}</span>
+              <app-icon name="chevron-down" [size]="13" />
+            </button>
+
+            @if (accountOpen()) {
+              <ul id="account-menu" class="account__menu card">
+                <li>
+                  <a routerLink="/orders" (click)="closeAll()">
+                    <app-icon name="receipt" [size]="16" /> Your orders
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/basket" (click)="closeAll()">
+                    <app-icon name="cart" [size]="16" /> Your basket
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/features/chat" (click)="closeAll()">
+                    <app-icon name="send" [size]="16" /> Chat
+                  </a>
+                </li>
+
+                @if (signedIn.isAdmin) {
+                  <li class="account__section">
+                    <span class="eyebrow">Machine room</span>
+                  </li>
+                  <li>
+                    <a routerLink="/admin/order-events" (click)="closeAll()">
+                      <app-icon name="activity" [size]="16" /> Order events
+                    </a>
+                  </li>
+                  <li>
+                    <a routerLink="/admin/completed-orders" (click)="closeAll()">
+                      <app-icon name="inbox" [size]="16" /> All orders
+                    </a>
+                  </li>
+                  <li>
+                    <a routerLink="/admin/menu-management" (click)="closeAll()">
+                      <app-icon name="package" [size]="16" /> Catalogue
+                    </a>
+                  </li>
+                  <li>
+                    <a routerLink="/test-error" (click)="closeAll()">
+                      <app-icon name="shield" [size]="16" /> API diagnostics
+                    </a>
+                  </li>
+                }
+
+                <li class="account__section">
+                  <button type="button" (click)="signOut()">
+                    <app-icon name="logout" [size]="16" /> Sign out
+                  </button>
+                </li>
+              </ul>
+            }
+          </div>
+        } @else {
+          <a routerLink="/account/login" class="btn btn-ghost btn-sm" (click)="closeAll()">
+            Sign in
           </a>
-          <a routerLink="/orders" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-history me-3"></i> View Orders
+          <a routerLink="/account/register" class="btn btn-primary btn-sm" (click)="closeAll()">
+            Sign up
           </a>
-          <a routerLink="features/Gifts-n-Points" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-diamond me-2"></i> Gifts&Points
-          </a>
-          <a routerLink="/chat" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-weixin me-2"></i> Chat
-          </a>
-          <div class="dropdown-divider"></div>
-          <a (click)="logout()" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-sign-out me-3"></i> Logout
-          </a>
-        </div>
+        }
       </div>
-
-    </ng-container>
-
-    <!-- admin logged in -->
-    <ng-container *ngIf="(currentUser$ | async) && (currentUser$ | async).isAdmin">
-      <div class="dropdown ms-3 me-5" dropdown>
-        <a class="dropdown-toggle" style="cursor: pointer" dropdownToggle>
-          <strong>Welcome {{(currentUser$ | async).displayName}}</strong>
-        </a>
-        <div class="dropdown-menu dropdown-menu-right" style="cursor: pointer;" *dropdownMenu>
-          <a routerLink="admin/completed-orders" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-file-o me-3"></i> Completed orders
-          </a>
-          <a routerLink="admin/order-events" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-exchange me-3"></i> Order events
-          </a>
-          <a routerLink="admin/menu-management" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-superpowers me-3"></i> Manage Menu
-          </a>
-          <a routerLink="admin/users" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-superpowers me-3"></i> Manage Users
-          </a>
-          <a routerLink="/chat" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-weixin me-2"></i> Chat
-          </a>
-          <div class="dropdown-divider"></div>
-          <a (click)="logout()" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-sign-out me-3"></i> Logout
-          </a>
-        </div>
-      </div>
-
-    </ng-container>
+    </nav>
   </div>
-</div>
+</header>

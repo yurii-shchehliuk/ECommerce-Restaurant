@@ -1,57 +1,117 @@
-<div class="container mt-4 order-events">
-  <div class="d-flex align-items-center justify-content-between mb-3">
+<div class="shell page machine">
+  <header class="machine__head">
     <div>
-      <h4 class="mb-1">Order events</h4>
-      <p class="text-muted mb-0 small">
-        Published by <code>API.Basket</code> after checkout, consumed by
-        <code>API.Admin</code> off the <code>owlet-order-placed</code> queue.
-        Refreshes every 2s.
+      <p class="eyebrow">Machine room</p>
+      <p class="machine__lede">
+        <code>API.Basket</code> publishes an <code>OrderPlaced</code> message at
+        checkout. <code>API.Admin</code> consumes it off the durable queue
+        <code>owlet-order-placed</code> and records that it arrived. Every row below
+        exists only because a message was delivered. Polled every two seconds.
       </p>
     </div>
-    <span class="badge rounded-pill bg-success live" *ngIf="!error">
-      <span class="dot"></span> live
-    </span>
-    <span class="badge rounded-pill bg-danger" *ngIf="error">disconnected</span>
-  </div>
 
-  <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+    @if (error) {
+      <span class="pill pill--down">
+        <app-icon name="alert" [size]="13" /> disconnected
+      </span>
+    } @else {
+      <span class="pill pill--live">
+        <span class="beacon" aria-hidden="true"></span> live
+      </span>
+    }
+  </header>
 
-  <div class="alert alert-light border" *ngIf="loaded && !error && events.length === 0">
-    Nothing consumed yet. Place an order in the storefront and it will appear here.
-  </div>
+  @if (error) {
+    <div class="state state--error" role="alert">
+      <app-icon name="alert" [size]="22" />
+      <div>
+        <p class="state__title">{{ error }}</p>
+        <p class="state__body">
+          Orders placed while it is down are not lost: the broker holds them until it
+          returns, and the latency column then shows how long that took.
+        </p>
+      </div>
+    </div>
+  } @else if (!loaded) {
+    <div class="skeleton__lines card" aria-hidden="true">
+      <span class="skeleton__line"></span>
+      <span class="skeleton__line"></span>
+      <span class="skeleton__line skeleton__line--short"></span>
+    </div>
+    <p class="sr-only" role="status">Reading the event log</p>
+  } @else if (!rows.length) {
+    <div class="state state--center">
+      <app-icon name="inbox" [size]="28" />
+      <div>
+        <p class="state__title">Nothing consumed yet</p>
+        <p class="state__body">Place an order in the storefront and watch a row appear.</p>
+      </div>
+      <a routerLink="/shop" class="btn btn-ghost btn-sm">Go and order something</a>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table class="data-table figure">
+        <caption class="sr-only">Order events consumed from RabbitMQ, most recent first</caption>
+        <thead>
+          <tr>
+            <th scope="col">Order</th>
+            <th scope="col">Buyer</th>
+            <th scope="col" class="num">Total</th>
+            <th scope="col" class="num">Items</th>
+            <th scope="col">Status</th>
+            <th scope="col">Published</th>
+            <th scope="col">Consumed</th>
+            <th scope="col" class="latency-col">Time on the bus</th>
+            <th scope="col">Event</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows; track row.event.eventId) {
+            <tr>
+              <th scope="row">#{{ row.event.orderId }}</th>
+              <td class="buyer">{{ row.event.buyerEmail }}</td>
+              <td class="num">{{ row.event.total | currency }}</td>
+              <td class="num">{{ row.event.itemCount }}</td>
+              <td><span class="pill">{{ row.event.status }}</span></td>
+              <td>
+                @if (row.publishedAt) {
+                  {{ row.publishedAt | date: 'HH:mm:ss.SSS' : 'UTC' }}
+                } @else {
+                  &mdash;
+                }
+              </td>
+              <td>
+                @if (row.consumedAt) {
+                  {{ row.consumedAt | date: 'HH:mm:ss.SSS' : 'UTC' }}
+                } @else {
+                  &mdash;
+                }
+              </td>
 
-  <div class="table-responsive" *ngIf="events.length > 0">
-    <table class="table table-hover align-middle mb-0 bg-white shadow-sm rounded">
-      <thead class="table-light">
-        <tr>
-          <th>Order</th>
-          <th>Buyer</th>
-          <th class="text-end">Total</th>
-          <th class="text-center">Items</th>
-          <th>Status</th>
-          <th>Published (UTC)</th>
-          <th>Consumed (UTC)</th>
-          <th class="text-end">Bus latency</th>
-          <th>Event</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let event of events; trackBy: trackByEventId">
-          <th scope="row"># {{ event.orderId }}</th>
-          <td>{{ event.buyerEmail }}</td>
-          <td class="text-end">{{ event.total | currency }}</td>
-          <td class="text-center">{{ event.itemCount }}</td>
-          <td>
-            <span class="badge bg-secondary">{{ event.status }}</span>
-          </td>
-          <td class="text-nowrap small">{{ asUtc(event.occurredAtUtc) | date: "HH:mm:ss.SSS":"UTC" }}</td>
-          <td class="text-nowrap small">{{ asUtc(event.receivedAtUtc) | date: "HH:mm:ss.SSS":"UTC" }}</td>
-          <td class="text-end text-nowrap">
-            <span class="badge bg-light text-dark border">{{ busLatencyMs(event) }} ms</span>
-          </td>
-          <td class="small text-muted">{{ shortId(event.eventId) }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+              <!-- The signature of this page. The bar is the message crossing the
+                   queue, scaled against the slowest hop currently on screen, so an
+                   ordinary delivery is a sliver and an outage is unmissable. -->
+              <td class="latency-col">
+                <div class="latency">
+                  <span class="latency__value">
+                    @if (row.latencyMs === null) {
+                      &mdash;
+                    } @else {
+                      {{ row.latencyMs }} ms
+                    }
+                  </span>
+                  <span class="latency__wire" aria-hidden="true">
+                    <span class="latency__fill" [class.latency__fill--slow]="row.slow"
+                      [style.width.%]="row.share"></span>
+                  </span>
+                </div>
+              </td>
+
+              <td class="event-id">{{ shortId(row.event.eventId) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 </div>

@@ -1,16 +1,22 @@
-<div class="container">
-    <ul class="nav nav-pills nav-justified">
-        <li class="nav-item" *ngFor="let step of steps; let i = index">
-            <button 
-                (click)="onClick(i)"
-                [disabled]="true"
-                [class.active]="selectedIndex === i"
-                class="nav-link text-uppercase font-weight-bold btn-block" style="padding: 1.20em;">
-                {{step.label}}
-            </button>
-        </li>
-    </ul>
-    <div>
-        <ng-container [ngTemplateOutlet]="selected.content"></ng-container>    
-    </div>
-</div>
+<nav aria-label="Checkout progress">
+  <ol class="steps">
+    @for (step of steps; track step.label; let i = $index) {
+      <li class="step" [class.step--current]="selectedIndex === i"
+        [class.step--done]="i < selectedIndex">
+        <button type="button" class="step__btn" [disabled]="i >= selectedIndex"
+          [attr.aria-current]="selectedIndex === i ? 'step' : null" (click)="select(i)">
+          <span class="step__index" aria-hidden="true">
+            @if (i < selectedIndex) {
+              <app-icon name="check" [size]="12" />
+            } @else {
+              {{ i + 1 }}
+            }
+          </span>
+          {{ step.label }}
+        </button>
+      </li>
+    }
+  </ol>
+</nav>
+
+<ng-container [ngTemplateOutlet]="selected ? selected.content : null" />

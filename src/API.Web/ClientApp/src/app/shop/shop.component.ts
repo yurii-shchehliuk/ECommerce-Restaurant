@@ -1,107 +1,121 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, OnInit, inject, viewChild } from '@angular/core';
 import { IProduct } from '../shared/models/product';
-import { ShopService } from './shop.service';
-import { IBrand } from '../shared/models/brand';
 import { IType } from '../shared/models/productType';
 import { ShopParams } from '../shared/models/shopParams';
+import { IconComponent } from '../shared/components/icon/icon.component';
+import { PagerComponent } from '../shared/components/pager/pager.component';
+import { PagingHeaderComponent } from '../shared/components/paging-header/paging-header.component';
+import { ProductItemComponent } from './product-item/product-item.component';
+import { ShopService } from './shop.service';
 
 @Component({
   selector: 'app-shop',
   templateUrl: './shop.component.html',
-  styleUrls: ['./shop.component.scss']
+  styleUrls: ['./shop.component.css'],
+  imports: [PagingHeaderComponent, ProductItemComponent, PagerComponent, IconComponent],
 })
 export class ShopComponent implements OnInit {
-  @ViewChild('search') searchTerm: ElementRef;
-  products: IProduct[];
-  brands: IBrand[];
-  types: IType[];
+  private shopService = inject(ShopService);
+
+  readonly searchTerm = viewChild<ElementRef<HTMLInputElement>>('search');
+
+  products: IProduct[] = [];
+  types: IType[] = [];
   shopParams: ShopParams;
-  totalCount: number;
-  sortOptions = [
-    { name: 'Alphabetical', value: 'name' },
-    { name: 'Price: Low to High', value: 'priceAsc' },
-    { name: 'Price: High to Low', value: 'priceDesc' }
+  totalCount = 0;
+  loading = true;
+  error: string | null = null;
+
+  /** Placeholder cards, one per slot on a full page. */
+  readonly skeletons = Array.from({ length: 6 }, (_, i) => i);
+
+  readonly sortOptions = [
+    { name: 'Name, A to Z', value: 'name' },
+    { name: 'Price, low to high', value: 'priceAsc' },
+    { name: 'Price, high to low', value: 'priceDesc' },
   ];
 
-  constructor(private shopService: ShopService) {
+  constructor() {
     this.shopParams = this.shopService.getShopParams();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.getProducts(true);
-    this.getBrands();
     this.getTypes();
   }
 
-  getProducts(useCache = false) {
-    this.shopService.getProducts(useCache).subscribe(response => {
-      this.products = response.data;
-      this.totalCount = response.count;
-    }, error => {
-      console.log(error);
+  getProducts(useCache = false): void {
+    this.loading = true;
+    this.error = null;
+
+    this.shopService.getProducts(useCache).subscribe({
+      next: (page) => {
+        this.products = page.data;
+        this.totalCount = page.count;
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'The menu could not be loaded.';
+        this.loading = false;
+      },
     });
   }
 
-  getBrands() {
-    this.shopService.getBrands().subscribe(response => {
-      this.brands = [{ id: 0, name: 'All' }, ...response];
-    }, error => {
-      console.log(error);
+  /** Categories are a nicety; losing them should not empty the page. */
+  getTypes(): void {
+    this.shopService.getTypes().subscribe({
+      next: (types) => (this.types = [{ id: 0, name: 'Everything' }, ...types]),
+      error: () => undefined,
     });
   }
 
-  getTypes() {
-    this.shopService.getTypes().subscribe(response => {
-      this.types = [{ id: 0, name: 'All' }, ...response];
-    }, error => {
-      console.log(error);
+  onTypeSelected(typeId: number): void {
+    this.updateParams((params) => {
+      params.typeId = typeId;
+      params.pageNumber = 1;
     });
   }
 
-  onBrandSelected(brandId: number) {
-    const params = this.shopService.getShopParams();
-    params.brandId = brandId;
-    params.pageNumber = 1;
-    this.shopService.setShopParams(params);
-    this.getProducts();
+  onSortSelected(sort: string): void {
+    this.updateParams((params) => {
+      params.sort = sort;
+      params.pageNumber = 1;
+    });
   }
 
-  onTypeSelected(typeId: number) {
-    const params = this.shopService.getShopParams();
-    params.typeId = typeId;
-    params.pageNumber = 1;
-    this.shopService.setShopParams(params);
-    this.getProducts();
-  }
-
-  onSortSelected(sort: string) {
-    const params = this.shopService.getShopParams();
-    params.sort = sort;
-    this.shopService.setShopParams(params);
-    this.getProducts();
-  }
-
-  onPageChanged(event: any) {
-    const params = this.shopService.getShopParams();
-    if (params.pageNumber !== event) {
-      params.pageNumber = event;
-      this.shopService.setShopParams(params);
-      this.getProducts(true);
+  onPageChanged(page: number): void {
+    if (this.shopParams.pageNumber === page) {
+      return;
     }
+    this.updateParams((params) => (params.pageNumber = page), true);
   }
 
-  onSearch() {
-    const params = this.shopService.getShopParams();
-    params.search = this.searchTerm.nativeElement.value;
-    params.pageNumber = 1;
-    this.shopService.setShopParams(params);
-    this.getProducts();
+  onSearch(): void {
+    this.updateParams((params) => {
+      params.search = this.searchTerm()?.nativeElement.value ?? '';
+      params.pageNumber = 1;
+    });
   }
 
-  onReset() {
-    this.searchTerm.nativeElement.value = '';
+  onReset(): void {
+    const input = this.searchTerm();
+    if (input) {
+      input.nativeElement.value = '';
+    }
     this.shopParams = new ShopParams();
     this.shopService.setShopParams(this.shopParams);
     this.getProducts();
+  }
+
+  /**
+   * Paging may serve from the cache; changing a filter, a sort or the search never
+   * may, because the cache is keyed by page alone and would answer the old query.
+   */
+  private updateParams(mutate: (params: ShopParams) => void, useCache = false): void {
+    const params = this.shopService.getShopParams();
+    mutate(params);
+    this.shopService.setShopParams(params);
+    this.shopParams = params;
+    this.getProducts(useCache);
   }
 }

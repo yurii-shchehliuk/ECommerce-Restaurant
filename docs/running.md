@@ -3,20 +3,13 @@
 Two ways: everything in Docker, or the infrastructure in Docker and the services
 from your IDE.
 
-> **Status:** the Compose path was run end to end on 16 August 2026 — eleven
-> containers, register, sign in, add to basket, place an order, and the order
-> event consumed off RabbitMQ by `API.Admin`. What that run proved, and what it
-> did not, is listed in the README under "Verified, not asserted".
-
----
-
 ## Prerequisites
 
 | | Version |
 |---|---|
 | Docker Desktop | any recent version, Linux containers |
 | .NET SDK | 6.0 for the no-Docker path (newer SDKs build `net6.0` fine, with an out-of-support warning) |
-| Node.js | only for the no-Docker path — 18.x works; the container builds the client itself |
+| Node.js | only for the no-Docker path — 20.19+, 22.12+ or 24, which is what Angular 20 supports; the container builds the client itself |
 | SQL Server | only for the no-Docker path; LocalDB or Express is enough |
 
 `dotnet build Owlet.sln` and `dotnet test` need neither Node.js nor Docker.
@@ -45,8 +38,8 @@ falling back to a committed default.
 ### `Common.env` — the signing key
 
 `TokenService` signs with **HS512**, so `Token:Key` must be at least 64 bytes /
-512 bits. Anything shorter is accepted by the token library but is weaker than the
-algorithm requires — see the README, "What is still wrong", item 3.
+512 bits — RFC 7518 §3.2 requires a key at least as large as the algorithm's hash
+output. The token library's own floor is lower, so generate the full 64 bytes:
 
 ```bash
 openssl rand -base64 64
@@ -76,9 +69,8 @@ Or set `StripeSettings__SecretKey` in `Common.env`.
 
 ### Preferred local approach: user-secrets
 
-Rather than editing `appsettings.json` — which is how this repository's
-credentials got committed in the first place — use user-secrets. They live outside
-the repository entirely:
+Use user-secrets rather than editing `appsettings.json`. They live outside the
+repository entirely, so there is nothing to accidentally commit:
 
 ```bash
 cd src/API.Identity
@@ -97,17 +89,17 @@ want.
 docker compose up --build
 ```
 
-That is the whole command. The compose file lives next to `Owlet.sln` because the
-build context is the repository root; it used to live in `docker/` and had to be
-copied up one directory by hand first.
+That is the whole command. The compose file lives next to `Owlet.sln`, because the
+build context is the repository root and Docker resolves it relative to the
+compose file.
 
 First run pulls SQL Server 2019, Redis, RabbitMQ, Seq, smtp4dev and
-redis-commander, then builds five images — including a `node:18-alpine` stage that
-runs `npm ci` and `ng build` for the Angular client. Expect ten minutes cold.
+redis-commander, then builds five images — including a Node stage that runs
+`npm ci` and `ng build` for the Angular client. Expect ten minutes cold.
 
 The services wait for SQL Server, Redis and RabbitMQ to report healthy before they
-start, and then retry their migrations on top of that, so a cold start no longer
-races the database.
+start, and retry their migrations on top of that, so a cold start meets a database
+that is already accepting connections.
 
 ### Ports
 
@@ -201,7 +193,24 @@ dotnet run --project ../../API.Web
 In Development, `API.Web` proxies to the CLI dev server, so the SPA is available
 through `API.Web` once `ng serve` is up. In Development the client uses
 `src/environment.ts`, which points at the services' own ports rather than at the
-gateway.
+gateway — so `API.Identity`, `API.Basket` and `API.Admin` all have to be
+reachable on 5041, 5031 and 5011 for the pages to fill in.
+
+Product images are served by `API.Web` itself: the catalogue rows carry absolute
+URLs pointing at its port, so run it as well as `ng serve` if you want the menu
+to have pictures.
+
+### Client checks
+
+```bash
+cd src/API.Web/ClientApp
+npm run build      # production build
+npm run test:ci    # 77 tests, headless Chrome
+npm run lint
+```
+
+`test:ci` needs a Chrome or Chromium on the machine; set `CHROME_BIN` if it is
+not on the path.
 
 ---
 

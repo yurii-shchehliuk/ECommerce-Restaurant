@@ -1,21 +1,55 @@
-<div class="container mt-5">
-    <button (click)="get500Error()" class="btn btn-outline-primary me-3">Test 500 Error</button>
-    <button (click)="get404Error()" class="btn btn-outline-primary me-3">Test 404 Error</button>
-    <button (click)="get400Error()" class="btn btn-outline-primary me-3">Test 400 Error</button>
-    <button (click)="getAuthorizedAccess()" class="btn btn-outline-primary me-3">AuthorizedAccess</button>
-    <button (click)="getAllAccess()" class="btn btn-outline-primary me-3">AllAccess</button>
-    <button (click)="getUserAccess()" class="btn btn-outline-primary me-3">UserAccess</button>
-    <button (click)="getAdminAccess()" class="btn btn-outline-primary me-3">AdminAccess</button>
-    <button (click)="getUser_Admin_Access()" class="btn btn-outline-primary me-3">User_Admin_Access</button>
-    <button (click)="getPolicyAccess()" class="btn btn-outline-primary me-3">PolicyAccess</button>
-    <button (click)="getAdmin_CreateAccess()" class="btn btn-outline-primary me-3">Admin_CreateAccess</button>
-    <button (click)="getAdmin_Create_Edit_DeleteAccess()" class="btn btn-outline-primary me-3">Admin_Create_Edit_DeleteAccess</button>
-    <button (click)="getAdmin_Create_Edit_DeleteAccess_Or_SuperAdmin()" class="btn btn-outline-primary me-3">Admin_Create_Edit_DeleteAccess_Or_SuperAdmin</button>
-    <button (click)="getOnlySuperAdminChecker()" class="btn btn-outline-primary me-3">OnlySuperAdminChecker</button>
-    <button (click)="get400ValidationError()" class="btn btn-outline-primary me-3">Test 400 Validation Error</button>
-    <div class="row mt-5" *ngIf="validationErrors">
-        <ul class="text-danger">
-        <li *ngFor="let error of validationErrors">{{error}}</li>
-        </ul>
-    </div>
+<div class="shell page">
+  <header class="page__head">
+    <p class="eyebrow">Machine room</p>
+    <p class="page__lede">
+      Each button calls <code>API.Identity</code>'s <code>BuggyController</code> and the
+      response goes through the application's real HTTP error interceptor. What you see
+      is the pipeline itself, not a mock of it.
+    </p>
+  </header>
+
+  <section class="probes">
+    <h2 class="probes__title">Status handling</h2>
+    <ul class="probes__list">
+      @for (probe of statusProbes; track probe.path) {
+        <li>
+          <button type="button" class="btn btn-ghost btn-sm" (click)="run(probe)">
+            {{ probe.label }}
+          </button>
+          <span class="probes__note">{{ probe.note }}</span>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <section class="probes">
+    <h2 class="probes__title">Authorisation policies</h2>
+    <ul class="probes__list">
+      @for (probe of policyProbes; track probe.path) {
+        <li>
+          <button type="button" class="btn btn-ghost btn-sm" (click)="run(probe)">
+            {{ probe.label }}
+          </button>
+          <span class="probes__note">{{ probe.note }}</span>
+        </li>
+      }
+    </ul>
+  </section>
+
+  @if (lastResult; as result) {
+    <p class="probes__result figure" aria-live="polite">
+      <span class="probes__path">{{ result.path }}</span>
+      <span class="pill" [class.pill--live]="result.ok" [class.pill--down]="!result.ok">
+        {{ result.status }}
+      </span>
+    </p>
+  }
+
+  @if (validationErrors.length) {
+    <ul class="probes__errors">
+      @for (message of validationErrors; track message) {
+        <li>{{ message }}</li>
+      }
+    </ul>
+  }
 </div>

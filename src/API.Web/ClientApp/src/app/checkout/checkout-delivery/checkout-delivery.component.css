@@ -1,0 +1,78 @@
+.delivery {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-raised);
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease;
+}
+
+.option:hover {
+  border-color: var(--color-body-faint);
+}
+
+/* :has lets the whole card show selection, so the hit area is the card and not a
+   12px radio. Browsers without :has still get the radio's own focus ring. */
+.option:has(.option__input:checked) {
+  border-color: var(--color-moss-500);
+  background: color-mix(in srgb, var(--color-moss-500) 8%, transparent);
+}
+
+.option:has(.option__input:focus-visible) {
+  outline: 2px solid var(--color-ember-500);
+  outline-offset: 2px;
+}
+
+.option__input {
+  margin-top: 0.25rem;
+  accent-color: var(--color-moss-500);
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+}
+
+.option__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.option__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.option__name {
+  font-weight: 650;
+}
+
+.option__price {
+  font-weight: 600;
+}
+
+.option__detail {
+  display: block;
+  margin-top: 0.1875rem;
+  font-size: 0.875rem;
+  color: var(--color-body-muted);
+}
+
+@media (min-width: 44rem) {
+  .delivery {
+    grid-template-columns: 1fr 1fr;
+  }
+}

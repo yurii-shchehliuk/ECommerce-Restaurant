@@ -1,0 +1,25 @@
+.checkout {
+  padding-block: 2.5rem var(--spacing-section);
+}
+
+.checkout__grid {
+  display: grid;
+  gap: 2rem;
+  align-items: start;
+}
+
+.checkout__main {
+  min-width: 0;
+}
+
+@media (min-width: 60rem) {
+  .checkout__grid {
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    gap: 2.5rem;
+  }
+
+  .checkout__side {
+    position: sticky;
+    top: 5rem;
+  }
+}

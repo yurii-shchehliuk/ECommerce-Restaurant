@@ -1,11 +1,28 @@
-<pagination 
-[boundaryLinks]="true" 
-[totalItems]="totalCount" 
-[ngModel]="pageNumber"
-(pageChanged)="onPagerChange($event)"
-[itemsPerPage]="pageSize"
-previousText="&lsaquo;" 
-nextText="&rsaquo;"
-firstText="&laquo;" 
-lastText="&raquo;">
-</pagination>
+@if (totalPages > 1) {
+  <nav class="pager" aria-label="Menu pages">
+    <button type="button" class="pager__step" (click)="go(pageNumber() - 1)"
+      [disabled]="pageNumber() <= 1" aria-label="Previous page">
+      <app-icon name="chevron-left" [size]="15" />
+    </button>
+
+    <ul class="pager__list">
+      @for (page of pages; track $index) {
+        <li>
+          @if (page === null) {
+            <span class="pager__gap" aria-hidden="true">&hellip;</span>
+          } @else {
+            <button type="button" class="pager__page figure"
+              [class.is-current]="page === pageNumber()"
+              [attr.aria-current]="page === pageNumber() ? 'page' : null"
+              [attr.aria-label]="'Page ' + page" (click)="go(page)">{{ page }}</button>
+          }
+        </li>
+      }
+    </ul>
+
+    <button type="button" class="pager__step" (click)="go(pageNumber() + 1)"
+      [disabled]="pageNumber() >= totalPages" aria-label="Next page">
+      <app-icon name="chevron-right" [size]="15" />
+    </button>
+  </nav>
+}

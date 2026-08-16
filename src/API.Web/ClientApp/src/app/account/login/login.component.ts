@@ -1,41 +1,57 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Component, OnInit, inject } from '@angular/core';
+import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { IconComponent } from '../../shared/components/icon/icon.component';
+import { toMessages } from 'src/app/shared/validators/api-errors';
+import { EMAIL_PATTERN } from 'src/app/shared/validators/email';
 import { AccountService } from '../account.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { TextInputComponent } from '../../shared/components/text-input/text-input.component';
+
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css'],
+    imports: [ReactiveFormsModule, TextInputComponent, RouterLink, IconComponent]
 })
 export class LoginComponent implements OnInit {
-  loginForm: FormGroup;
-  returnUrl: string;
+  private accountService = inject(AccountService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
-  constructor(private accountService: AccountService, private router: Router, private activatedRoute: ActivatedRoute) { }
+  readonly loginForm = new FormGroup({
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.pattern(EMAIL_PATTERN)],
+    }),
+    password: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+  });
 
-  ngOnInit() {
-    this.returnUrl = this.activatedRoute.snapshot.queryParams.returnUrl || '/shop';
-    this.createLoginForm();
+  returnUrl = '/shop';
+  submitting = false;
+  error: string | null = null;
+
+  ngOnInit(): void {
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/shop';
   }
 
-  createLoginForm() {
-    this.loginForm = new FormGroup({
-      // The TLD quantifier was {2,4}, which rejected every address ending in
-      // .local, .online, .company or any other TLD longer than four characters -
-      // silently, by disabling the submit button with no message.
-      email: new FormControl('', [Validators.required, Validators
-        .pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,}$')]),
-      password: new FormControl('', Validators.required)
+  onSubmit(): void {
+    if (this.loginForm.invalid || this.submitting) {
+      return;
+    }
+
+    this.submitting = true;
+    this.error = null;
+
+    this.accountService.login(this.loginForm.getRawValue()).subscribe({
+      next: () => this.router.navigateByUrl(this.returnUrl),
+      error: (failure) => {
+        this.error = toMessages(
+          failure,
+          'That email address and password do not match an account.'
+        )[0];
+        this.submitting = false;
+      },
     });
   }
-
-  onSubmit() {
-    this.accountService.login(this.loginForm.value).subscribe(() => {
-      this.router.navigateByUrl(this.returnUrl);
-    }, error => {
-      console.log(error);
-    });
-  }
-
 }

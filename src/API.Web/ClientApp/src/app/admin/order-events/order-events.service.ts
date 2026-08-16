@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environment';
 
@@ -27,9 +27,9 @@ export interface ReceivedOrderEvent {
  */
 @Injectable({ providedIn: 'root' })
 export class OrderEventsService {
-  private baseUrl = environment.adminApi;
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {}
+  private baseUrl = environment.adminApi;
 
   getReceivedEvents(take = 20): Observable<ReceivedOrderEvent[]> {
     return this.http.get<ReceivedOrderEvent[]>(`${this.baseUrl}OrderEvents?take=${take}`);

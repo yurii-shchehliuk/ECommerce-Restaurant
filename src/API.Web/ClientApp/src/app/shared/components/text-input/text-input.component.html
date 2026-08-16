@@ -1,23 +1,34 @@
-<div class="form-label-group">
-    <input 
-        [ngClass]="(controlDir && controlDir.control && controlDir.control.touched) ? !controlDir.control.valid ? 'is-invalid' : 'is-valid' : null"
-        [type]="type"
-        (input)="onChange($event.target.value)"
-        (blur)="onTouched()"
-        id="{{label}}" 
-        #input
-        class="form-control" 
-        placeholder="{{label}}"
-    >
-    <div *ngIf="controlDir && controlDir.control && controlDir.control.status === 'PENDING'" class="fa fa-spinner fa-spin loader"></div>
-    <label for="{{label}}">{{label}}</label>
-    <div class="invalid-feedback" *ngIf="(controlDir && controlDir.control && !controlDir.control.valid && controlDir.control.touched)">
-    <span *ngIf="controlDir.control.errors?.required">{{label}} is required</span>
-    <span *ngIf="controlDir.control.errors?.pattern">Invalid email address</span>
-    
-    </div>
+<div class="field">
+  <label class="field-label" [attr.for]="inputId">{{ label() }}</label>
+  <input
+    #input
+    [id]="inputId"
+    [type]="type()"
+    class="field-control"
+    [attr.aria-invalid]="showError ? 'true' : null"
+    [attr.aria-describedby]="describedBy"
+    [attr.autocomplete]="autocomplete()"
+    (input)="onChange($any($event.target).value)"
+    (blur)="onTouched()"
+  />
 
-    <div class="invalid-feedback d-block" *ngIf="(controlDir && controlDir.control && !controlDir.control.valid && controlDir.control.dirty)">
-        <span *ngIf="controlDir.control.errors?.emailExists">Email address is in use</span>
-    </div>
-  </div>
+  @if (showError) {
+    <p class="field-error" [id]="inputId + '-error'">
+      @if (control?.errors?.['required']) {
+        {{ label() }} is required
+      } @else if (control?.errors?.['passwordMismatch']) {
+        The two passwords do not match
+      } @else if (control?.errors?.['emailExists']) {
+        That email address is already registered
+      } @else if (control?.errors?.['pattern']) {
+        {{ hint() || 'Check the format of this field' }}
+      } @else if (control?.errors?.['minlength']) {
+        {{ label() }} is too short
+      } @else {
+        Check this field
+      }
+    </p>
+  } @else if (hint()) {
+    <p class="field-hint" [id]="inputId + '-hint'">{{ hint() }}</p>
+  }
+</div>

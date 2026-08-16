@@ -1,56 +1,93 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AsyncValidatorFn } from '@angular/forms';
+import { Component, inject } from '@angular/core';
+import {
+  AsyncValidatorFn,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { of, timer } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { toMessages } from 'src/app/shared/validators/api-errors';
+import { EMAIL_PATTERN } from 'src/app/shared/validators/email';
+import { PASSWORD_PATTERN, PASSWORD_RULE, passwordsMatch } from 'src/app/shared/validators/password';
+import { IconComponent } from '../../shared/components/icon/icon.component';
+import { TextInputComponent } from '../../shared/components/text-input/text-input.component';
 import { AccountService } from '../account.service';
-import { Router } from '@angular/router';
-import { timer, of } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
-import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  styleUrls: ['./register.component.css'],
+  imports: [ReactiveFormsModule, TextInputComponent, RouterLink, IconComponent],
 })
-export class RegisterComponent implements OnInit {
-  registerForm: FormGroup;
-  errors: string[];
+export class RegisterComponent {
+  private accountService = inject(AccountService);
+  private router = inject(Router);
 
-  constructor(private fb: FormBuilder, private accountService: AccountService, private router: Router) { }
+  readonly passwordRule = PASSWORD_RULE;
 
-  ngOnInit() {
-    this.createRegisterForm();
-  }
+  /**
+   * Mirrors API.Identity's `RegisterVM`. Every field it marks `[Required]` is here,
+   * including `confirmPassword`, which the endpoint rejects the request without, and
+   * the password rule is checked here as well so the answer arrives while the person
+   * is still typing rather than as a 400.
+   */
+  readonly registerForm = new FormGroup(
+    {
+      displayName: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+      email: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.pattern(EMAIL_PATTERN)],
+        asyncValidators: [this.validateEmailNotTaken()],
+      }),
+      password: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.pattern(PASSWORD_PATTERN)],
+      }),
+      confirmPassword: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+    },
+    { validators: passwordsMatch('password', 'confirmPassword') }
+  );
 
-  onSubmit() {
-    this.accountService.register(this.registerForm.value).subscribe(response => {
-      this.router.navigateByUrl('/shop');
-    }, error => {
-      console.log(error);
-      this.errors = error.errors;
+  errors: string[] = [];
+  submitting = false;
+
+  onSubmit(): void {
+    if (this.registerForm.invalid || this.submitting) {
+      return;
+    }
+
+    this.submitting = true;
+    this.errors = [];
+
+    this.accountService.register(this.registerForm.getRawValue()).subscribe({
+      next: () => this.router.navigateByUrl('/shop'),
+      error: (error) => {
+        this.errors = toMessages(error, 'That account could not be created.');
+        this.submitting = false;
+      },
     });
   }
 
+  /** Debounced, so it asks the API once the address has stopped changing. */
   private validateEmailNotTaken(): AsyncValidatorFn {
-    return control => timer(500).pipe(
-      switchMap(() => {
-        if (!control.value) {
-          return of(null);
-        }
-        return this.accountService.checkEmailExists(control.value).pipe(
-          map(res => res ? { emailExists: true } : null)
-        );
-      })
-    );
-  }
-
-  private createRegisterForm() {
-    this.registerForm = this.fb.group({
-      displayName: [null, [Validators.required]],
-      email: [null,
-        [Validators.required, Validators.pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,}$')],
-        [this.validateEmailNotTaken()]
-      ],
-      password: [null, [Validators.required]]
-    });
+    return (control) =>
+      timer(400).pipe(
+        switchMap(() =>
+          control.value
+            ? this.accountService
+                .checkEmailExists(control.value)
+                .pipe(map((exists) => (exists ? { emailExists: true } : null)))
+            : of(null)
+        )
+      );
   }
 }

@@ -1,8 +1,5 @@
 {
   "root": true,
-  "ignorePatterns": [
-    "projects/**/*"
-  ],
   "overrides": [
     {
       "files": [
@@ -10,14 +7,14 @@
       ],
       "parserOptions": {
         "project": [
-          "tsconfig.json",
-          "e2e/tsconfig.json"
+          "tsconfig.json"
         ],
         "createDefaultProgram": true
       },
       "extends": [
-        "plugin:@angular-eslint/ng-cli-compat",
-        "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "rules": {
@@ -37,52 +34,8 @@
             "style": "camelCase"
           }
         ],
-        "@typescript-eslint/explicit-function-return-type": "off",
-        "@typescript-eslint/explicit-member-accessibility": [
-          "off",
-          {
-            "accessibility": "explicit"
-          }
-        ],
-        "@typescript-eslint/explicit-module-boundary-types": "off",
-        "@typescript-eslint/naming-convention": [
-          "error",
-          {
-            "selector": "variable",
-            "format": [
-              "camelCase",
-              "UPPER_CASE",
-              "PascalCase"
-            ],
-            "leadingUnderscore": "forbid",
-            "trailingUnderscore": "forbid"
-          }
-        ],
-        "@typescript-eslint/typedef": "off",
-        "arrow-parens": [
-          "off",
-          "always"
-        ],
-        "dot-notation": "off",
-        "id-denylist": [
-          "error",
-          "any",
-          "Number",
-          "number",
-          "String",
-          "string",
-          "Boolean",
-          "boolean",
-          "Undefined",
-          "undefined"
-        ],
-        "import/order": "off",
-        "indent": "off",
-        "no-empty-function": "off",
-        "no-shadow": "off",
-        "no-unused-expressions": "off",
-        "no-use-before-define": "off",
-        "semi": "off"
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-explicit-any": "warn"
       }
     },
     {
@@ -93,14 +46,6 @@
         "plugin:@angular-eslint/template/recommended"
       ],
       "rules": {}
-    },
-    {
-      "files": [
-        "*.ts"
-      ],
-      "extends": [
-        "plugin:@ngrx/recommended"
-      ]
     }
   ]
 }
