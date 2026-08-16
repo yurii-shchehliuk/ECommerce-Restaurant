@@ -73,8 +73,20 @@
               <td class="num">{{ row.event.total | currency }}</td>
               <td class="num">{{ row.event.itemCount }}</td>
               <td><span class="pill">{{ row.event.status }}</span></td>
-              <td>{{ asUtc(row.event.occurredAtUtc) | date: 'HH:mm:ss.SSS' : 'UTC' }}</td>
-              <td>{{ asUtc(row.event.receivedAtUtc) | date: 'HH:mm:ss.SSS' : 'UTC' }}</td>
+              <td>
+                @if (row.publishedAt) {
+                  {{ row.publishedAt | date: 'HH:mm:ss.SSS' : 'UTC' }}
+                } @else {
+                  &mdash;
+                }
+              </td>
+              <td>
+                @if (row.consumedAt) {
+                  {{ row.consumedAt | date: 'HH:mm:ss.SSS' : 'UTC' }}
+                } @else {
+                  &mdash;
+                }
+              </td>
 
               <!-- The signature of this page. The bar is the message crossing the
                    queue, scaled against the slowest hop currently on screen, so an
