@@ -3,9 +3,20 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<UserSecretsId>82754558-fabb-4b3e-ad5e-78c553fc4b3a</UserSecretsId>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-		<DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+		<DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
 		<DockerfileContext>..\..</DockerfileContext>
-		<TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+		<!--
+		  The Angular client is built by the Angular CLI (`ng build`), in the node stage
+		  of src/API.Web/Dockerfile. It is deliberately NOT built by MSBuild: the
+		  Microsoft.TypeScript.MSBuild package that used to be referenced here ran `tsc`
+		  over ClientApp on every `dotnet build`, which failed with
+		  "TS2688: Cannot find type definition file for 'jasmine'" on any machine that
+		  had not run `npm install` first — i.e. on a clean clone, which is the only
+		  state that matters. `dotnet build Owlet.sln` now succeeds with no Node.js
+		  installed at all.
+		-->
+		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+		<DefaultItemExcludes>$(DefaultItemExcludes);ClientApp\node_modules\**;ClientApp\dist\**</DefaultItemExcludes>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="Content\**" />
@@ -14,10 +25,6 @@
 		<None Remove="Content\**" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.9.5">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
 		<PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
 		<PackageReference Include="Serilog.Sinks.Seq" Version="5.2.2" />
@@ -25,8 +32,5 @@
 	<ItemGroup>
 		<ProjectReference Include="..\WebApi.Domain\WebApi.Domain.csproj" />
 		<ProjectReference Include="..\WebApi.Infrastructure\WebApi.Infrastructure.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-		<Folder Include="ClientApp\" />
 	</ItemGroup>
 </Project>

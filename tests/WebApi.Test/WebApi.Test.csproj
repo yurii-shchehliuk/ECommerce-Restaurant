@@ -6,6 +6,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>true</ImplicitUsings>
     <IsPackable>false</IsPackable>
+    <!-- The repo targets net6.0, which is EOL; roll forward so the test host runs on
+         a newer installed runtime when the 6.0 ASP.NET runtime is absent. -->
+    <RollForward>Major</RollForward>
   </PropertyGroup>
 
   <ItemGroup>
