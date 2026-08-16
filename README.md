@@ -236,7 +236,7 @@ the checkout published, consumed 233 ms later.
 without Node.js installed (12 analyser warnings, all CA2017 in
 `PaymentsController`). `dotnet test` runs **25 tests, all passing**, none of
 which need Docker. In the client, `npm ci && npm run build` succeeds from a clean
-tree, `npm run test:ci` runs **72 tests, all passing**, and `ng lint` reports no
+tree, `npm run test:ci` runs **77 tests, all passing**, and `ng lint` reports no
 errors and no warnings.
 
 **The client audits clean.** Across thirteen routes at 1360px and 360px: exactly
@@ -264,7 +264,7 @@ stepper, `@microsoft/signalr` for chat. Eight runtime dependencies in total.
 **Infrastructure** — Docker Compose, nginx, SQL Server 2019, Redis 6, RabbitMQ 3,
 Seq, smtp4dev, redis-commander
 **Tests** — xUnit 2.4, 25 tests, including a MassTransit in-memory harness test
-that asserts a published message reaches its consumer; Karma and Jasmine, 72
+that asserts a published message reaches its consumer; Karma and Jasmine, 77
 tests on the client
 
 ---

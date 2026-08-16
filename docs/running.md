@@ -205,7 +205,7 @@ to have pictures.
 ```bash
 cd src/API.Web/ClientApp
 npm run build      # production build
-npm run test:ci    # 72 tests, headless Chrome
+npm run test:ci    # 77 tests, headless Chrome
 npm run lint
 ```
 

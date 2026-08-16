@@ -340,7 +340,7 @@ either wrong produces a 400 that reads like something else:
   expression. `shared/validators/password.ts` mirrors that rule so the answer
   arrives under the field rather than as a server error.
 
-**Tests.** Karma and Jasmine, 72 specs, `npm run test:ci` to run them headless.
+**Tests.** Karma and Jasmine, 77 specs, `npm run test:ci` to run them headless.
 They cover the pager's windowing, the basket service's guards and its
 re-pricing-from-the-response rule, the catalogue cache, the breadcrumb
 derivation, the theme preference, toast de-duplication, the password rules and
