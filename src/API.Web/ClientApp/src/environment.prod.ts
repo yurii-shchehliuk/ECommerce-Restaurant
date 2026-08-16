@@ -3,10 +3,13 @@
 // Every URL here is relative, because the production bundle is served through the
 // nginx gateway on port 5200 and the gateway routes each prefix to a service:
 //
-//   /                -> api.web    (this bundle)
-//   /identity/...    -> api.identity
-//   /basket/...      -> api.basket
-//   /admin/...       -> api.admin
+//   /                    -> api.web    (this bundle)
+//   /svc/identity/...    -> api.identity
+//   /svc/basket/...      -> api.basket
+//   /svc/admin/...       -> api.admin
+//
+// The /svc prefix keeps the gateway's routes out of the Angular router's namespace:
+// the client already owns /basket, /admin, /orders and /shop.
 //
 // Relative URLs mean the browser only ever talks to one origin, which is what makes
 // the CORS configuration unnecessary in production rather than merely permissive.
@@ -19,15 +22,15 @@
 // at runtime if it ever had been used.
 export const environment = {
   production: true,
-  adminApi: '/admin/api/',
+  adminApi: '/svc/admin/api/',
   baseApi: {
     web: '/api/',
     server: '/api/'
   },
-  basketApi: '/basket/api/',
+  basketApi: '/svc/basket/api/',
   identityApi: {
-    api: '/identity/api/',
-    chat: '/identity/chatsocket'
+    api: '/svc/identity/api/',
+    chat: '/svc/identity/chatsocket'
   }
 };
 

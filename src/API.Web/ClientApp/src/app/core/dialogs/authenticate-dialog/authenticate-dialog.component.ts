@@ -29,7 +29,7 @@ export class AuthenticateDialogComponent implements OnInit {
   private createLoginForm() {
     this.loginForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators
-        .pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')]),
+        .pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,}$')]),
       password: new FormControl('', Validators.required)
     });
   }

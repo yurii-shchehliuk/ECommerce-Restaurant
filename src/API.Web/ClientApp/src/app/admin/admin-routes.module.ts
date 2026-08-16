@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CompletedOrdersComponent } from './completed-orders/completed-orders.component';
+import { OrderEventsComponent } from './order-events/order-events.component';
 import { ManageMenuComponent } from './manage-menu/menu-list.component';
 import { RouterModule, Routes } from '@angular/router';
 import { UserListComponent } from './manage-users/user-list.component';
@@ -9,6 +10,7 @@ import { AddEditComponent as m } from './manage-menu/add-edit.component';
 
 const routes: Routes = [
   { path: 'completed-orders', component: CompletedOrdersComponent },
+  { path: 'order-events', component: OrderEventsComponent },
   {
     path: 'menu-management',
     component: ManageMenuComponent,

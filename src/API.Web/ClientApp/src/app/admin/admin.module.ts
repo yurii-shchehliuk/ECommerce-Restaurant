@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AdminRoutesModule } from './admin-routes.module';
 import { SharedModule } from '../shared/shared.module';
 import { CompletedOrdersComponent } from './completed-orders/completed-orders.component';
+import { OrderEventsComponent } from './order-events/order-events.component';
 import { ManageMenuComponent } from './manage-menu/menu-list.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UserListComponent } from './manage-users/user-list.component';
@@ -12,6 +13,7 @@ import { AddEditComponent as m } from './manage-menu/add-edit.component';
 @NgModule({
   declarations: [
     CompletedOrdersComponent,
+    OrderEventsComponent,
     ManageMenuComponent,
     UserListComponent,
     u,

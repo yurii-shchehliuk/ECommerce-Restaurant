@@ -21,8 +21,11 @@ export class LoginComponent implements OnInit {
 
   createLoginForm() {
     this.loginForm = new FormGroup({
+      // The TLD quantifier was {2,4}, which rejected every address ending in
+      // .local, .online, .company or any other TLD longer than four characters -
+      // silently, by disabling the submit button with no message.
       email: new FormControl('', [Validators.required, Validators
-        .pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')]),
+        .pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,}$')]),
       password: new FormControl('', Validators.required)
     });
   }

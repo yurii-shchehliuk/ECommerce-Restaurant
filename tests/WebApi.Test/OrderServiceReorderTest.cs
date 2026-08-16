@@ -30,7 +30,7 @@ namespace WebApi.Test
             var repository = new SpyOrderRepository { ExistingOrder = new Order { Id = 99 } };
             var payments = new SpyPaymentService();
             var sut = new OrderService(
-                new FakeBasket(paymentIntentId: null), new FakeUnitOfWork(repository), payments, new NullNotification());
+                new FakeBasket(paymentIntentId: null!), new FakeUnitOfWork(repository), payments, new NullNotification());
 
             var order = await sut.CreateOrderAsync("bob@example.com", 1, "basket-1", new Address());
 
@@ -124,14 +124,14 @@ namespace WebApi.Test
 
         private sealed class SpyOrderRepository : IGenericRepository<Order>
         {
-            public Order ExistingOrder { get; set; }
+            public Order? ExistingOrder { get; set; }
             public bool SpecificationWasQueried { get; private set; }
             public List<Order> Deleted { get; } = new();
 
             public Task<Order> GetEntityWithSpec(ISpecification<Order> spec)
             {
                 SpecificationWasQueried = true;
-                return Task.FromResult(ExistingOrder);
+                return Task.FromResult(ExistingOrder!);
             }
 
             public Task DeleteAsync(Order entity)

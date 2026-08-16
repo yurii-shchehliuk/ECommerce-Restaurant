@@ -4,6 +4,9 @@
   <nav class="my-2 my-md-0 me-md-3 text-uppercase" style="font-size: larger;">
     <a class="p-2" [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
     <a class="p-2" routerLink="/shop" routerLinkActive="active">Shop</a>
+    <!-- Reads API.Admin's record of what it consumed off RabbitMQ. Unauthenticated,
+         like the endpoint behind it; see API.Admin/Controllers/OrderEventsController. -->
+    <a class="p-2" routerLink="/admin/order-events" routerLinkActive="active">Order events</a>
     <ng-container *ngIf="(currentUser$ | async) && (currentUser$ | async).isAdmin">
       <a class="p-2" routerLink="/test-error" routerLinkActive="active">test-error</a>
     </ng-container>
@@ -58,6 +61,9 @@
         <div class="dropdown-menu dropdown-menu-right" style="cursor: pointer;" *dropdownMenu>
           <a routerLink="admin/completed-orders" class="dropdown-item d-flex align-items-center py-2">
             <i class="fa fa-file-o me-3"></i> Completed orders
+          </a>
+          <a routerLink="admin/order-events" class="dropdown-item d-flex align-items-center py-2">
+            <i class="fa fa-exchange me-3"></i> Order events
           </a>
           <a routerLink="admin/menu-management" class="dropdown-item d-flex align-items-center py-2">
             <i class="fa fa-superpowers me-3"></i> Manage Menu
