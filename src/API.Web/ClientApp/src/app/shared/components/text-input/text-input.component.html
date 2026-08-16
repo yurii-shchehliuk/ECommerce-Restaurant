@@ -6,7 +6,7 @@
     [type]="type()"
     class="field-control"
     [attr.aria-invalid]="showError ? 'true' : null"
-    [attr.aria-describedby]="showError ? inputId + '-error' : null"
+    [attr.aria-describedby]="describedBy"
     [attr.autocomplete]="autocomplete()"
     (input)="onChange($any($event.target).value)"
     (blur)="onTouched()"
@@ -16,15 +16,19 @@
     <p class="field-error" [id]="inputId + '-error'">
       @if (control?.errors?.['required']) {
         {{ label() }} is required
-      } @else if (control?.errors?.['pattern']) {
-        Enter a valid email address
+      } @else if (control?.errors?.['passwordMismatch']) {
+        The two passwords do not match
       } @else if (control?.errors?.['emailExists']) {
         That email address is already registered
+      } @else if (control?.errors?.['pattern']) {
+        {{ hint() || 'Check the format of this field' }}
       } @else if (control?.errors?.['minlength']) {
         {{ label() }} is too short
       } @else {
         Check this field
       }
     </p>
+  } @else if (hint()) {
+    <p class="field-hint" [id]="inputId + '-hint'">{{ hint() }}</p>
   }
 </div>

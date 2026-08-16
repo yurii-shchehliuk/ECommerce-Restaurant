@@ -8,7 +8,9 @@
       <app-text-input formControlName="email" label="Email address" type="email"
         autocomplete="email" />
       <app-text-input formControlName="password" label="Password" type="password"
-        autocomplete="new-password" />
+        autocomplete="new-password" [hint]="passwordRule" />
+      <app-text-input formControlName="confirmPassword" label="Confirm password"
+        type="password" autocomplete="new-password" />
 
       @if (errors.length) {
         <div class="state state--error" role="alert">

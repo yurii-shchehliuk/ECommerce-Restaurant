@@ -36,7 +36,10 @@
   position: relative;
   z-index: 1;
   padding-block: 4rem 4.5rem;
+  /* Left-aligned to the page grid rather than centred in it: the hero has to sit
+     on the same rail as everything below it. */
   max-width: 54rem;
+  margin-inline: 0;
 }
 
 .hero__eyebrow {

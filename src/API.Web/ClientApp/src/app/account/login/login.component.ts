@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { IconComponent } from '../../shared/components/icon/icon.component';
+import { toMessages } from 'src/app/shared/validators/api-errors';
 import { EMAIL_PATTERN } from 'src/app/shared/validators/email';
 import { AccountService } from '../account.service';
 import { TextInputComponent } from '../../shared/components/text-input/text-input.component';
@@ -44,8 +45,11 @@ export class LoginComponent implements OnInit {
 
     this.accountService.login(this.loginForm.getRawValue()).subscribe({
       next: () => this.router.navigateByUrl(this.returnUrl),
-      error: () => {
-        this.error = 'That email address and password do not match an account.';
+      error: (failure) => {
+        this.error = toMessages(
+          failure,
+          'That email address and password do not match an account.'
+        )[0];
         this.submitting = false;
       },
     });

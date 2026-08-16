@@ -50,11 +50,13 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./core/server-error/server-error.component').then((m) => m.ServerErrorComponent),
     title: 'Server error - Owlet',
+    data: { chrome: false },
   },
   {
     path: '**',
     loadComponent: () =>
       import('./core/not-found/not-found.component').then((m) => m.NotFoundComponent),
     title: 'Page not found - Owlet',
+    data: { chrome: false },
   },
 ];

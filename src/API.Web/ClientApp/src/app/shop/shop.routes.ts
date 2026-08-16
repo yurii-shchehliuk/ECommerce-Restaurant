@@ -4,7 +4,7 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./shop.component').then((m) => m.ShopComponent),
-    title: 'Shop - Owlet',
+    title: 'Menu - Owlet',
   },
   {
     path: ':id',

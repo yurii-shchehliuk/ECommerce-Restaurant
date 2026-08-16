@@ -331,6 +331,17 @@
     color: var(--color-danger-500);
   }
 
+  .field-hint {
+    margin-top: 0.3125rem;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: var(--color-body-faint);
+  }
+
+  .field {
+    margin-bottom: 1rem;
+  }
+
   .eyebrow {
     font-size: var(--text-eyebrow);
     font-weight: 600;

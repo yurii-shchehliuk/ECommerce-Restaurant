@@ -18,7 +18,7 @@ export const routes: Routes = [
   {
     path: 'menu-management',
     loadComponent: () => import('./products/products.component').then((m) => m.ProductsComponent),
-    title: 'Products - Owlet',
+    title: 'Catalogue - Owlet',
   },
   { path: '', pathMatch: 'full', redirectTo: 'order-events' },
 ];

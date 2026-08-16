@@ -13,5 +13,6 @@ export const routes: Routes = [
         (m) => m.CheckoutSuccessComponent
       ),
     title: 'Order placed - Owlet',
+    data: { chrome: false },
   },
 ];

@@ -63,9 +63,8 @@
 
 .service-list__row dd {
   margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  display: grid;
+  gap: 0.125rem;
   color: var(--color-body-faint);
 }
 

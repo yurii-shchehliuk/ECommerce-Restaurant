@@ -24,6 +24,8 @@ export class TextInputComponent implements OnInit, ControlValueAccessor {
   readonly type = input('text');
   readonly label = input('');
   readonly autocomplete = input<string | null>(null);
+  /** Rule text, shown under the field until the field is in error. */
+  readonly hint = input<string | null>(null);
 
   readonly inputId = `text-input-${nextId++}`;
 
@@ -33,6 +35,14 @@ export class TextInputComponent implements OnInit, ControlValueAccessor {
 
   get control(): AbstractControl | null {
     return this.controlDir.control;
+  }
+
+  /** Points the field at whichever of its two descriptions is currently rendered. */
+  get describedBy(): string | null {
+    if (this.showError) {
+      return `${this.inputId}-error`;
+    }
+    return this.hint() ? `${this.inputId}-hint` : null;
   }
 
   get showError(): boolean {
