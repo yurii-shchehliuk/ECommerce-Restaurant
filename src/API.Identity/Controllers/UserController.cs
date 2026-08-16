@@ -109,8 +109,17 @@ namespace API.Identity.Controllers
         }
 
         [HttpPost("register")]
-        [ValidateAntiForgeryToken]
-
+        // [ValidateAntiForgeryToken] was here and made this endpoint unusable: the
+        // filter it needs is only registered by AddControllersWithViews(), and this
+        // service calls AddControllers(), so every registration attempt failed with
+        // "No service for type ValidateAntiforgeryTokenAuthorizationFilter has been
+        // registered" - a 500, not a 400. Found by actually calling the endpoint.
+        //
+        // It would be the wrong attribute here even if it resolved. Anti-forgery
+        // defends cookie-authenticated form posts against a third-party site
+        // submitting on the user's behalf. This API authenticates with a bearer token
+        // that no browser attaches automatically, and registration is anonymous, so
+        // there is no ambient authority for a forged request to borrow.
         public async Task<ActionResult<UserDto>> Register(RegisterVM registerDTO)
         {
             if (CheckEmailExistsAsync(registerDTO.Email).Result.Value)

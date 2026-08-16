@@ -151,7 +151,13 @@ services:
     healthcheck:
       # depends_on used to order container *start* only, so the APIs raced SQL Server's
       # 30-second cold start and lost. This is the readiness gate that was missing.
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P \"$$SA_PASSWORD\" -Q 'SELECT 1' || exit 1"]
+      #
+      # Note the path and the -C: current mssql:2019-latest images ship
+      # /opt/mssql-tools18, not /opt/mssql-tools, and the v18 sqlcmd encrypts by
+      # default and so refuses the container's self-signed certificate without -C.
+      # Both are why the widely-copied version of this health check silently never
+      # passes.
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$SA_PASSWORD\" -Q 'SELECT 1' || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 20
@@ -201,6 +207,10 @@ services:
       - "5342:80"
     environment:
       - ACCEPT_EULA=Y
+      # Current Seq images refuse to start without either an admin password or an
+      # explicit opt-out, and crash-loop with the reason buried in a stack trace.
+      # This is a local log viewer on a developer machine, so opt out.
+      - SEQ_FIRSTRUN_NOAUTHENTICATION=true
     networks:
       - owletnet
 

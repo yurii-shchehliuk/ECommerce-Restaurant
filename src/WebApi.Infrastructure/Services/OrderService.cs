@@ -49,14 +49,25 @@ namespace WebApi.Infrastructure.Services
             // calc subtotal
             var subtotal = items.Sum(item => item.Price * item.Quantity);
 
-            // check to see if order exists
-            var spec = new OrderByPaymentIntentIdSpecification(basket.PaymentIntentId);
-            var existingOrder = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
-
-            if (existingOrder != null)
+            // Replace a previous attempt at *this* payment intent, if there is one.
+            //
+            // The guard matters. OrderByPaymentIntentIdSpecification compares
+            // PaymentIntentId for equality, so with a null intent it matches every
+            // order that also has a null intent - i.e. the first order anyone placed.
+            // Without Stripe configured every basket has a null intent, so the second
+            // checkout would find the first order, try to delete it and call
+            // CreateOrUpdatePaymentIntent(null), and fail the whole request. Found by
+            // placing two orders against a running stack.
+            if (!string.IsNullOrEmpty(basket.PaymentIntentId))
             {
-                await _unitOfWork.Repository<Order>().DeleteAsync(existingOrder);
-                await _paymentService.CreateOrUpdatePaymentIntent(basket.PaymentIntentId);
+                var spec = new OrderByPaymentIntentIdSpecification(basket.PaymentIntentId);
+                var existingOrder = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
+
+                if (existingOrder != null)
+                {
+                    await _unitOfWork.Repository<Order>().DeleteAsync(existingOrder);
+                    await _paymentService.CreateOrUpdatePaymentIntent(basket.PaymentIntentId);
+                }
             }
 
             // create order
