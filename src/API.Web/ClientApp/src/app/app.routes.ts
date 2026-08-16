@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { authGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
 
 /**
  * Everything except the landing page is lazily loaded, so the first paint carries
@@ -33,6 +34,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
+    canActivate: [adminGuard],
     loadChildren: () => import('./admin/admin.routes').then((m) => m.routes),
   },
   {

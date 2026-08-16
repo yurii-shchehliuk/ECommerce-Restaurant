@@ -28,13 +28,16 @@
         <li>
           <a routerLink="/shop" routerLinkActive="is-active" (click)="closeAll()">Menu</a>
         </li>
-        <li>
-          <!-- Reads API.Admin's record of what it consumed off RabbitMQ. Unauthenticated,
-               like the endpoint behind it; see API.Admin/Controllers/OrderEventsController. -->
-          <a routerLink="/admin/order-events" routerLinkActive="is-active" (click)="closeAll()">
-            Order events
-          </a>
-        </li>
+        @if (user()?.isAdmin) {
+          <li>
+            <!-- Reads API.Admin's record of what it consumed off RabbitMQ. The /admin
+                 branch is behind adminGuard, so the link is shown to the people who can
+                 follow it; see src/app/core/guards/admin.guard.ts. -->
+            <a routerLink="/admin/order-events" routerLinkActive="is-active" (click)="closeAll()">
+              Order events
+            </a>
+          </li>
+        }
       </ul>
 
       <div class="site-header__actions">
@@ -96,11 +99,6 @@
                   <li>
                     <a routerLink="/admin/menu-management" (click)="closeAll()">
                       <app-icon name="package" [size]="16" /> Catalogue
-                    </a>
-                  </li>
-                  <li>
-                    <a routerLink="/test-error" (click)="closeAll()">
-                      <app-icon name="shield" [size]="16" /> API diagnostics
                     </a>
                   </li>
                 }

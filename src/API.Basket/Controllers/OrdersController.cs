@@ -1,8 +1,10 @@
 using API.Basket.Dtos;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WebApi.Domain.Constants;
 using WebApi.Domain.Core;
 using WebApi.Domain.DTOs;
 using WebApi.Domain.Entities.OrderAggregate;
@@ -11,6 +13,13 @@ using WebApi.Infrastructure.Controllers;
 
 namespace API.Basket.Controllers
 {
+    /// <summary>
+    /// Every action here reads or writes a named buyer's order, so the whole controller
+    /// requires a validated JWT. The email the actions work from comes from the token's
+    /// claims, never from the request body, so a signed-in caller can only reach their
+    /// own orders.
+    /// </summary>
+    [Authorize]
     public class OrdersController : BaseApiController
     {
         private readonly IOrderService _orderService;
@@ -63,7 +72,13 @@ namespace API.Basket.Controllers
             return Ok(await _orderService.GetDeliveryMethodsAsync());
         }
 
+        /// <summary>
+        /// Every buyer's orders, including their delivery address. That is other people's
+        /// personal data, so it is scoped to the Admin role rather than to any signed-in
+        /// user. <c>OrdersAuthorizationTest</c> asserts the anonymous 401.
+        /// </summary>
         [HttpGet("allOrders")]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<ActionResult<IReadOnlyList<OrderDto>>> GetAllOrders()
         {
             var orders = await _orderService.GetOrders();
