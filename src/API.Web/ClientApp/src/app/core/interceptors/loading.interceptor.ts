@@ -1,28 +1,32 @@
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { BusyService } from '../services/busy.service';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { delay, finalize } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { BusyService } from '../services/busy.service';
 
+/**
+ * Raises the global progress indicator for requests the user is waiting on.
+ *
+ * The exclusions are requests that already have their own in-place feedback: order
+ * submission has a button spinner, deletions are optimistic, and the email-exists
+ * check fires on every keystroke.
+ */
 @Injectable()
 export class LoadingInterceptor implements HttpInterceptor {
-    constructor(private busyService: BusyService) {}
+  constructor(private busyService: BusyService) {}
 
-    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        if (req.method === 'POST' && req.url.includes('orders')) {
-            return next.handle(req);
-        }
-        if (req.method === 'DELETE') {
-            return next.handle(req);
-        }
-        if (req.url.includes('emailexists')) {
-            return next.handle(req);
-        }
-        this.busyService.busy(req.url);
-        return next.handle(req).pipe(
-            finalize(() => {
-                this.busyService.idle();
-            })
-        );
+  intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    const silent =
+      (req.method === 'POST' && req.url.includes('orders')) ||
+      req.method === 'DELETE' ||
+      req.url.includes('emailexists') ||
+      req.url.includes('orderevents');
+
+    if (silent) {
+      return next.handle(req);
     }
+
+    this.busyService.busy();
+    return next.handle(req).pipe(finalize(() => this.busyService.idle()));
+  }
 }

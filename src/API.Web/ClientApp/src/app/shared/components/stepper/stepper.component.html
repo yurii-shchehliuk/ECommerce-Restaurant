@@ -1,16 +1,15 @@
-<div class="container">
-    <ul class="nav nav-pills nav-justified">
-        <li class="nav-item" *ngFor="let step of steps; let i = index">
-            <button 
-                (click)="onClick(i)"
-                [disabled]="true"
-                [class.active]="selectedIndex === i"
-                class="nav-link text-uppercase font-weight-bold btn-block" style="padding: 1.20em;">
-                {{step.label}}
-            </button>
-        </li>
-    </ul>
-    <div>
-        <ng-container [ngTemplateOutlet]="selected.content"></ng-container>    
-    </div>
-</div>
+<nav aria-label="Checkout progress">
+  <ol class="nav nav-pills nav-fill mb-4">
+    <li class="nav-item" *ngFor="let step of steps; let i = index">
+      <button type="button" class="nav-link w-100"
+              [class.active]="selectedIndex === i"
+              [disabled]="i > selectedIndex"
+              [attr.aria-current]="selectedIndex === i ? 'step' : null"
+              (click)="select(i)">
+        <span class="me-2">{{ i + 1 }}</span>{{ step.label }}
+      </button>
+    </li>
+  </ol>
+</nav>
+
+<ng-container [ngTemplateOutlet]="selected ? selected.content : null"></ng-container>

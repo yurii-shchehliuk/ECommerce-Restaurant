@@ -1,41 +1,48 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { EMAIL_PATTERN } from 'src/app/shared/validators/email';
 import { AccountService } from '../account.service';
-import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  loginForm: FormGroup;
-  returnUrl: string;
+  loginForm = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.pattern(EMAIL_PATTERN)]),
+    password: new FormControl('', Validators.required),
+  });
 
-  constructor(private accountService: AccountService, private router: Router, private activatedRoute: ActivatedRoute) { }
+  returnUrl = '/shop';
+  submitting = false;
+  error: string | null = null;
 
-  ngOnInit() {
-    this.returnUrl = this.activatedRoute.snapshot.queryParams.returnUrl || '/shop';
-    this.createLoginForm();
+  constructor(
+    private accountService: AccountService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
+
+  ngOnInit(): void {
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/shop';
   }
 
-  createLoginForm() {
-    this.loginForm = new FormGroup({
-      // The TLD quantifier was {2,4}, which rejected every address ending in
-      // .local, .online, .company or any other TLD longer than four characters -
-      // silently, by disabling the submit button with no message.
-      email: new FormControl('', [Validators.required, Validators
-        .pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,}$')]),
-      password: new FormControl('', Validators.required)
+  onSubmit(): void {
+    if (this.loginForm.invalid || this.submitting) {
+      return;
+    }
+
+    this.submitting = true;
+    this.error = null;
+
+    this.accountService.login(this.loginForm.getRawValue()).subscribe({
+      next: () => this.router.navigateByUrl(this.returnUrl),
+      error: () => {
+        this.error = 'That email address and password do not match an account.';
+        this.submitting = false;
+      },
     });
   }
-
-  onSubmit() {
-    this.accountService.login(this.loginForm.value).subscribe(() => {
-      this.router.navigateByUrl(this.returnUrl);
-    }, error => {
-      console.log(error);
-    });
-  }
-
 }

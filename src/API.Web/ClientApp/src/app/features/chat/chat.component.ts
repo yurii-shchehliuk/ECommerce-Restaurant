@@ -1,77 +1,62 @@
-import { Component, NgZone, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { SignalRService } from '../signalr.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { MessageVM } from '../models/MessageVM';
+import { SignalRService } from '../signalr.service';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss'],
 })
-export class ChatComponent implements OnInit {
-  messageList: MessageVM[] = [];
-  message: MessageVM = {
-    createdAt: new Date().toISOString(),
-    messageBody: '',
-    userName: '',
-    groupName: '',
-    id: ''
-  };
+export class ChatComponent implements OnInit, OnDestroy {
+  messages: MessageVM[] = [];
+  draft = '';
+  userName = '';
+  status: 'connecting' | 'connected' | 'failed' = 'connecting';
 
-  constructor(
-    private signalRService: SignalRService,
-  ) { }
+  private subscription = new Subscription();
+
+  constructor(private signalR: SignalRService) {}
 
   ngOnInit(): void {
-    this.subscribeToEvents();
+    this.userName = localStorage.getItem('user_name') ?? '';
+
+    this.subscription.add(
+      this.signalR.allMessagesObject$.subscribe((message) => this.messages.push(message))
+    );
+
+    this.signalR
+      .startConnection()
+      .then(() => {
+        this.signalR.listenToAllMessages();
+        this.status = 'connected';
+      })
+      .catch(() => (this.status = 'failed'));
   }
 
-  sendMessage(): void {
-    this.message.userName = localStorage.getItem('user_name');
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+    this.signalR.stopConnection();
+  }
 
-    if (this.message.messageBody.length === 0)
-      {return;}
-    if (this.message.userName?.length !== 0) {
-      // var result = this.openDialog();
+  isMine(message: MessageVM): boolean {
+    return !!this.userName && message.userName === this.userName;
+  }
+
+  send(): void {
+    const body = this.draft.trim();
+    if (!body || this.status !== 'connected') {
+      return;
     }
 
-    this.signalRService.sendMessage(this.message).subscribe({
-      next: (data) => {
-        console.log(data);
-      },
-      error: (err) => {
-        console.log('sendMessage', err);
-      },
-      complete: () => {
-        this.message.messageBody = '';
-      }
-    });
-  }
-
-  private addToInbox(obj: MessageVM) {
-    const newObj = {
-      userName: obj.userName,
-      messageBody: obj.messageBody,
+    const message: MessageVM = {
+      id: '',
+      groupName: '',
+      userName: this.userName,
+      messageBody: body,
       createdAt: new Date().toISOString(),
-      groupName: obj.groupName,
-      id: obj.id
     };
-    this.messageList.push(newObj);
-  }
 
-  private subscribeToEvents() {
-    // start a connection
-    this.signalRService.startConnection().then(() => {
-      console.log('connected');
-
-      // register for ALL relay
-      this.signalRService.listenToAllMessages();
-
-      // subscribe to messages received
-      this.signalRService.allMessagesObject$
-        .subscribe((res: MessageVM) => {
-          this.addToInbox(res);
-        });
-    });
+    this.signalR.sendMessage(message).subscribe({ complete: () => (this.draft = '') });
   }
 }

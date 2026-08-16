@@ -1,19 +1,87 @@
-import { Component, OnInit } from '@angular/core';
-import { BreadcrumbService } from 'xng-breadcrumb';
-import { Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { Subscription, filter, startWith } from 'rxjs';
 
+export interface Crumb {
+  label: string;
+  url: string;
+}
+
+/**
+ * Page heading and breadcrumb trail, derived from the URL.
+ *
+ * Deriving the trail from `router.url` rather than from route data keeps every route
+ * definition free of presentation metadata; the one thing the URL cannot supply is a
+ * human name for an id segment, which `setTrailingLabel` fills in from the loaded
+ * record.
+ */
 @Component({
   selector: 'app-section-header',
   templateUrl: './section-header.component.html',
-  styleUrls: ['./section-header.component.scss']
+  styleUrls: ['./section-header.component.scss'],
 })
-export class SectionHeaderComponent implements OnInit {
-  breadcrumb$: Observable<any[]>;
+export class SectionHeaderComponent implements OnInit, OnDestroy {
+  crumbs: Crumb[] = [];
 
-  constructor(private bcService: BreadcrumbService) { }
+  private subscription = new Subscription();
 
-  ngOnInit() {
-    this.breadcrumb$ = this.bcService.breadcrumbs$;
+  private static readonly LABELS: Record<string, string> = {
+    shop: 'Shop',
+    basket: 'Basket',
+    checkout: 'Checkout',
+    success: 'Order placed',
+    orders: 'Orders',
+    account: 'Account',
+    login: 'Sign in',
+    register: 'Sign up',
+    admin: 'Admin',
+    'order-events': 'Order events',
+    'completed-orders': 'All orders',
+    'menu-management': 'Products',
+    features: 'Features',
+    chat: 'Chat',
+    'test-error': 'API diagnostics',
+    'not-found': 'Not found',
+    'server-error': 'Server error',
+  };
+
+  constructor(private router: Router) {}
+
+  ngOnInit(): void {
+    this.subscription.add(
+      this.router.events
+        .pipe(
+          filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+          startWith(null)
+        )
+        .subscribe(() => this.build())
+    );
   }
 
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  get title(): string {
+    return this.crumbs.length ? this.crumbs[this.crumbs.length - 1].label : '';
+  }
+
+  private build(): void {
+    const path = this.router.url.split('?')[0].split('#')[0];
+    const segments = path.split('/').filter(Boolean);
+
+    let url = '';
+    this.crumbs = segments.map((segment) => {
+      url += `/${segment}`;
+      return {
+        label: SectionHeaderComponent.LABELS[segment] ?? this.humanise(segment),
+        url,
+      };
+    });
+  }
+
+  private humanise(segment: string): string {
+    const decoded = decodeURIComponent(segment);
+    return /^\d+$/.test(decoded) ? `#${decoded}` : decoded.replace(/-/g, ' ');
+  }
 }

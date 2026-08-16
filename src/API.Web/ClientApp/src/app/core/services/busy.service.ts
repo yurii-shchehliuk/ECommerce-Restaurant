@@ -1,28 +1,28 @@
 import { Injectable } from '@angular/core';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { BehaviorSubject, Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+/**
+ * Tracks in-flight requests so the shell can show one global progress indicator.
+ *
+ * A counter rather than a boolean: overlapping requests each raise and lower it, and
+ * the indicator only clears when the last one finishes.
+ */
+@Injectable({ providedIn: 'root' })
 export class BusyService {
-  busyRequestCount = 0;
+  private count = 0;
+  private busySource = new BehaviorSubject<boolean>(false);
 
-  constructor(private spinnerService: NgxSpinnerService) {}
+  readonly busy$: Observable<boolean> = this.busySource.asObservable();
 
-  busy(name: string = undefined) {
-    this.busyRequestCount++;
-    this.spinnerService.show(name, {
-      type: 'timer',
-      bdColor: 'rgba(255,255,255,0.7)',
-      color: '#333333',
-    });
+  busy(): void {
+    this.count++;
+    this.busySource.next(true);
   }
 
-  idle() {
-    this.busyRequestCount--;
-    if (this.busyRequestCount <= 0) {
-      this.busyRequestCount = 0;
-      this.spinnerService.hide();
+  idle(): void {
+    this.count = Math.max(0, this.count - 1);
+    if (this.count === 0) {
+      this.busySource.next(false);
     }
   }
 }

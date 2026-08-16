@@ -1,117 +1,106 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { EventEmitter, Injectable } from '@angular/core';
-import * as signalR from '@aspnet/signalr';
-import { DefaultHttpClient, HttpRequest, HttpResponse, HubConnection, HubConnectionBuilder, IHttpConnectionOptions } from '@aspnet/signalr';
-import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import {
+  HubConnection,
+  HubConnectionBuilder,
+  HubConnectionState,
+  LogLevel,
+} from '@microsoft/signalr';
+import { Observable, Subject } from 'rxjs';
 import { MessageVM } from 'src/app/features/models/MessageVM';
 import { environment } from 'src/environment';
 
-@Injectable({
-  providedIn: 'root',
-})
+/**
+ * The browser half of API.Identity's ChatHub.
+ *
+ * Messages are *sent* over HTTP to `ChatController`, which relays them through the
+ * hub; they arrive *back* over the socket. That split is the server's design, and
+ * keeping it means a message is persisted by the controller before any client sees
+ * it.
+ */
+@Injectable({ providedIn: 'root' })
 export class SignalRService {
-  messageReceived = new EventEmitter<MessageVM>();
-  baseUrl = environment.identityApi.api + 'Chat/send';
+  private hubConnection: HubConnection | null = null;
+  private allMessages = new Subject<MessageVM>();
+  private groupMessages = new Subject<MessageVM>();
 
-  private hubConnection: signalR.HubConnection;
-  private receivedMessage: MessageVM;
-  private $allMessages = new Subject<MessageVM>();
-  private $groupMessages: Subject<MessageVM> = new Subject<MessageVM>();
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient, asd: HttpClient) {
+  get allMessagesObject$(): Observable<MessageVM> {
+    return this.allMessages.asObservable();
   }
 
-  public get allMessagesObject$(): Observable<MessageVM> {
-    return this.$allMessages.asObservable();
+  get groupMsgsObject$(): Observable<MessageVM> {
+    return this.groupMessages.asObservable();
   }
 
-  public get groupMsgsObject$(): Observable<MessageVM> {
-    return this.$groupMessages.asObservable();
+  get connected(): boolean {
+    return this.hubConnection?.state === HubConnectionState.Connected;
   }
 
-  // Calls the controller method
-  sendMessage(msgDto: MessageVM) {
-    return this.http.post(this.baseUrl, msgDto);
+  sendMessage(message: MessageVM) {
+    return this.http.post(`${environment.identityApi.api}Chat/send`, message);
   }
 
-  // Calls the controller method
-  sendGroupMessage(msgDto: MessageVM) {
-    return this.http.post(environment.identityApi.api + 'Chat/group', msgDto);
+  sendGroupMessage(message: MessageVM) {
+    return this.http.post(`${environment.identityApi.api}Chat/group`, message);
   }
 
-  getMessages(groupId: string) {
-    return this.http.get(environment.identityApi.api + 'Chat/groupId/',
-      { params: new HttpParams().append('groupId', groupId) })
-      .subscribe({
-        next: (data) => {
-          console.log(data);
-        },
-        error: (err) => {
-          console.log('getMessages', err);
-        }
-      });
+  /**
+   * Asks the hub to replay a group's history. The response arrives on the socket as
+   * `GetGroupMessages`, not as the body of this request.
+   */
+  requestGroupHistory(groupId: string) {
+    return this.http
+      .get(`${environment.identityApi.api}Chat/groupId/`, {
+        params: new HttpParams().append('groupId', groupId),
+      })
+      .subscribe({ error: () => undefined });
   }
 
-  public listenToAllMessages() {
-    this.hubConnection.on('AllMessages', (msg: MessageVM,) => {
-      this.receivedMessage = msg;
-      this.$allMessages.next(this.receivedMessage);
-    });
-    this.hubConnection.onclose(async () => {
-      setTimeout(await this.startConnection(), 5000);
-    });
+  listenToAllMessages(): void {
+    this.hubConnection?.on('AllMessages', (message: MessageVM) => this.allMessages.next(message));
   }
 
-  public listenToGroup() {
-    (this.hubConnection).on('GetGroupMessages', (msgArr: MessageVM[]) => {
-      msgArr.map((msg: MessageVM) => {
-        this.$groupMessages.next(msg);
-      });
-    });
-    this.hubConnection.onclose(async () => {
-      setTimeout(await this.startConnection(), 5000);
-    });
+  listenToGroup(): void {
+    this.hubConnection?.on('GetGroupMessages', (messages: MessageVM[]) =>
+      (messages ?? []).forEach((message) => this.groupMessages.next(message))
+    );
   }
 
-  public joinGroupFeed(groupName: string) {
-    return new Promise((resolve, reject) => {
-      (this.hubConnection)
-        .invoke('JoinToGroup', groupName)
-        .then(() => {
-          console.log('added to feed');
-          return resolve(true);
-        }, (err: any) => {
-          console.log(err);
-          return reject(err);
-        });
-    });
+  joinGroupFeed(groupName: string): Promise<void> {
+    return this.hubConnection
+      ? this.hubConnection.invoke('JoinToGroup', groupName)
+      : Promise.reject(new Error('not connected'));
   }
 
-  public leaveGroup(group: string): void {
-    this.hubConnection.invoke('LeaveGroup', group);
+  leaveGroup(groupName: string): void {
+    this.hubConnection?.invoke('LeaveGroup', groupName);
   }
 
-  public async startConnection(productId: string = ''): Promise<any> {
-    return await new Promise(async (resolve, reject) => {
-      //build connection
-      this.hubConnection = new signalR.HubConnectionBuilder() //+ `&productId=${productId}`
-        .withUrl(environment.identityApi.chat + `?productId=${productId}`, {
-          headers: new HttpHeaders().set('productId', productId),
-          logging: signalR.LogLevel.Trace,
-        } as IHttpConnectionOptions)
-        .build();
-      this.hubConnection.serverTimeoutInMilliseconds = 100000; //100sec
+  /**
+   * Reconnection is delegated to `withAutomaticReconnect`, which backs off between
+   * attempts; a hand-rolled `onclose` timer reconnects without backoff and stacks a
+   * fresh timer on every drop.
+   */
+  async startConnection(productId = ''): Promise<void> {
+    if (this.connected) {
+      return;
+    }
 
-      //start
-      await this.hubConnection.start()
-        .then(() => {
-          console.log('connection established', new Date().toISOString());
-          return resolve(true);
-        })
-        .catch((err: any) => {
-          console.log('error occured' + err);
-          reject(err);
-        });
-    });
+    this.hubConnection = new HubConnectionBuilder()
+      .withUrl(`${environment.identityApi.chat}?productId=${productId}`)
+      .withAutomaticReconnect()
+      .configureLogging(environment.production ? LogLevel.Error : LogLevel.Information)
+      .build();
+
+    this.hubConnection.serverTimeoutInMilliseconds = 100_000;
+
+    await this.hubConnection.start();
+  }
+
+  async stopConnection(): Promise<void> {
+    await this.hubConnection?.stop();
+    this.hubConnection = null;
   }
 }

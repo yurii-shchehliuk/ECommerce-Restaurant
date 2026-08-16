@@ -1,39 +1,15 @@
-
 @import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-@import "../node_modules/ngx-bootstrap/datepicker/bs-datepicker.css";
-@import "../node_modules/bootswatch/dist/united/bootstrap.min.css";
-@import "../node_modules/font-awesome/css/font-awesome.min.css";
 @import "../node_modules/ngx-toastr/toastr.css";
 
-// bootswatch theming in angular.json
-
-.xng-breadcrumb-root {
-    padding: 8px 16px;
-    display: inline;
-    border-radius: 0;
+html,
+body {
+  height: 100%;
 }
 
-label.xng-breadcrumb-trail {
-    margin-bottom: 0;
-    color: rgb(7, 99, 42);
-}
-
-.xng-breadcrumb-separator {
-    padding: 0 0;
+body {
+  margin: 0;
 }
 
 .StripeElement {
-    height: 3.125em;
-}
-
-
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
-.cdk-dialog-container{
-    overflow: hidden !important;
+  height: 3.125em;
 }

@@ -1,35 +1,27 @@
-<div class="container mt-2">
-    <div *ngIf="(basket$ | async) === null">
-        <p>There are no items in your basket</p>
-    </div>
+<div class="container my-5">
+  <ng-container *ngIf="(basket$ | async) as basket; else emptyBasket">
+    <ng-container *ngIf="basket.items.length; else emptyBasket">
+      <app-basket-summary [items]="basket.items" (increment)="incrementItemQuantity($event)"
+                          (decrement)="decrementItemQuantity($event)"
+                          (remove)="removeBasketItem($event)"></app-basket-summary>
 
-    <div *ngIf="basket$ | async">
-        <div class="pb-5">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12 py-5 mb-1">
-                        <app-basket-summary 
-                            (decrement)="decrementItemQuantity($event)"
-                            (increment)="incrementItemQuantity($event)"
-                            (remove)="removeBasketItem($event)"
-                            [items]="(basket$ | async).items"></app-basket-summary>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-6 offset-6">
-                        <app-order-totals 
-                            *ngIf="(basketTotals$ | async)"
-                            [shippingPrice]="(basketTotals$ | async).shipping"
-                            [subtotal]="(basketTotals$ | async).subtotal" 
-                            [total]="(basketTotals$ | async).total">
-                        </app-order-totals>
-                        <a routerLink="/checkout" class="btn btn-outline-primary py-2 btn-block">
-                            Proceed to checkout
-                        </a>
-                    </div>
-                </div>
-            </div>
+      <div class="row justify-content-end mt-4">
+        <div class="col-lg-5">
+          <app-order-totals *ngIf="(basketTotals$ | async) as totals"
+                            [shippingPrice]="totals.shipping" [subtotal]="totals.subtotal"
+                            [total]="totals.total"></app-order-totals>
+          <a routerLink="/checkout" class="btn btn-primary w-100">Proceed to checkout</a>
         </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #emptyBasket>
+    <div class="py-5 text-center">
+      <app-icon name="cart" [size]="48" class="text-secondary"></app-icon>
+      <h2 class="h4 mt-3">Your basket is empty</h2>
+      <p class="text-muted">Add something from the menu and it will show up here.</p>
+      <a routerLink="/shop" class="btn btn-primary">Browse the menu</a>
     </div>
+  </ng-template>
 </div>

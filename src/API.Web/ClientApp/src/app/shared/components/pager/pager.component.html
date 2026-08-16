@@ -1,11 +1,28 @@
-<pagination 
-[boundaryLinks]="true" 
-[totalItems]="totalCount" 
-[ngModel]="pageNumber"
-(pageChanged)="onPagerChange($event)"
-[itemsPerPage]="pageSize"
-previousText="&lsaquo;" 
-nextText="&rsaquo;"
-firstText="&laquo;" 
-lastText="&raquo;">
-</pagination>
+<nav *ngIf="totalPages > 1" aria-label="Product pages">
+  <ul class="pagination mb-0">
+    <li class="page-item" [class.disabled]="pageNumber <= 1">
+      <button type="button" class="page-link" (click)="go(pageNumber - 1)"
+              [disabled]="pageNumber <= 1" aria-label="Previous page">
+        <app-icon name="chevron-left" [size]="16"></app-icon>
+      </button>
+    </li>
+
+    <ng-container *ngFor="let page of pages; let i = index">
+      <li *ngIf="page === null" class="page-item disabled" aria-hidden="true">
+        <span class="page-link">&hellip;</span>
+      </li>
+      <li *ngIf="page !== null" class="page-item" [class.active]="page === pageNumber">
+        <button type="button" class="page-link" (click)="go(page)"
+                [attr.aria-current]="page === pageNumber ? 'page' : null"
+                [attr.aria-label]="'Page ' + page">{{ page }}</button>
+      </li>
+    </ng-container>
+
+    <li class="page-item" [class.disabled]="pageNumber >= totalPages">
+      <button type="button" class="page-link" (click)="go(pageNumber + 1)"
+              [disabled]="pageNumber >= totalPages" aria-label="Next page">
+        <app-icon name="chevron-right" [size]="16"></app-icon>
+      </button>
+    </li>
+  </ul>
+</nav>

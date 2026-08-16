@@ -1,0 +1,14 @@
+.app-progress {
+  height: 3px;
+}
+
+.app-progress__bar {
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #0d6efd, transparent);
+  animation: app-progress 1.1s linear infinite;
+}
+
+@keyframes app-progress {
+  from { background-position: -40vw 0; }
+  to { background-position: 140vw 0; }
+}

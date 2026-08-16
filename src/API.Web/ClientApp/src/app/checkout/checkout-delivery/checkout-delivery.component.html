@@ -19,9 +19,9 @@
 
 <div class="float-none d-flex justify-content-between flex-column flex-lg-row mb-5">
     <button class="btn btn-outline-primary" cdkStepperPrevious>
-        <i class="fa fa-angle-left"></i> Back to Address
+        <app-icon name="chevron-left" [size]="16"></app-icon> Back to address
     </button>
     <button [disabled]="checkoutForm.get('deliveryForm').invalid" class="btn btn-primary" cdkStepperNext>
-        Go to Review <i class="fa fa-angle-right"></i>
+        Go to review <app-icon name="chevron-right" [size]="16"></app-icon>
     </button>
 </div>

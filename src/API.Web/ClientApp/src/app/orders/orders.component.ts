@@ -1,30 +1,29 @@
 import { Component, OnInit } from '@angular/core';
-import { OrdersService } from './orders.service';
 import { IOrder } from '../shared/models/order';
+import { OrdersService } from './orders.service';
 
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
-  styleUrls: ['./orders.component.scss']
+  styleUrls: ['./orders.component.scss'],
 })
 export class OrdersComponent implements OnInit {
-  orders: IOrder[];
+  orders: IOrder[] = [];
+  loading = true;
+  error: string | null = null;
 
-  constructor(private ordersService: OrdersService) { }
+  constructor(private ordersService: OrdersService) {}
 
-  ngOnInit() {
-    this.getOrders();
-  }
-
-  getOrders() {
-    this.ordersService.getOrdersForUser().subscribe((orders: IOrder[]) => {
-      this.orders = orders;
-    }, error => {
-      console.log(error);
+  ngOnInit(): void {
+    this.ordersService.getOrdersForUser().subscribe({
+      next: (orders) => {
+        this.orders = orders ?? [];
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'Your orders could not be loaded.';
+        this.loading = false;
+      },
     });
   }
-  onChat(){
-
-  }
-
 }

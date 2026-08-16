@@ -33,9 +33,9 @@
 
 <div class="float-none d-flex justify-content-between flex-column flex-lg-row mb-5">
     <button class="btn btn-outline-primary" routerLink="/basket">
-        <i class="fa fa-angle-left"></i> Back to Basket
+        <app-icon name="chevron-left" [size]="16"></app-icon> Back to basket
     </button>
     <button [disabled]="checkoutForm.get('addressForm').invalid" class="btn btn-primary" cdkStepperNext>
-        Go to Delivery <i class="fa fa-angle-right"></i> 
+        Go to delivery <app-icon name="chevron-right" [size]="16"></app-icon>
     </button>
 </div>

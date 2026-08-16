@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { IPagination, Pagination } from '../shared/models/pagination';
 import { IBrand } from '../shared/models/brand';
 import { IType } from '../shared/models/productType';
-import { map, delay } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ShopParams } from '../shared/models/shopParams';
 import { IProduct } from '../shared/models/product';
 import { of } from 'rxjs';

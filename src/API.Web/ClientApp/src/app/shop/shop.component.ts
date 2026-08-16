@@ -1,72 +1,66 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { IProduct } from '../shared/models/product';
-import { ShopService } from './shop.service';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IBrand } from '../shared/models/brand';
+import { IProduct } from '../shared/models/product';
 import { IType } from '../shared/models/productType';
 import { ShopParams } from '../shared/models/shopParams';
+import { ShopService } from './shop.service';
 
 @Component({
   selector: 'app-shop',
   templateUrl: './shop.component.html',
-  styleUrls: ['./shop.component.scss']
+  styleUrls: ['./shop.component.scss'],
 })
 export class ShopComponent implements OnInit {
-  @ViewChild('search') searchTerm: ElementRef;
-  products: IProduct[];
-  brands: IBrand[];
-  types: IType[];
+  @ViewChild('search') searchTerm!: ElementRef<HTMLInputElement>;
+
+  products: IProduct[] = [];
+  brands: IBrand[] = [];
+  types: IType[] = [];
   shopParams: ShopParams;
-  totalCount: number;
-  sortOptions = [
+  totalCount = 0;
+  loading = true;
+  error: string | null = null;
+
+  readonly sortOptions = [
     { name: 'Alphabetical', value: 'name' },
-    { name: 'Price: Low to High', value: 'priceAsc' },
-    { name: 'Price: High to Low', value: 'priceDesc' }
+    { name: 'Price: low to high', value: 'priceAsc' },
+    { name: 'Price: high to low', value: 'priceDesc' },
   ];
 
   constructor(private shopService: ShopService) {
     this.shopParams = this.shopService.getShopParams();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.getProducts(true);
-    this.getBrands();
     this.getTypes();
   }
 
-  getProducts(useCache = false) {
-    this.shopService.getProducts(useCache).subscribe(response => {
-      this.products = response.data;
-      this.totalCount = response.count;
-    }, error => {
-      console.log(error);
+  getProducts(useCache = false): void {
+    this.loading = true;
+    this.error = null;
+
+    this.shopService.getProducts(useCache).subscribe({
+      next: (response) => {
+        this.products = response.data;
+        this.totalCount = response.count;
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'The catalogue could not be loaded.';
+        this.loading = false;
+      },
     });
   }
 
-  getBrands() {
-    this.shopService.getBrands().subscribe(response => {
-      this.brands = [{ id: 0, name: 'All' }, ...response];
-    }, error => {
-      console.log(error);
+  getTypes(): void {
+    this.shopService.getTypes().subscribe({
+      next: (types) => (this.types = [{ id: 0, name: 'All' }, ...types]),
+      error: () => undefined,
     });
   }
 
-  getTypes() {
-    this.shopService.getTypes().subscribe(response => {
-      this.types = [{ id: 0, name: 'All' }, ...response];
-    }, error => {
-      console.log(error);
-    });
-  }
-
-  onBrandSelected(brandId: number) {
-    const params = this.shopService.getShopParams();
-    params.brandId = brandId;
-    params.pageNumber = 1;
-    this.shopService.setShopParams(params);
-    this.getProducts();
-  }
-
-  onTypeSelected(typeId: number) {
+  onTypeSelected(typeId: number): void {
     const params = this.shopService.getShopParams();
     params.typeId = typeId;
     params.pageNumber = 1;
@@ -74,23 +68,23 @@ export class ShopComponent implements OnInit {
     this.getProducts();
   }
 
-  onSortSelected(sort: string) {
+  onSortSelected(sort: string): void {
     const params = this.shopService.getShopParams();
     params.sort = sort;
     this.shopService.setShopParams(params);
     this.getProducts();
   }
 
-  onPageChanged(event: any) {
+  onPageChanged(page: number): void {
     const params = this.shopService.getShopParams();
-    if (params.pageNumber !== event) {
-      params.pageNumber = event;
+    if (params.pageNumber !== page) {
+      params.pageNumber = page;
       this.shopService.setShopParams(params);
       this.getProducts(true);
     }
   }
 
-  onSearch() {
+  onSearch(): void {
     const params = this.shopService.getShopParams();
     params.search = this.searchTerm.nativeElement.value;
     params.pageNumber = 1;
@@ -98,7 +92,7 @@ export class ShopComponent implements OnInit {
     this.getProducts();
   }
 
-  onReset() {
+  onReset(): void {
     this.searchTerm.nativeElement.value = '';
     this.shopParams = new ShopParams();
     this.shopService.setShopParams(this.shopParams);

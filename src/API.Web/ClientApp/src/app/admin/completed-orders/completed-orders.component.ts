@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@aspnet/signalr';
+import { IOrder } from 'src/app/shared/models/order';
 import { CompletedOrdersService } from './completed-orders.service';
 
 @Component({
@@ -8,35 +8,35 @@ import { CompletedOrdersService } from './completed-orders.service';
   styleUrls: ['./completed-orders.component.scss'],
 })
 export class CompletedOrdersComponent implements OnInit {
-  orders: any;
-  constructor(private service: CompletedOrdersService) { }
+  orders: IOrder[] = [];
+  loading = true;
+  error: string | null = null;
+
+  constructor(private service: CompletedOrdersService) {}
 
   ngOnInit(): void {
-    this.service.getOrders().subscribe(
-      (res) => {
-        this.orders = res;
+    this.service.getOrders().subscribe({
+      next: (orders) => {
+        this.orders = orders ?? [];
+        this.loading = false;
       },
-      (err) => {
-        console.log('getOrders', err);
-      }
-    );
-  }
-  exportData() {
-    const blob = new Blob([JSON.stringify(this.orders, null, 2)], {
-      type: 'application/json',
+      error: () => {
+        this.error = 'Could not reach API.Basket.';
+        this.loading = false;
+      },
     });
-    this.download(blob, 'fileName.json');
   }
-  download(blob, filename) {
-    const a = document.createElement('a');
+
+  /** Client-side export, so it works without an endpoint that does not exist. */
+  exportData(): void {
+    const blob = new Blob([JSON.stringify(this.orders, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    }, 0);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'orders.json';
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(url);
   }
 }

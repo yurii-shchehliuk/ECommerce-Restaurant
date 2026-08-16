@@ -1,14 +1,15 @@
-<ng-container *ngIf="(breadcrumb$ | async) as breadcrumbs">
-    <section *ngIf="breadcrumbs.length > 0 && breadcrumbs[breadcrumbs.length-1].label !== 'Home'" class="" style=" background-color: #f5f5f5;">
-        <div class="container">
-            <div class="row d-flex align-items-center">
-                <div class="col-9">
-                    <h1>{{breadcrumbs.length > 0 && breadcrumbs[breadcrumbs.length-1].label | titlecase}}</h1>
-                </div>
-                <div class="col-3">
-                    <xng-breadcrumb></xng-breadcrumb>
-                </div>
-            </div>
-        </div>
-    </section>
-</ng-container>
+<section *ngIf="crumbs.length" class="bg-light border-bottom py-3">
+  <div class="container d-flex flex-wrap justify-content-between align-items-baseline gap-2">
+    <h1 class="h4 mb-0 text-capitalize">{{ title }}</h1>
+    <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+        <li class="breadcrumb-item" *ngFor="let crumb of crumbs; let last = last"
+            [class.active]="last" [attr.aria-current]="last ? 'page' : null">
+          <a *ngIf="!last" [routerLink]="crumb.url" class="text-capitalize">{{ crumb.label }}</a>
+          <span *ngIf="last" class="text-capitalize">{{ crumb.label }}</span>
+        </li>
+      </ol>
+    </nav>
+  </div>
+</section>

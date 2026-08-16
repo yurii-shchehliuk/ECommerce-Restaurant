@@ -1,29 +1,31 @@
 import { Component, OnInit } from '@angular/core';
-import { IOrder } from 'src/app/shared/models/order';
 import { ActivatedRoute } from '@angular/router';
-import { BreadcrumbService } from 'xng-breadcrumb';
+import { IOrder } from 'src/app/shared/models/order';
 import { OrdersService } from '../orders.service';
 
 @Component({
   selector: 'app-order-detailed',
   templateUrl: './order-detailed.component.html',
-  styleUrls: ['./order-detailed.component.scss']
+  styleUrls: ['./order-detailed.component.scss'],
 })
 export class OrderDetailedComponent implements OnInit {
-  order: IOrder;
+  order: IOrder | null = null;
+  loading = true;
+  error: string | null = null;
 
-  constructor(private route: ActivatedRoute, private breadcrumbService: BreadcrumbService, private ordersService: OrdersService) {
-    this.breadcrumbService.set('@OrderDetailed', '');
-  }
+  constructor(private route: ActivatedRoute, private ordersService: OrdersService) {}
 
-  ngOnInit() {
-    this.ordersService.getOrderDetailed(+this.route.snapshot.paramMap.get('id'))
-      .subscribe((order: IOrder) => {
-      this.order = order;
-      this.breadcrumbService.set('@OrderDetailed', `Order# ${order.id} - ${order.status}`);
-    }, error => {
-      console.log(error);
+  ngOnInit(): void {
+    const id = +(this.route.snapshot.paramMap.get('id') ?? 0);
+    this.ordersService.getOrderDetailed(id).subscribe({
+      next: (order) => {
+        this.order = order;
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'That order could not be loaded.';
+        this.loading = false;
+      },
     });
   }
-
 }

@@ -1,56 +1,64 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AsyncValidatorFn } from '@angular/forms';
-import { AccountService } from '../account.service';
+import { Component } from '@angular/core';
+import { AsyncValidatorFn, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { timer, of } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
-import { MatDialogRef } from '@angular/material/dialog';
+import { of, timer } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { EMAIL_PATTERN } from 'src/app/shared/validators/email';
+import { AccountService } from '../account.service';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent implements OnInit {
-  registerForm: FormGroup;
-  errors: string[];
+export class RegisterComponent {
+  registerForm = this.fb.group({
+    displayName: ['', [Validators.required]],
+    email: [
+      '',
+      [Validators.required, Validators.pattern(EMAIL_PATTERN)],
+      [this.validateEmailNotTaken()],
+    ],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+  });
 
-  constructor(private fb: FormBuilder, private accountService: AccountService, private router: Router) { }
+  errors: string[] = [];
+  submitting = false;
 
-  ngOnInit() {
-    this.createRegisterForm();
-  }
+  constructor(
+    private fb: FormBuilder,
+    private accountService: AccountService,
+    private router: Router
+  ) {}
 
-  onSubmit() {
-    this.accountService.register(this.registerForm.value).subscribe(response => {
-      this.router.navigateByUrl('/shop');
-    }, error => {
-      console.log(error);
-      this.errors = error.errors;
+  onSubmit(): void {
+    if (this.registerForm.invalid || this.submitting) {
+      return;
+    }
+
+    this.submitting = true;
+    this.errors = [];
+
+    this.accountService.register(this.registerForm.getRawValue()).subscribe({
+      next: () => this.router.navigateByUrl('/shop'),
+      error: (error) => {
+        this.errors = error?.errors ?? ['Registration failed. Please try again.'];
+        this.submitting = false;
+      },
     });
   }
 
+  /** Debounced so it asks the API once the address has stopped changing. */
   private validateEmailNotTaken(): AsyncValidatorFn {
-    return control => timer(500).pipe(
-      switchMap(() => {
-        if (!control.value) {
-          return of(null);
-        }
-        return this.accountService.checkEmailExists(control.value).pipe(
-          map(res => res ? { emailExists: true } : null)
-        );
-      })
-    );
-  }
-
-  private createRegisterForm() {
-    this.registerForm = this.fb.group({
-      displayName: [null, [Validators.required]],
-      email: [null,
-        [Validators.required, Validators.pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,}$')],
-        [this.validateEmailNotTaken()]
-      ],
-      password: [null, [Validators.required]]
-    });
+    return (control) =>
+      timer(400).pipe(
+        switchMap(() =>
+          control.value
+            ? this.accountService
+                .checkEmailExists(control.value)
+                .pipe(map((exists) => (exists ? { emailExists: true } : null)))
+            : of(null)
+        )
+      );
   }
 }

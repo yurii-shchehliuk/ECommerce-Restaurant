@@ -1,72 +1,54 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { BasketService } from 'src/app/basket/basket.service';
 import { IProduct } from 'src/app/shared/models/product';
 import { ShopService } from '../shop.service';
-import { ActivatedRoute } from '@angular/router';
-import { BreadcrumbService } from 'xng-breadcrumb';
-import { BasketService } from 'src/app/basket/basket.service';
-import { Store } from '@ngrx/store';
-import { getDisplayImage, productActionFn, State } from 'src/app/state/product.reducer';
 
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',
-  styleUrls: ['./product-details.component.scss']
+  styleUrls: ['./product-details.component.scss'],
 })
 export class ProductDetailsComponent implements OnInit {
-  product: IProduct;
+  product: IProduct | null = null;
+  productId = '';
   quantity = 1;
+  loading = true;
+  error: string | null = null;
 
-  constructor(private shopService: ShopService,
-    private activateRoute: ActivatedRoute,
-    private bcService: BreadcrumbService,
-    private basketService: BasketService,
-    private store: Store<State>
-  ) {
-    this.bcService.set('@productDetails', '');
-  }
+  constructor(
+    private shopService: ShopService,
+    private route: ActivatedRoute,
+    private basketService: BasketService
+  ) {}
 
-  ngOnInit() {
-    this.loadProduct();
-  }
-
-  addItemToBasket() {
-    this.basketService.addItemToBasket(this.product, this.quantity);
-  }
-
-  incrementQuantity() {
-    this.quantity++;
-  }
-
-  decrementQuantity() {
-    if (this.quantity > 1) {
-      this.quantity--;
-    }
-  }
-
-  loadProduct() {
-    this.shopService.getProduct(+this.activateRoute.snapshot.paramMap.get('id')).subscribe(product => {
-      this.product = product;
-      this.bcService.set('@productDetails', product.name);
-    }, error => {
-      console.log(error);
+  ngOnInit(): void {
+    this.productId = this.route.snapshot.paramMap.get('id') ?? '';
+    this.shopService.getProduct(+this.productId).subscribe({
+      next: (product) => {
+        this.product = product;
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'That product could not be loaded.';
+        this.loading = false;
+      },
     });
   }
 
-  displayImage: boolean = true;
-  onCheckChanged(): void {
-    this.store.dispatch(productActionFn.toggleImage());
-    // this.store.subscribe(state => {
-    //   this.displayImage = state.product.displayImage;
-    // });
-    // this.store.select('product').subscribe(
-    //   displ => {
-    //     this.displayImage = displ.displayImage;
-    //     console.log(displ);
-    //   }
-    // );
+  addItemToBasket(): void {
+    if (this.product) {
+      this.basketService.addItemToBasket(this.product, this.quantity);
+    }
+  }
 
-    this.store.select(getDisplayImage).subscribe(
-      showImage => this.displayImage = showImage
-    );
+  incrementQuantity(): void {
+    this.quantity++;
+  }
+
+  decrementQuantity(): void {
+    if (this.quantity > 1) {
+      this.quantity--;
+    }
   }
 }

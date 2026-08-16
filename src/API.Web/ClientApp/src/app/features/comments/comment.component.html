@@ -1,45 +1,24 @@
-<div class="w-100 flex justify-content-center align-items-center">
-    <mat-form-field class="w-100 d-inline pb-0">
-        <div class="textarea-container">
-            <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5" class="d-inline"
-                placeholder="Type a message" [(ngModel)]="message.messageBody"
-                name="messageBody">{{message.messageBody}}</textarea>
-            <button mat-button type="submit" class="d-inline" style="float: right" (click)="sendMessage()">
-                <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
-            </button>
-        </div>
-    </mat-form-field>
-</div>
-<ng-container *ngIf="groupMessages.length > 0; else feedEmpty">
-    <div *ngFor="let msg of groupMessages" class="card rounded-0 my-2">
-        <mat-card class="w-100">
-            <img mat-card-sm-image src="https://material.angular.io/assets/img/examples/shiba2.jpg"
-                class="msg-img col-sm-1 m-0" style="float: left;">
-            <div class="col-sm-11" style="float: right;">
-                <mat-card-header>
-                    <mat-card-title-group>
-                        <mat-card-subtitle>{{ msg.createdAt | date:'MM/dd/yyyy' }}</mat-card-subtitle>
-                        <!-- <mat-card-subtitle align="end" class="d-inline" style="display: inline;">Edit</mat-card-subtitle> -->
-                        <mat-card-title>{{ msg.userName }}</mat-card-title>
-                        <!-- <mat-card-subtitle>{{ msg | json}}</mat-card-subtitle> -->
-                    </mat-card-title-group>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>
-                        {{ msg.messageBody }}
-                    </p>
-                </mat-card-content>
-                <mat-card-actions class="d-flex justify-content-between">
-                    <button class="d-inline " mat-button>Reply</button>
-                    <div class=" d-inline ">
-                        <button mat-button>Like</button>
-                        <button mat-button>Share</button>
-                    </div>
-                </mat-card-actions>
-            </div>
-        </mat-card>
-    </div>
-</ng-container>
-<ng-template #feedEmpty>
-    <p>No Feed yet.</p>
-</ng-template>
+<section class="mt-5">
+  <h2 class="h5 mb-3">Comments</h2>
+
+  <form *ngIf="userName; else signInFirst" class="d-flex gap-2 mb-3" (ngSubmit)="send()">
+    <label class="visually-hidden" for="comment-body">Add a comment</label>
+    <input id="comment-body" class="form-control" [(ngModel)]="draft" name="draft"
+           placeholder="Add a comment" autocomplete="off" />
+    <button type="submit" class="btn btn-primary" [disabled]="!draft.trim()">Post</button>
+  </form>
+  <ng-template #signInFirst>
+    <p class="text-muted"><a routerLink="/account/login">Sign in</a> to leave a comment.</p>
+  </ng-template>
+
+  <ul class="list-unstyled" *ngIf="comments.length; else noComments">
+    <li *ngFor="let comment of comments" class="border-top py-3">
+      <strong>{{ comment.userName }}</strong>
+      <span class="text-muted small ms-2">{{ comment.createdAt | date: 'mediumDate' }}</span>
+      <p class="mb-0">{{ comment.messageBody }}</p>
+    </li>
+  </ul>
+  <ng-template #noComments>
+    <p class="text-muted mb-0">No comments yet.</p>
+  </ng-template>
+</section>

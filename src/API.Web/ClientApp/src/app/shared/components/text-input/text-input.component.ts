@@ -1,44 +1,71 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, Self } from '@angular/core';
-import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { Component, ElementRef, Input, OnInit, Self, ViewChild } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, NgControl } from '@angular/forms';
 
+let nextId = 0;
+
+/**
+ * Labelled text field with validation messaging, implemented as a
+ * `ControlValueAccessor` so reactive forms drive it directly.
+ *
+ * The label is a real `<label for>` rather than a placeholder: placeholder-as-label
+ * disappears the moment someone types, which is precisely when they need it.
+ */
 @Component({
   selector: 'app-text-input',
   templateUrl: './text-input.component.html',
-  styleUrls: ['./text-input.component.scss']
+  styleUrls: ['./text-input.component.scss'],
 })
 export class TextInputComponent implements OnInit, ControlValueAccessor {
-  @ViewChild('input', { static: true }) input: ElementRef;
+  @ViewChild('input', { static: true }) input!: ElementRef<HTMLInputElement>;
+
   @Input() type = 'text';
-  @Input() label: string;
+  @Input() label = '';
+  @Input() autocomplete: string | null = null;
+
+  readonly inputId = `text-input-${nextId++}`;
 
   constructor(@Self() public controlDir: NgControl) {
     this.controlDir.valueAccessor = this;
   }
 
-  ngOnInit() {
-    const control = this.controlDir.control;
-    const validators = control.validator ? [control.validator] : [];
-    const asyncValidators = control.asyncValidator ? [control.asyncValidator] : [];
-
-    control.setValidators(validators);
-    control.setAsyncValidators(asyncValidators);
-    control.updateValueAndValidity();
+  get control(): AbstractControl | null {
+    return this.controlDir.control;
   }
 
-  onChange(event) { }
-
-  onTouched() { }
-
-  writeValue(obj: any): void {
-    this.input.nativeElement.value = obj || '';
+  get showError(): boolean {
+    const control = this.control;
+    return !!control && control.invalid && (control.touched || control.dirty);
   }
 
-  registerOnChange(fn: any): void {
+  ngOnInit(): void {
+    const control = this.control;
+    if (!control) {
+      return;
+    }
+    // Re-applying the validators the parent form declared keeps them attached after
+    // the value accessor is swapped in.
+    control.setValidators(control.validator ? [control.validator] : []);
+    control.setAsyncValidators(control.asyncValidator ? [control.asyncValidator] : []);
+    control.updateValueAndValidity({ emitEvent: false });
+  }
+
+  onChange: (value: string) => void = () => undefined;
+
+  onTouched: () => void = () => undefined;
+
+  writeValue(value: string): void {
+    this.input.nativeElement.value = value ?? '';
+  }
+
+  registerOnChange(fn: (value: string) => void): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
+  setDisabledState(isDisabled: boolean): void {
+    this.input.nativeElement.disabled = isDisabled;
+  }
 }

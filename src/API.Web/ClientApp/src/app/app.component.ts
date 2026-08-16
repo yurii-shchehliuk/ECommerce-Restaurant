@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { BasketService } from './basket/basket.service';
+import { Observable } from 'rxjs';
 import { AccountService } from './account/account.service';
-import { MessageVM } from './features/models/MessageVM';
-import { SignalRService } from './features/signalr.service';
+import { BasketService } from './basket/basket.service';
+import { BusyService } from './core/services/busy.service';
 
 @Component({
   selector: 'app-root',
@@ -10,41 +10,33 @@ import { SignalRService } from './features/signalr.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  title = 'Shop';
+  busy$: Observable<boolean>;
+
   constructor(
     private basketService: BasketService,
     private accountService: AccountService,
-  ) {}
+    private busyService: BusyService
+  ) {
+    this.busy$ = this.busyService.busy$;
+  }
 
   ngOnInit(): void {
-    this.loadBasket();
-    this.loadCurrentUser();
-
+    this.restoreSession();
+    this.restoreBasket();
   }
 
-  loadCurrentUser() {
-    const token = localStorage.getItem('token');
-    this.accountService.loadCurrentUser(token).subscribe(
-      () => {
-        console.log('loaded user');
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+  /** A stale or forged token is not an error worth showing; it just means signed out. */
+  private restoreSession(): void {
+    this.accountService.loadCurrentUser(localStorage.getItem('token')).subscribe({
+      error: () => undefined,
+    });
   }
 
-  loadBasket() {
+  private restoreBasket(): void {
     const basketId = localStorage.getItem('basket_id');
-    if (basketId) {
-      this.basketService.getBasket(basketId).subscribe(
-        () => {
-          console.log('initialised basket');
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
+    if (!basketId) {
+      return;
     }
+    this.basketService.getBasket(basketId).subscribe({ error: () => undefined });
   }
 }

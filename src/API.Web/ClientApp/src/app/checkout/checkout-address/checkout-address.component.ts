@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AccountService } from 'src/app/account/account.service';
 import { ToastrService } from 'ngx-toastr';
@@ -9,13 +9,10 @@ import { IAddress } from 'src/app/shared/models/address';
   templateUrl: './checkout-address.component.html',
   styleUrls: ['./checkout-address.component.scss']
 })
-export class CheckoutAddressComponent implements OnInit {
+export class CheckoutAddressComponent {
   @Input() checkoutForm: FormGroup;
 
   constructor(private accountService: AccountService, private toastr: ToastrService) { }
-
-  ngOnInit() {
-  }
 
   saveUserAddress() {
     this.accountService.updateUserAddress(this.checkoutForm.get('addressForm').value)

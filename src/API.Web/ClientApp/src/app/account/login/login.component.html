@@ -1,14 +1,20 @@
-<div class="d-flex justify-content-center mt-5">
-  <div class="col-3">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="text-center mb-4">
-        <h1 class="h3 mb-3 font-weight-normal">Login</h1>
-      </div>
+<div class="container my-5" style="max-width: 26rem">
+  <h1 class="h3 mb-4">Sign in</h1>
 
-      <app-text-input formControlName="email" [label]="'Email Address'"></app-text-input>
-      <app-text-input formControlName="password" [label]="'Password'" [type]="'password'"></app-text-input>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+    <app-text-input formControlName="email" label="Email address" type="email"
+                    autocomplete="email"></app-text-input>
+    <app-text-input formControlName="password" label="Password" type="password"
+                    autocomplete="current-password"></app-text-input>
 
-      <button [disabled]="loginForm.invalid" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-    </form>
-  </div>
+    <p class="text-danger" *ngIf="error">{{ error }}</p>
+
+    <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid || submitting">
+      {{ submitting ? 'Signing in…' : 'Sign in' }}
+    </button>
+  </form>
+
+  <p class="mt-3 mb-0">
+    No account yet? <a routerLink="/account/register">Create one</a>.
+  </p>
 </div>

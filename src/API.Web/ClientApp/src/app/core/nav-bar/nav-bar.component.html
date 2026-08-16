@@ -1,86 +1,111 @@
-<div
-  class="d-flex flex-column flex-md-row align-items-center justify-content-between px-md-4 bg-white border-bottom shadow-sm sticky">
-  <img src="/assets/images/logo_main.png" style="max-height: 70px;" alt="logo" class="logo me-5" routerLink="/">
-  <nav class="my-2 my-md-0 me-md-3 text-uppercase" style="font-size: larger;">
-    <a class="p-2" [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
-    <a class="p-2" routerLink="/shop" routerLinkActive="active">Shop</a>
-    <!-- Reads API.Admin's record of what it consumed off RabbitMQ. Unauthenticated,
-         like the endpoint behind it; see API.Admin/Controllers/OrderEventsController. -->
-    <a class="p-2" routerLink="/admin/order-events" routerLinkActive="active">Order events</a>
-    <ng-container *ngIf="(currentUser$ | async) && (currentUser$ | async).isAdmin">
-      <a class="p-2" routerLink="/test-error" routerLinkActive="active">test-error</a>
-    </ng-container>
-  </nav>
-  <div class="d-flex align-items-center">
-    <a routerLink="/basket" class="position-relative">
-      <button mat-button><i class="fa fa-shopping-cart fa-2x text-dark"></i></button>
-      <div *ngIf="(basket$ | async)" class="cart-no">{{(basket$ | async).items.length}}</div>
+<header class="navbar navbar-expand-md bg-white border-bottom shadow-sm sticky-top">
+  <div class="container-fluid px-3 px-md-4">
+    <a class="navbar-brand p-0" routerLink="/" aria-label="Owlet home">
+      <img src="assets/images/logo_main.png" alt="Owlet" style="max-height: 56px" />
     </a>
 
-    <!-- logged out -->
-    <ng-container *ngIf="(currentUser$ | async) === null">
-      <!-- <button mat-button class="me-5 "><i class="fa fa-user-o fa-2x" (click)="authenticateDialog()"></i></button> -->
-      <a routerLink="/account/login" class="btn btn-outline-secondary me-2">Login</a>
-      <a routerLink="/account/register" class="btn btn-outline-secondary me-3">Sign up</a>
-    </ng-container>
+    <button type="button" class="btn btn-outline-secondary d-md-none ms-auto me-2"
+            (click)="toggleMenu()" [attr.aria-expanded]="menuOpen" aria-controls="primary-nav"
+            aria-label="Toggle navigation">
+      <app-icon [name]="menuOpen ? 'x' : 'menu'"></app-icon>
+    </button>
 
-    <!-- user logged in -->
-    <ng-container *ngIf="(currentUser$ | async) && !(currentUser$ | async).isAdmin">
-      <div class="dropdown ms-3 me-5" dropdown>
-        <a class="dropdown-toggle" style="cursor: pointer" dropdownToggle>
-          <strong>Welcome {{(currentUser$ | async).displayName}}</strong>
+    <nav id="primary-nav" class="collapse navbar-collapse" [class.show]="menuOpen"
+         aria-label="Primary">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/" routerLinkActive="active"
+             [routerLinkActiveOptions]="{ exact: true }" (click)="closeAll()">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/shop" routerLinkActive="active"
+             (click)="closeAll()">Shop</a>
+        </li>
+        <li class="nav-item">
+          <!-- Reads API.Admin's record of what it consumed off RabbitMQ. Unauthenticated,
+               like the endpoint behind it; see API.Admin/Controllers/OrderEventsController. -->
+          <a class="nav-link" routerLink="/admin/order-events" routerLinkActive="active"
+             (click)="closeAll()">Order events</a>
+        </li>
+      </ul>
+
+      <div class="d-flex align-items-center gap-2 py-2 py-md-0">
+        <a routerLink="/basket" class="btn btn-outline-secondary position-relative"
+           (click)="closeAll()" [attr.aria-label]="'Basket, ' + itemCount(basket$ | async) + ' items'">
+          <app-icon name="cart"></app-icon>
+          <span *ngIf="itemCount(basket$ | async) as count"
+                class="badge rounded-pill bg-primary position-absolute top-0 start-100 translate-middle">
+            {{ count }}
+          </span>
         </a>
-        <div class="dropdown-menu dropdown-menu-right" style="cursor: pointer;" *dropdownMenu>
-          <a routerLink="/basket" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-shopping-cart me-3"></i> View Basket
-          </a>
-          <a routerLink="/orders" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-history me-3"></i> View Orders
-          </a>
-          <a routerLink="features/Gifts-n-Points" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-diamond me-2"></i> Gifts&Points
-          </a>
-          <a routerLink="/chat" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-weixin me-2"></i> Chat
-          </a>
-          <div class="dropdown-divider"></div>
-          <a (click)="logout()" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-sign-out me-3"></i> Logout
-          </a>
-        </div>
+
+        <ng-container *ngIf="(currentUser$ | async) as user; else signedOut">
+          <div class="position-relative">
+            <button type="button" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2"
+                    (click)="toggleAccount()" [attr.aria-expanded]="accountOpen">
+              <app-icon name="user"></app-icon>
+              <span class="d-none d-lg-inline">{{ user.displayName }}</span>
+              <app-icon name="chevron-down" [size]="14"></app-icon>
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end mt-1" [class.show]="accountOpen">
+              <li>
+                <a class="dropdown-item d-flex align-items-center gap-2" routerLink="/orders"
+                   (click)="closeAll()">
+                  <app-icon name="receipt" [size]="16"></app-icon> My orders
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item d-flex align-items-center gap-2" routerLink="/basket"
+                   (click)="closeAll()">
+                  <app-icon name="cart" [size]="16"></app-icon> My basket
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item d-flex align-items-center gap-2" routerLink="/features/chat"
+                   (click)="closeAll()">
+                  <app-icon name="send" [size]="16"></app-icon> Chat
+                </a>
+              </li>
+
+              <ng-container *ngIf="user.isAdmin">
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item d-flex align-items-center gap-2"
+                     routerLink="/admin/completed-orders" (click)="closeAll()">
+                    <app-icon name="inbox" [size]="16"></app-icon> All orders
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item d-flex align-items-center gap-2"
+                     routerLink="/admin/menu-management" (click)="closeAll()">
+                    <app-icon name="package" [size]="16"></app-icon> Products
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item d-flex align-items-center gap-2"
+                     routerLink="/test-error" (click)="closeAll()">
+                    <app-icon name="shield" [size]="16"></app-icon> API diagnostics
+                  </a>
+                </li>
+              </ng-container>
+
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <button type="button" class="dropdown-item d-flex align-items-center gap-2"
+                        (click)="logout()">
+                  <app-icon name="logout" [size]="16"></app-icon> Sign out
+                </button>
+              </li>
+            </ul>
+          </div>
+        </ng-container>
+
+        <ng-template #signedOut>
+          <a routerLink="/account/login" class="btn btn-outline-secondary" (click)="closeAll()">Sign in</a>
+          <a routerLink="/account/register" class="btn btn-primary" (click)="closeAll()">Sign up</a>
+        </ng-template>
       </div>
-
-    </ng-container>
-
-    <!-- admin logged in -->
-    <ng-container *ngIf="(currentUser$ | async) && (currentUser$ | async).isAdmin">
-      <div class="dropdown ms-3 me-5" dropdown>
-        <a class="dropdown-toggle" style="cursor: pointer" dropdownToggle>
-          <strong>Welcome {{(currentUser$ | async).displayName}}</strong>
-        </a>
-        <div class="dropdown-menu dropdown-menu-right" style="cursor: pointer;" *dropdownMenu>
-          <a routerLink="admin/completed-orders" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-file-o me-3"></i> Completed orders
-          </a>
-          <a routerLink="admin/order-events" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-exchange me-3"></i> Order events
-          </a>
-          <a routerLink="admin/menu-management" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-superpowers me-3"></i> Manage Menu
-          </a>
-          <a routerLink="admin/users" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-superpowers me-3"></i> Manage Users
-          </a>
-          <a routerLink="/chat" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-weixin me-2"></i> Chat
-          </a>
-          <div class="dropdown-divider"></div>
-          <a (click)="logout()" class="dropdown-item d-flex align-items-center py-2">
-            <i class="fa fa-sign-out me-3"></i> Logout
-          </a>
-        </div>
-      </div>
-
-    </ng-container>
+    </nav>
   </div>
-</div>
+</header>
