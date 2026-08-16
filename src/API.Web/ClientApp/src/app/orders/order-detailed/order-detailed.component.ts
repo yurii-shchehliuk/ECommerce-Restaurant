@@ -1,5 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { DatePipe } from '@angular/common';
+import { IconComponent } from '../../shared/components/icon/icon.component';
 import { IOrder } from 'src/app/shared/models/order';
 import { OrdersService } from '../orders.service';
 
@@ -9,8 +11,8 @@ import { OrderTotalsComponent } from '../../shared/components/order-totals/order
 @Component({
     selector: 'app-order-detailed',
     templateUrl: './order-detailed.component.html',
-    styleUrls: ['./order-detailed.component.scss'],
-    imports: [BasketSummaryComponent, OrderTotalsComponent]
+    styleUrls: ['./order-detailed.component.css'],
+    imports: [BasketSummaryComponent, OrderTotalsComponent, IconComponent, DatePipe, RouterLink]
 })
 export class OrderDetailedComponent implements OnInit {
   private route = inject(ActivatedRoute);

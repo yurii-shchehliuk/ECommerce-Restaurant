@@ -7,6 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { IconComponent } from '../../shared/components/icon/icon.component';
 import { of, timer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { EMAIL_PATTERN } from 'src/app/shared/validators/email';
@@ -17,8 +18,8 @@ import { TextInputComponent } from '../../shared/components/text-input/text-inpu
 @Component({
     selector: 'app-register',
     templateUrl: './register.component.html',
-    styleUrls: ['./register.component.scss'],
-    imports: [ReactiveFormsModule, TextInputComponent, RouterLink]
+    styleUrls: ['./register.component.css'],
+    imports: [ReactiveFormsModule, TextInputComponent, RouterLink, IconComponent]
 })
 export class RegisterComponent {
   private accountService = inject(AccountService);

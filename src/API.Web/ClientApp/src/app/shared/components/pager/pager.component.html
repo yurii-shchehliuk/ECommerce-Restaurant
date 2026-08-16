@@ -1,33 +1,28 @@
 @if (totalPages > 1) {
-  <nav aria-label="Product pages">
-    <ul class="pagination mb-0">
-      <li class="page-item" [class.disabled]="pageNumber() <= 1">
-        <button type="button" class="page-link" (click)="go(pageNumber() - 1)"
-          [disabled]="pageNumber() <= 1" aria-label="Previous page">
-          <app-icon name="chevron-left" [size]="16" />
-        </button>
-      </li>
+  <nav class="pager" aria-label="Menu pages">
+    <button type="button" class="pager__step" (click)="go(pageNumber() - 1)"
+      [disabled]="pageNumber() <= 1" aria-label="Previous page">
+      <app-icon name="chevron-left" [size]="15" />
+    </button>
 
+    <ul class="pager__list">
       @for (page of pages; track $index) {
-        @if (page === null) {
-          <li class="page-item disabled" aria-hidden="true">
-            <span class="page-link">&hellip;</span>
-          </li>
-        } @else {
-          <li class="page-item" [class.active]="page === pageNumber()">
-            <button type="button" class="page-link" (click)="go(page)"
+        <li>
+          @if (page === null) {
+            <span class="pager__gap" aria-hidden="true">&hellip;</span>
+          } @else {
+            <button type="button" class="pager__page figure"
+              [class.is-current]="page === pageNumber()"
               [attr.aria-current]="page === pageNumber() ? 'page' : null"
-              [attr.aria-label]="'Page ' + page">{{ page }}</button>
-          </li>
-        }
+              [attr.aria-label]="'Page ' + page" (click)="go(page)">{{ page }}</button>
+          }
+        </li>
       }
-
-      <li class="page-item" [class.disabled]="pageNumber() >= totalPages">
-        <button type="button" class="page-link" (click)="go(pageNumber() + 1)"
-          [disabled]="pageNumber() >= totalPages" aria-label="Next page">
-          <app-icon name="chevron-right" [size]="16" />
-        </button>
-      </li>
     </ul>
+
+    <button type="button" class="pager__step" (click)="go(pageNumber() + 1)"
+      [disabled]="pageNumber() >= totalPages" aria-label="Next page">
+      <app-icon name="chevron-right" [size]="15" />
+    </button>
   </nav>
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BasketService } from 'src/app/basket/basket.service';
 import { IProduct } from 'src/app/shared/models/product';
 import { ShopService } from '../shop.service';
@@ -10,8 +10,8 @@ import { CommentComponent } from '../../features/comments/comment.component';
 @Component({
     selector: 'app-product-details',
     templateUrl: './product-details.component.html',
-    styleUrls: ['./product-details.component.scss'],
-    imports: [IconComponent, CommentComponent, CurrencyPipe]
+    styleUrls: ['./product-details.component.css'],
+    imports: [IconComponent, CommentComponent, CurrencyPipe, RouterLink]
 })
 export class ProductDetailsComponent implements OnInit {
   private shopService = inject(ShopService);

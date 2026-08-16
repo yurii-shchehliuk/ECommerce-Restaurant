@@ -7,7 +7,7 @@ import { IconComponent } from '../../shared/components/icon/icon.component';
 @Component({
     selector: 'app-checkout-success',
     templateUrl: './checkout-success.component.html',
-    styleUrls: ['./checkout-success.component.scss'],
+    styleUrls: ['./checkout-success.component.css'],
     imports: [IconComponent, RouterLink]
 })
 export class CheckoutSuccessComponent {

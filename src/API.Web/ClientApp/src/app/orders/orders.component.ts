@@ -3,12 +3,12 @@ import { IOrder } from '../shared/models/order';
 import { OrdersService } from './orders.service';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { IconComponent } from '../shared/components/icon/icon.component';
 
 @Component({
     selector: 'app-orders',
     templateUrl: './orders.component.html',
-    styleUrls: ['./orders.component.scss'],
-    imports: [RouterLink, CurrencyPipe, DatePipe]
+    imports: [RouterLink, CurrencyPipe, DatePipe, IconComponent]
 })
 export class OrdersComponent implements OnInit {
   private ordersService = inject(OrdersService);

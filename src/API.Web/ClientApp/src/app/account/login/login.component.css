@@ -1,0 +1,15 @@
+.auth__submit {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.auth__alt {
+  margin: 1.25rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--color-body-muted);
+}
+
+.auth__alt a {
+  color: var(--color-moss-500);
+  font-weight: 600;
+}

@@ -1,13 +1,18 @@
 <nav aria-label="Checkout progress">
-  <ol class="nav nav-pills nav-fill mb-4">
-    @for (step of steps; track step; let i = $index) {
-      <li class="nav-item">
-        <button type="button" class="nav-link w-100"
-          [class.active]="selectedIndex === i"
-          [disabled]="i > selectedIndex"
-          [attr.aria-current]="selectedIndex === i ? 'step' : null"
-          (click)="select(i)">
-          <span class="me-2">{{ i + 1 }}</span>{{ step.label }}
+  <ol class="steps">
+    @for (step of steps; track step.label; let i = $index) {
+      <li class="step" [class.step--current]="selectedIndex === i"
+        [class.step--done]="i < selectedIndex">
+        <button type="button" class="step__btn" [disabled]="i >= selectedIndex"
+          [attr.aria-current]="selectedIndex === i ? 'step' : null" (click)="select(i)">
+          <span class="step__index" aria-hidden="true">
+            @if (i < selectedIndex) {
+              <app-icon name="check" [size]="12" />
+            } @else {
+              {{ i + 1 }}
+            }
+          </span>
+          {{ step.label }}
         </button>
       </li>
     }

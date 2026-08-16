@@ -1,6 +1,6 @@
-<div class="container my-5">
-  <div class="row g-4">
-    <div class="col-lg-8">
+<div class="shell checkout">
+  <div class="checkout__grid">
+    <div class="checkout__main">
       <app-stepper #appStepper>
         <cdk-step label="Address" [completed]="checkoutForm.controls.addressForm.valid">
           <app-checkout-address [checkoutForm]="checkoutForm" />
@@ -17,11 +17,11 @@
       </app-stepper>
     </div>
 
-    <div class="col-lg-4">
+    <aside class="checkout__side">
       @if (basketTotals$ | async; as totals) {
         <app-order-totals [shippingPrice]="totals.shipping" [subtotal]="totals.subtotal"
           [total]="totals.total" />
       }
-    </div>
+    </aside>
   </div>
 </div>

@@ -1,14 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { IOrder } from 'src/app/shared/models/order';
-import { CompletedOrdersService } from './completed-orders.service';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { IconComponent } from '../../shared/components/icon/icon.component';
+import { CompletedOrdersService } from './completed-orders.service';
 
 @Component({
     selector: 'app-completed-orders',
     templateUrl: './completed-orders.component.html',
-    styleUrls: ['./completed-orders.component.scss'],
-    imports: [RouterLink, CurrencyPipe, DatePipe]
+    imports: [RouterLink, CurrencyPipe, DatePipe, IconComponent]
 })
 export class CompletedOrdersComponent implements OnInit {
   private service = inject(CompletedOrdersService);

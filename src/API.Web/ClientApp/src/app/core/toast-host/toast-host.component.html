@@ -1,16 +1,18 @@
-<div class="toast-host" aria-live="polite" aria-atomic="true">
-  @for (toast of toasts$ | async; track trackById($index, toast)) {
-    <div class="toast-host__item"
-      [class.toast-host__item--success]="toast.kind === 'success'"
-      [class.toast-host__item--error]="toast.kind === 'error'"
-      role="status">
-      <div class="toast-host__body">
+<div class="toast-host" aria-live="polite" aria-atomic="false">
+  @for (toast of toasts(); track toast.id) {
+    <div class="toast" [class.toast--success]="toast.kind === 'success'"
+      [class.toast--error]="toast.kind === 'error'" role="status">
+      <app-icon class="toast__icon" [size]="18"
+        [name]="toast.kind === 'success' ? 'check-circle' : toast.kind === 'error' ? 'alert' : 'inbox'" />
+
+      <div class="toast__body">
         @if (toast.title) {
-          <strong class="d-block">{{ toast.title }}</strong>
+          <strong class="toast__title">{{ toast.title }}</strong>
         }
         <span>{{ toast.message }}</span>
       </div>
-      <button type="button" class="toast-host__close" (click)="dismiss(toast)"
+
+      <button type="button" class="toast__close" (click)="dismiss(toast)"
         aria-label="Dismiss notification">
         <app-icon name="x" [size]="16" />
       </button>

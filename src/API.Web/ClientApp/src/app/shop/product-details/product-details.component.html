@@ -1,40 +1,61 @@
-<div class="container my-5">
+<div class="shell detail">
   @if (loading) {
-    <p>Loading&hellip;</p>
-  }
-  @if (error) {
-    <p class="text-danger">{{ error }}</p>
-  }
-
-  @if (product; as item) {
-    <div class="row g-4">
-      <div class="col-md-6">
-        <img [src]="item.pictureUrl" [alt]="item.name" class="img-fluid rounded" />
-      </div>
-      <div class="col-md-6">
-        <h1 class="h3">{{ item.name }}</h1>
-        <p class="fs-3 mb-4">{{ item.price | currency }}</p>
-        <div class="d-flex align-items-center gap-2 mb-4">
-          <button type="button" class="btn btn-outline-secondary" (click)="decrementQuantity()"
-            [disabled]="quantity <= 1" aria-label="Decrease quantity">
-            <app-icon name="minus" [size]="16" />
-          </button>
-          <span aria-live="polite" class="px-2">{{ quantity }}</span>
-          <button type="button" class="btn btn-outline-secondary" (click)="incrementQuantity()"
-            aria-label="Increase quantity">
-            <app-icon name="plus" [size]="16" />
-          </button>
-          <button type="button" class="btn btn-primary ms-3" (click)="addItemToBasket()">
-            Add to basket
-          </button>
-        </div>
-        <h2 class="h6 text-uppercase">Description</h2>
-        <p>{{ item.description }}</p>
+    <div class="detail__grid" aria-hidden="true">
+      <div class="skeleton card"><div class="skeleton__image"></div></div>
+      <div class="skeleton__lines">
+        <span class="skeleton__line"></span>
+        <span class="skeleton__line skeleton__line--short"></span>
+        <span class="skeleton__line"></span>
       </div>
     </div>
-  }
+    <p class="sr-only" role="status">Loading this item</p>
+  } @else if (error) {
+    <div class="state state--error state--center" role="alert">
+      <app-icon name="alert" [size]="24" />
+      <div>
+        <p class="state__title">{{ error }}</p>
+        <p class="state__body">The item may no longer be on the menu.</p>
+      </div>
+      <a routerLink="/shop" class="btn btn-ghost btn-sm">Back to the menu</a>
+    </div>
+  } @else if (product; as item) {
+    <div class="detail__grid">
+      <figure class="detail__figure">
+        <img [src]="item.pictureUrl" [alt]="item.name" />
+      </figure>
 
-  @if (product) {
+      <div class="detail__buy">
+        <p class="eyebrow">{{ item.productType }} &middot; {{ item.productBrand }}</p>
+        <h1 class="detail__name">{{ item.name }}</h1>
+        <p class="detail__price figure">{{ item.price | currency }}</p>
+
+        <div class="detail__controls">
+          <div class="qty" role="group" aria-label="Quantity">
+            <button type="button" class="qty__btn" (click)="decrementQuantity()"
+              [disabled]="quantity <= 1" aria-label="Decrease quantity">
+              <app-icon name="minus" [size]="15" />
+            </button>
+            <span class="qty__value figure" aria-live="polite">{{ quantity }}</span>
+            <button type="button" class="qty__btn" (click)="incrementQuantity()"
+              aria-label="Increase quantity">
+              <app-icon name="plus" [size]="15" />
+            </button>
+          </div>
+
+          <button type="button" class="btn btn-accent detail__add" (click)="addItemToBasket()">
+            <app-icon name="cart" [size]="16" /> Add to basket
+          </button>
+        </div>
+
+        @if (item.description) {
+          <div class="detail__description prose-body">
+            <h2 class="detail__subheading">Description</h2>
+            <p>{{ item.description }}</p>
+          </div>
+        }
+      </div>
+    </div>
+
     <app-comment [productId]="productId" />
   }
 </div>

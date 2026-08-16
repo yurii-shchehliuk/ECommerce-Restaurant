@@ -1,68 +1,45 @@
 @if (rows().length) {
-  <div class="table-responsive">
-    <table class="table align-middle">
-      <caption class="visually-hidden">Line items</caption>
-      <thead>
-        <tr>
-          <th scope="col">Product</th>
-          <th scope="col" class="text-end">Price</th>
-          <th scope="col" class="text-center">Quantity</th>
-          <th scope="col" class="text-end">Total</th>
-          @if (editable()) {
-            <th scope="col"><span class="visually-hidden">Remove</span></th>
+  <ul class="lines">
+    @for (row of rows(); track row.productId) {
+      <li class="line">
+        <img class="line__image" [src]="row.pictureUrl" [alt]="row.productName" loading="lazy" />
+
+        <div class="line__main">
+          <a class="line__name" [routerLink]="['/shop', row.productId]">{{ row.productName }}</a>
+          @if (row.type) {
+            <p class="line__meta">{{ row.type }}</p>
           }
-        </tr>
-      </thead>
-      <tbody>
-        @for (row of rows(); track row.productId) {
-          <tr>
-            <th scope="row" class="fw-normal">
-              <div class="d-flex align-items-center gap-3">
-                <img [src]="row.pictureUrl" [alt]="row.productName" class="rounded"
-                  style="width: 56px; height: 56px; object-fit: cover" />
-                <div>
-                  <a [routerLink]="['/shop', row.productId]" class="fw-semibold">
-                    {{ row.productName }}
-                  </a>
-                  @if (row.type) {
-                    <span class="d-block small text-muted">{{ row.type }}</span>
-                  }
-                </div>
-              </div>
-            </th>
-            <td class="text-end">{{ row.price | currency }}</td>
-            <td class="text-center">
-              @if (editable()) {
-                <div class="d-inline-flex align-items-center gap-2">
-                  <button type="button" class="btn btn-sm btn-outline-secondary"
-                    (click)="decrementItemQuantity(row)"
-                    [attr.aria-label]="'Remove one ' + row.productName">
-                    <app-icon name="minus" [size]="14" />
-                  </button>
-                  <span>{{ row.quantity }}</span>
-                  <button type="button" class="btn btn-sm btn-outline-secondary"
-                    (click)="incrementItemQuantity(row)"
-                    [attr.aria-label]="'Add one ' + row.productName">
-                    <app-icon name="plus" [size]="14" />
-                  </button>
-                </div>
-              } @else {
-                {{ row.quantity }}
-              }
-            </td>
-            <td class="text-end">{{ row.price * row.quantity | currency }}</td>
-            @if (editable()) {
-              <td class="text-end">
-                <button type="button" class="btn btn-sm btn-outline-danger"
-                  (click)="removeBasketItem(row)"
-                  [attr.aria-label]="'Remove ' + row.productName + ' from the basket'">
-                  <app-icon name="trash" [size]="14" />
-                </button>
-              </td>
-            }
-          </tr>
+          <p class="line__unit figure">{{ row.price | currency }} each</p>
+        </div>
+
+        <div class="line__qty">
+          @if (editable()) {
+            <div class="qty" role="group"
+              [attr.aria-label]="'Quantity of ' + row.productName">
+              <button type="button" class="qty__btn" (click)="decrementItemQuantity(row)"
+                [attr.aria-label]="'Remove one ' + row.productName">
+                <app-icon name="minus" [size]="14" />
+              </button>
+              <span class="qty__value figure">{{ row.quantity }}</span>
+              <button type="button" class="qty__btn" (click)="incrementItemQuantity(row)"
+                [attr.aria-label]="'Add one ' + row.productName">
+                <app-icon name="plus" [size]="14" />
+              </button>
+            </div>
+          } @else {
+            <span class="line__count figure">&times;{{ row.quantity }}</span>
+          }
+        </div>
+
+        <p class="line__total figure">{{ row.price * row.quantity | currency }}</p>
+
+        @if (editable()) {
+          <button type="button" class="line__remove" (click)="removeBasketItem(row)"
+            [attr.aria-label]="'Remove ' + row.productName + ' from the basket'">
+            <app-icon name="trash" [size]="16" />
+          </button>
         }
-      </tbody>
-    </table>
-  </div>
+      </li>
+    }
+  </ul>
 }

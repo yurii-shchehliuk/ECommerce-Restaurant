@@ -16,7 +16,7 @@ import { RouterLink } from '@angular/router';
 @Component({
     selector: 'app-comment',
     templateUrl: './comment.component.html',
-    styleUrls: ['./comment.component.scss'],
+    styleUrls: ['./comment.component.css'],
     imports: [ReactiveFormsModule, FormsModule, RouterLink, DatePipe]
 })
 export class CommentComponent implements OnInit, OnDestroy {

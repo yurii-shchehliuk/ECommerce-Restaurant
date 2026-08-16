@@ -1,42 +1,55 @@
-<div class="container my-4">
-  <h1 class="h4">API diagnostics</h1>
-  <p class="text-muted">
-    Each button calls <code>API.Identity</code>'s <code>BuggyController</code>. The
-    response is handled by the application's HTTP error interceptor, so what you see
-    is the real pipeline rather than a mock.
-  </p>
+<div class="shell page">
+  <header class="page__head">
+    <p class="eyebrow">Machine room</p>
+    <h1 class="page__title">API diagnostics</h1>
+    <p class="page__lede">
+      Each button calls <code>API.Identity</code>'s <code>BuggyController</code> and the
+      response goes through the application's real HTTP error interceptor. What you see
+      is the pipeline itself, not a mock of it.
+    </p>
+  </header>
 
-  <h2 class="h6 text-uppercase mt-4">Status handling</h2>
-  <div class="d-flex flex-wrap gap-2">
-    @for (probe of statusProbes; track probe) {
-      <button type="button"
-        class="btn btn-outline-primary btn-sm" (click)="run(probe)"
-      [title]="probe.note">{{ probe.label }}</button>
-    }
-  </div>
+  <section class="probes">
+    <h2 class="probes__title">Status handling</h2>
+    <ul class="probes__list">
+      @for (probe of statusProbes; track probe.path) {
+        <li>
+          <button type="button" class="btn btn-ghost btn-sm" (click)="run(probe)">
+            {{ probe.label }}
+          </button>
+          <span class="probes__note">{{ probe.note }}</span>
+        </li>
+      }
+    </ul>
+  </section>
 
-  <h2 class="h6 text-uppercase mt-4">Authorisation policies</h2>
-  <div class="d-flex flex-wrap gap-2">
-    @for (probe of policyProbes; track probe) {
-      <button type="button"
-        class="btn btn-outline-secondary btn-sm" (click)="run(probe)"
-      [title]="probe.note">{{ probe.label }}</button>
-    }
-  </div>
+  <section class="probes">
+    <h2 class="probes__title">Authorisation policies</h2>
+    <ul class="probes__list">
+      @for (probe of policyProbes; track probe.path) {
+        <li>
+          <button type="button" class="btn btn-ghost btn-sm" (click)="run(probe)">
+            {{ probe.label }}
+          </button>
+          <span class="probes__note">{{ probe.note }}</span>
+        </li>
+      }
+    </ul>
+  </section>
 
-  @if (lastResult) {
-    <p class="mt-4" aria-live="polite">
-      <code>{{ lastResult.path }}</code>
-      <span class="ms-2" [class.text-success]="lastResult.ok" [class.text-danger]="!lastResult.ok">
-        {{ lastResult.status }}
+  @if (lastResult; as result) {
+    <p class="probes__result figure" aria-live="polite">
+      <span class="probes__path">{{ result.path }}</span>
+      <span class="pill" [class.pill--live]="result.ok" [class.pill--down]="!result.ok">
+        {{ result.status }}
       </span>
     </p>
   }
 
   @if (validationErrors.length) {
-    <ul class="text-danger">
-      @for (error of validationErrors; track error) {
-        <li>{{ error }}</li>
+    <ul class="probes__errors">
+      @for (message of validationErrors; track message) {
+        <li>{{ message }}</li>
       }
     </ul>
   }

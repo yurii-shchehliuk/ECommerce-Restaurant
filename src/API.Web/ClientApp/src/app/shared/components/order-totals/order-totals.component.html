@@ -1,17 +1,17 @@
-<section class="border rounded p-3 mb-3">
-  <h2 class="h6 text-uppercase mb-3">Order summary</h2>
-  <dl class="mb-0">
-    <div class="d-flex justify-content-between py-2 border-bottom">
-      <dt class="fw-normal text-muted">Subtotal</dt>
-      <dd class="mb-0">{{ subtotal() | currency }}</dd>
+<section class="totals card">
+  <h2 class="totals__heading">Order summary</h2>
+  <dl class="totals__list">
+    <div class="totals__row">
+      <dt>Subtotal</dt>
+      <dd class="figure">{{ subtotal() | currency }}</dd>
     </div>
-    <div class="d-flex justify-content-between py-2 border-bottom">
-      <dt class="fw-normal text-muted">Shipping</dt>
-      <dd class="mb-0">{{ shippingPrice() | currency }}</dd>
+    <div class="totals__row">
+      <dt>Shipping</dt>
+      <dd class="figure">{{ shippingPrice() | currency }}</dd>
     </div>
-    <div class="d-flex justify-content-between py-2">
-      <dt class="fw-semibold">Total</dt>
-      <dd class="mb-0 fw-semibold">{{ total() | currency }}</dd>
+    <div class="totals__row totals__row--sum">
+      <dt>Total</dt>
+      <dd class="figure">{{ total() | currency }}</dd>
     </div>
   </dl>
 </section>

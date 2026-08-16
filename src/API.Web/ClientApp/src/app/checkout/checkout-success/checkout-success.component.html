@@ -1,11 +1,25 @@
-<div class="container my-5 text-center">
-  <app-icon name="check-circle" [size]="64" class="text-success" />
-  <h1 class="h3 mt-3">Order confirmed</h1>
+<div class="shell success">
+  <div class="success__mark" aria-hidden="true">
+    <app-icon name="check" [size]="28" />
+  </div>
+
+  <h1 class="success__title">Order placed</h1>
+
   @if (order; as placed) {
-    <p class="text-muted">Order #{{ placed.id }} has been placed.</p>
-    <a [routerLink]="['/orders', placed.id]" class="btn btn-primary">View this order</a>
+    <p class="success__body">
+      Order <span class="figure">#{{ placed.id }}</span> is in. API.Basket has written it
+      to the database and published it to the queue.
+    </p>
+    <div class="success__actions">
+      <a [routerLink]="['/orders', placed.id]" class="btn btn-primary">View this order</a>
+      <a routerLink="/admin/order-events" class="btn btn-ghost">
+        <app-icon name="activity" [size]="16" /> Watch it arrive
+      </a>
+    </div>
   } @else {
-    <p class="text-muted">Your order has been placed.</p>
-    <a routerLink="/orders" class="btn btn-primary">View your orders</a>
+    <p class="success__body">Your order is in.</p>
+    <div class="success__actions">
+      <a routerLink="/orders" class="btn btn-primary">View your orders</a>
+    </div>
   }
 </div>

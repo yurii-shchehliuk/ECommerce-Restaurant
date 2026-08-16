@@ -1,33 +1,34 @@
-<div class="container my-5">
-  @if ((basket$ | async); as basket) {
-    @if (basket.items.length) {
-      <app-basket-summary [items]="basket.items" (increment)="incrementItemQuantity($event)"
-        (decrement)="decrementItemQuantity($event)"
-      (remove)="removeBasketItem($event)" />
-      <div class="row justify-content-end mt-4">
-        <div class="col-lg-5">
-          @if ((basketTotals$ | async); as totals) {
+<div class="shell basket">
+  @if ((basket$ | async)?.items?.length) {
+    @if (basket$ | async; as basket) {
+      <div class="basket__grid">
+        <section class="basket__items" aria-label="Basket contents">
+          <app-basket-summary [items]="basket.items" (increment)="incrementItemQuantity($event)"
+            (decrement)="decrementItemQuantity($event)" (remove)="removeBasketItem($event)" />
+        </section>
+
+        <aside class="basket__side">
+          @if (basketTotals$ | async; as totals) {
             <app-order-totals [shippingPrice]="totals.shipping" [subtotal]="totals.subtotal"
-            [total]="totals.total" />
+              [total]="totals.total" />
           }
-          <a routerLink="/checkout" class="btn btn-primary w-100">Proceed to checkout</a>
-        </div>
-      </div>
-    } @else {
-      <div class="py-5 text-center">
-        <app-icon name="cart" [size]="48" class="text-secondary" />
-        <h2 class="h4 mt-3">Your basket is empty</h2>
-        <p class="text-muted">Add something from the menu and it will show up here.</p>
-        <a routerLink="/shop" class="btn btn-primary">Browse the menu</a>
+          <a routerLink="/checkout" class="btn btn-accent basket__checkout">
+            Checkout <app-icon name="arrow-right" [size]="16" />
+          </a>
+          <p class="basket__note">
+            Shipping is chosen at checkout, and the total updates the moment you pick it.
+          </p>
+        </aside>
       </div>
     }
   } @else {
-    <div class="py-5 text-center">
-      <app-icon name="cart" [size]="48" class="text-secondary" />
-      <h2 class="h4 mt-3">Your basket is empty</h2>
-      <p class="text-muted">Add something from the menu and it will show up here.</p>
-      <a routerLink="/shop" class="btn btn-primary">Browse the menu</a>
+    <div class="state state--center">
+      <app-icon name="cart" [size]="28" />
+      <div>
+        <p class="state__title">Your basket is empty</p>
+        <p class="state__body">Pick something from the menu and it will show up here.</p>
+      </div>
+      <a routerLink="/shop" class="btn btn-accent">Browse the menu</a>
     </div>
   }
-
 </div>

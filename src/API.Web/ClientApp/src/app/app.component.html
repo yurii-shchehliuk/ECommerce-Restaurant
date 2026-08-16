@@ -1,17 +1,22 @@
+<a class="skip-link" href="#main">Skip to content</a>
+
 <app-nav-bar />
 
-<div class="app-progress" role="status" aria-live="polite">
-  @if (busy$ | async) {
-    <div class="app-progress__bar">
-      <span class="visually-hidden">Loading</span>
-    </div>
+<!-- The header's underline doubles as the request indicator: one element, two
+     jobs, and no layout shift when a request starts. -->
+<div class="wire" role="status" aria-live="polite">
+  @if (busy()) {
+    <span class="wire__pulse"></span>
+    <span class="sr-only">Loading</span>
   }
 </div>
 
 <app-section-header />
 
-<main id="main">
+<main id="main" tabindex="-1">
   <router-outlet />
 </main>
+
+<app-site-footer />
 
 <app-toast-host />

@@ -1,7 +1,53 @@
 <section class="hero">
-  <div class="container py-5">
-    <h1 class="display-5 fw-bold">Owlet</h1>
-    <p class="lead mb-4">A storefront built on four independent services.</p>
-    <a routerLink="/shop" class="btn btn-primary btn-lg">Browse the menu</a>
+  <div class="shell hero__inner">
+    <p class="eyebrow hero__eyebrow">Four services, one dinner</p>
+
+    <h1 class="hero__title">
+      Order the chicken.<br />
+      <span class="hero__title-accent">Watch the message move.</span>
+    </h1>
+
+    <p class="hero__lead">
+      Owlet is a working storefront, and a working distributed system with the lid
+      off. Place an order and the event that leaves the checkout is one you can
+      follow, hop by hop, on a page in this app.
+    </p>
+
+    <div class="hero__actions">
+      <a routerLink="/shop" class="btn btn-accent">
+        Browse the menu <app-icon name="arrow-right" [size]="16" />
+      </a>
+      <a routerLink="/admin/order-events" class="btn btn-ghost">
+        <app-icon name="activity" [size]="16" /> Watch the queue
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="path">
+  <div class="shell">
+    <div class="path__head">
+      <h2 class="path__title">What happens when you order</h2>
+      <p class="path__sub">
+        Nothing below is a diagram of an intention. Each step is a service in this
+        repository, and the last one is a page you can open.
+      </p>
+    </div>
+
+    <ol class="path__list">
+      @for (hop of hops; track hop.actor; let i = $index; let last = $last) {
+        <li class="hop">
+          <span class="hop__index figure" aria-hidden="true">{{ i + 1 }}</span>
+          <div class="hop__body">
+            <p class="hop__actor figure">{{ hop.actor }}</p>
+            <p class="hop__what">{{ hop.what }}</p>
+            <p class="hop__detail">{{ hop.detail }}</p>
+          </div>
+          @if (!last) {
+            <span class="hop__link" aria-hidden="true"></span>
+          }
+        </li>
+      }
+    </ol>
   </div>
 </section>

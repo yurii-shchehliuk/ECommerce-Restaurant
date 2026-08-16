@@ -1,46 +1,55 @@
-<div class="container my-4" style="max-width: 44rem">
-  <h1 class="h4">Chat</h1>
+<div class="shell page chat">
+  <header class="page__head page__head--split">
+    <div>
+      <h1 class="page__title">Chat</h1>
+      <p class="page__lede">
+        Messages are posted to <code>API.Identity</code> over HTTP and arrive back over
+        its SignalR hub, so every connected browser sees the same thread.
+      </p>
+    </div>
 
-  @if (status === 'connecting') {
-    <p>Connecting&hellip;</p>
-  }
-  @if (status === 'failed') {
-    <p class="text-danger">
-      Could not reach the chat hub on API.Identity.
-    </p>
-  }
+    @switch (status) {
+      @case ('connected') {
+        <span class="pill pill--live"><span class="beacon" aria-hidden="true"></span> connected</span>
+      }
+      @case ('failed') {
+        <span class="pill pill--down">
+          <app-icon name="alert" [size]="13" /> hub unreachable
+        </span>
+      }
+      @default {
+        <span class="pill">connecting…</span>
+      }
+    }
+  </header>
 
   @if (!userName) {
-    <p class="text-muted">
+    <p class="chat__hint">
       <a routerLink="/account/login">Sign in</a> to post under your own name.
     </p>
   }
 
-  @if (messages.length) {
-    <ul class="list-unstyled">
-      @for (message of messages; track message) {
-        <li class="mb-2">
-          <div class="d-flex" [class.justify-content-end]="isMine(message)">
-            <div class="border rounded p-2">
-              <strong class="d-block small">{{ message.userName || 'Anonymous' }}</strong>
-              <span>{{ message.messageBody }}</span>
-              <span class="d-block small text-muted">{{ message.createdAt | date: 'shortTime' }}</span>
-            </div>
-          </div>
-        </li>
-      }
-    </ul>
-  } @else {
-    <p class="text-muted">No messages yet.</p>
-  }
+  <div class="chat__thread" role="log" aria-live="polite" aria-label="Messages">
+    @for (message of messages; track $index) {
+      <article class="bubble" [class.bubble--mine]="isMine(message)">
+        <p class="bubble__who">{{ message.userName || 'Anonymous' }}</p>
+        <p class="bubble__text">{{ message.messageBody }}</p>
+        <p class="bubble__time figure">{{ message.createdAt | date: 'HH:mm' }}</p>
+      </article>
+    } @empty {
+      <div class="state state--center">
+        <app-icon name="send" [size]="26" />
+        <p class="state__title">No messages yet</p>
+      </div>
+    }
+  </div>
 
-  <form class="d-flex gap-2" (ngSubmit)="send()">
-    <label class="visually-hidden" for="chat-message">Message</label>
-    <input id="chat-message" class="form-control" [(ngModel)]="draft" name="draft"
-      placeholder="Type a message" autocomplete="off" />
-    <button type="submit" class="btn btn-primary" [disabled]="status !== 'connected'">
-      <app-icon name="send" [size]="16" />
-      <span class="visually-hidden">Send</span>
+  <form class="chat__compose" (ngSubmit)="send()">
+    <label class="sr-only" for="chat-message">Message</label>
+    <input id="chat-message" class="field-control" [(ngModel)]="draft" name="draft"
+      placeholder="Say something" autocomplete="off" [disabled]="status !== 'connected'" />
+    <button type="submit" class="btn btn-primary" [disabled]="status !== 'connected' || !draft.trim()">
+      <app-icon name="send" [size]="16" /> Send
     </button>
   </form>
 </div>

@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 
 /**
  * The application's whole icon set, as inline SVG.
@@ -37,7 +37,10 @@ export type IconName =
   | 'refresh'
   | 'truck'
   | 'credit-card'
-  | 'shield';
+  | 'shield'
+  | 'contrast'
+  | 'clock'
+  | 'arrow-right';
 
 const PATHS: Record<IconName, string> = {
   cart: '<circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.2l2.4 12.1a1.6 1.6 0 0 0 1.6 1.3h8.7a1.6 1.6 0 0 0 1.6-1.2L21 8H5.3"/>',
@@ -68,14 +71,17 @@ const PATHS: Record<IconName, string> = {
   truck: '<path d="M3 6h11v11H3zM14 9h4l3 3.2V17h-7"/><circle cx="7" cy="18.5" r="1.7"/><circle cx="17.5" cy="18.5" r="1.7"/>',
   'credit-card': '<rect x="2.5" y="5" width="19" height="14" rx="2.2"/><path d="M2.5 10h19M6 15h3"/>',
   shield: '<path d="M12 3 5 6v5.5c0 4.2 2.8 7.6 7 9.5 4.2-1.9 7-5.3 7-9.5V6l-7-3Z"/><path d="m9 12 2.2 2.2L15.5 10"/>',
+  contrast: '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor" stroke="none"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5.4l3.4 2"/>',
+  'arrow-right': '<path d="M4 12h15M13 6l6 6-6 6"/>',
 };
 
 @Component({
     selector: 'app-icon',
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `<svg
-    [attr.width]="size"
-    [attr.height]="size"
+    [attr.width]="size()"
+    [attr.height]="size()"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -84,24 +90,23 @@ const PATHS: Record<IconName, string> = {
     stroke-linejoin="round"
     aria-hidden="true"
     focusable="false"
-    [innerHTML]="markup"
+    [innerHTML]="markup()"
   ></svg>`,
     styles: [':host{display:inline-flex;line-height:0}']
 })
 export class IconComponent {
   private sanitizer = inject(DomSanitizer);
 
+  readonly name = input.required<IconName>();
   /** Edge length in px. Icons are square. */
-  @Input() size = 20;
-
-  markup: SafeHtml = '';
+  readonly size = input(20);
 
   /**
-   * Trusted because every value comes from the constant table above; the input is a
-   * key into it, never markup from a caller.
+   * Trusted because every value comes from the constant table above. The input is a
+   * key into that table, never markup from a caller, so nothing a caller supplies is
+   * ever parsed as HTML.
    */
-  @Input()
-  set name(value: IconName) {
-    this.markup = this.sanitizer.bypassSecurityTrustHtml(PATHS[value] ?? '');
-  }
+  readonly markup = computed(() =>
+    this.sanitizer.bypassSecurityTrustHtml(PATHS[this.name()] ?? '')
+  );
 }

@@ -3,7 +3,7 @@ import { Component, computed, input } from '@angular/core';
 @Component({
   selector: 'app-paging-header',
   templateUrl: './paging-header.component.html',
-  styleUrls: ['./paging-header.component.scss'],
+  styleUrls: ['./paging-header.component.css'],
 })
 export class PagingHeaderComponent {
   readonly pageNumber = input(1);

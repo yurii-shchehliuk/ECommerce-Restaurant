@@ -21,7 +21,7 @@ interface Probe {
 @Component({
     selector: 'app-test-error',
     templateUrl: './test-error.component.html',
-    styleUrls: ['./test-error.component.scss'],
+    styleUrls: ['./test-error.component.css'],
     imports: []
 })
 export class TestErrorComponent {

@@ -1,31 +1,30 @@
-<div class="mb-3">
-  <label class="form-label" [attr.for]="inputId">{{ label }}</label>
+<div class="field">
+  <label class="field-label" [attr.for]="inputId">{{ label() }}</label>
   <input
     #input
     [id]="inputId"
-    [type]="type"
-    class="form-control"
-    [class.is-invalid]="showError"
+    [type]="type()"
+    class="field-control"
     [attr.aria-invalid]="showError ? 'true' : null"
     [attr.aria-describedby]="showError ? inputId + '-error' : null"
-    [attr.autocomplete]="autocomplete"
+    [attr.autocomplete]="autocomplete()"
     (input)="onChange($any($event.target).value)"
     (blur)="onTouched()"
-    />
+  />
+
   @if (showError) {
-    <div class="invalid-feedback" [id]="inputId + '-error'">
+    <p class="field-error" [id]="inputId + '-error'">
       @if (control?.errors?.['required']) {
-        <span>{{ label }} is required</span>
+        {{ label() }} is required
+      } @else if (control?.errors?.['pattern']) {
+        Enter a valid email address
+      } @else if (control?.errors?.['emailExists']) {
+        That email address is already registered
+      } @else if (control?.errors?.['minlength']) {
+        {{ label() }} is too short
+      } @else {
+        Check this field
       }
-      @if (control?.errors?.['pattern']) {
-        <span>Enter a valid email address</span>
-      }
-      @if (control?.errors?.['emailExists']) {
-        <span>That email address is already registered</span>
-      }
-      @if (control?.errors?.['minlength']) {
-        <span>{{ label }} is too short</span>
-      }
-    </div>
+    </p>
   }
 </div>

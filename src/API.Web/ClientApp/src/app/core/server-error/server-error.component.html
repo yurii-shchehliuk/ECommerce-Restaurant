@@ -1,13 +1,25 @@
-<div class="container my-5">
-  <h1 class="h3">Something went wrong on the server</h1>
-  <p class="text-muted">The request reached a service and it failed while handling it.</p>
+<div class="shell page">
+  <div class="state state--error" role="alert">
+    <app-icon name="alert" [size]="24" />
+    <div>
+      <p class="state__title">A service failed while handling that request</p>
+      <p class="state__body">
+        The request reached a service and it threw. Refreshing usually clears it.
+      </p>
+    </div>
+  </div>
 
-  @if (error) {
-    <p class="text-danger">{{ error.message }}</p>
-    @if (error.details) {
-      <pre class="bg-light border rounded p-3 small"><code>{{ error.details }}</code></pre>
+  @if (error; as detail) {
+    @if (detail.message) {
+      <p class="server-error__message">{{ detail.message }}</p>
+    }
+    @if (detail.details) {
+      <details class="server-error__details">
+        <summary>Stack trace</summary>
+        <pre class="figure"><code>{{ detail.details }}</code></pre>
+      </details>
     }
   }
 
-  <a routerLink="/" class="btn btn-outline-secondary">Back to the storefront</a>
+  <a routerLink="/" class="btn btn-ghost">Back to the storefront</a>
 </div>

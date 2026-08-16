@@ -1,71 +1,99 @@
-<div class="container my-4">
-  <div class="row g-4">
-    <aside class="col-lg-3">
-      <h2 class="h6 text-uppercase">Sort</h2>
-      <label class="visually-hidden" for="sort">Sort products</label>
-      <select id="sort" class="form-select mb-4" (change)="onSortSelected($any($event.target).value)">
-        @for (option of sortOptions; track option) {
-          <option [value]="option.value"
-          [selected]="shopParams.sort === option.value">{{ option.name }}</option>
-        }
-      </select>
+<div class="shell shop">
+  <aside class="shop__filters" aria-label="Filters">
+    <div class="filters">
+      <div class="filters__group">
+        <label class="field-label" for="sort">Sort by</label>
+        <select id="sort" class="field-control" (change)="onSortSelected($any($event.target).value)">
+          @for (option of sortOptions; track option.value) {
+            <option [value]="option.value" [selected]="shopParams.sort === option.value">
+              {{ option.name }}
+            </option>
+          }
+        </select>
+      </div>
 
-      <h2 class="h6 text-uppercase">Types</h2>
-      <ul class="list-group mb-4">
-        @for (type of types; track type) {
-          <li>
-            <button type="button" class="list-group-item list-group-item-action w-100 text-start"
-              [class.active]="type.id === shopParams.typeId"
-              [attr.aria-pressed]="type.id === shopParams.typeId"
-            (click)="onTypeSelected(type.id)">{{ type.name }}</button>
+      <div class="filters__group">
+        <p class="field-label" id="type-filter-label">Category</p>
+        <ul class="chips" role="group" aria-labelledby="type-filter-label">
+          @for (type of types; track type.id) {
+            <li>
+              <button type="button" class="chip" [class.is-on]="type.id === shopParams.typeId"
+                [attr.aria-pressed]="type.id === shopParams.typeId"
+                (click)="onTypeSelected(type.id)">
+                {{ type.name }}
+              </button>
+            </li>
+          } @empty {
+            <li class="chips__empty">Categories unavailable</li>
+          }
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+  <section class="shop__results">
+    <div class="shop__bar">
+      <app-paging-header [totalCount]="totalCount" [pageSize]="shopParams.pageSize"
+        [pageNumber]="shopParams.pageNumber" />
+
+      <form class="search" (ngSubmit)="onSearch()">
+        <label class="sr-only" for="search">Search the menu</label>
+        <app-icon class="search__icon" name="search" [size]="16" />
+        <input id="search" #search type="search" class="field-control search__input"
+          placeholder="Search the menu" [value]="shopParams.search" />
+        <button type="submit" class="btn btn-primary btn-sm">Search</button>
+        @if (shopParams.search || shopParams.typeId) {
+          <button type="button" class="btn btn-quiet btn-sm" (click)="onReset()">Clear</button>
+        }
+      </form>
+    </div>
+
+    @if (loading) {
+      <ul class="grid" aria-hidden="true">
+        @for (placeholder of skeletons; track placeholder) {
+          <li class="skeleton card">
+            <div class="skeleton__image"></div>
+            <div class="skeleton__lines">
+              <span class="skeleton__line"></span>
+              <span class="skeleton__line skeleton__line--short"></span>
+            </div>
           </li>
         }
       </ul>
-    </aside>
-
-    <section class="col-lg-9">
-      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-        <app-paging-header [totalCount]="totalCount" [pageSize]="shopParams.pageSize"
-        [pageNumber]="shopParams.pageNumber" />
-
-        <form class="d-flex gap-2" (ngSubmit)="onSearch()">
-          <label class="visually-hidden" for="search">Search products</label>
-          <input id="search" #search class="form-control" type="search" placeholder="Search" />
-          <button type="submit" class="btn btn-outline-primary">Search</button>
-          <button type="button" class="btn btn-outline-secondary" (click)="onReset()">Reset</button>
-        </form>
+      <p class="sr-only" role="status">Loading the menu</p>
+    } @else if (error) {
+      <div class="state state--error" role="alert">
+        <app-icon name="alert" [size]="22" />
+        <div>
+          <p class="state__title">{{ error }}</p>
+          <p class="state__body">API.Basket did not answer. It serves the catalogue.</p>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" (click)="getProducts()">
+          <app-icon name="refresh" [size]="15" /> Try again
+        </button>
       </div>
-
-      @if (loading) {
-        <p>Loading&hellip;</p>
-      }
-      @if (error) {
-        <p class="text-danger">{{ error }}</p>
-      }
-
-      @if (!loading && !error) {
-        <div class="row g-4">
-          @for (item of products; track item) {
-            <div class="col-sm-6 col-xl-4">
-              <app-product-item [product]="item" />
-            </div>
-          }
+    } @else if (!products.length) {
+      <div class="state">
+        <app-icon name="search" [size]="22" />
+        <div>
+          <p class="state__title">Nothing matches that</p>
+          <p class="state__body">Try a different word, or clear the filters.</p>
         </div>
-      }
+        <button type="button" class="btn btn-ghost btn-sm" (click)="onReset()">
+          Clear filters
+        </button>
+      </div>
+    } @else {
+      <ul class="grid">
+        @for (item of products; track item.id) {
+          <li><app-product-item [product]="item" /></li>
+        }
+      </ul>
 
-      @if (!loading && !error && !products.length) {
-        <div class="py-5 text-center">
-          <p class="mb-2">Nothing matches that search.</p>
-          <button type="button" class="btn btn-outline-primary" (click)="onReset()">
-            Clear filters
-          </button>
-        </div>
-      }
-
-      <div class="d-flex justify-content-center mt-4">
+      <div class="shop__pager">
         <app-pager [pageSize]="shopParams.pageSize" [pageNumber]="shopParams.pageNumber"
-        [totalCount]="totalCount" (pageChanged)="onPageChanged($event)" />
+          [totalCount]="totalCount" (pageChanged)="onPageChanged($event)" />
       </div>
-    </section>
-  </div>
+    }
+  </section>
 </div>

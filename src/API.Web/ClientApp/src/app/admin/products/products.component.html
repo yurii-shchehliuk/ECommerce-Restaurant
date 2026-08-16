@@ -1,37 +1,55 @@
-<div class="container my-4">
-  <h1 class="h4 mb-3">Products</h1>
+<div class="shell page">
+  <header class="page__head">
+    <p class="eyebrow">Machine room</p>
+    <h1 class="page__title">Catalogue</h1>
+    <p class="page__lede">
+      Read from <code>API.Basket</code>, the same endpoint the storefront uses, so this
+      table and the menu can never disagree.
+    </p>
+  </header>
 
   @if (loading) {
-    <p>Loading&hellip;</p>
-  }
-  @if (error) {
-    <p class="text-danger">{{ error }}</p>
-  }
-
-  @if (!loading && !error && products.length) {
-    <table class="table align-middle">
-      <thead>
-        <tr>
-          <th scope="col">Product</th>
-          <th scope="col">Type</th>
-          <th scope="col">Brand</th>
-          <th scope="col" class="text-end">Price</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (product of products; track product) {
+    <div class="skeleton__lines card" aria-hidden="true">
+      <span class="skeleton__line"></span>
+      <span class="skeleton__line"></span>
+      <span class="skeleton__line skeleton__line--short"></span>
+    </div>
+    <p class="sr-only" role="status">Loading the catalogue</p>
+  } @else if (error) {
+    <div class="state state--error" role="alert">
+      <app-icon name="alert" [size]="22" />
+      <p class="state__title">{{ error }}</p>
+    </div>
+  } @else if (!products.length) {
+    <div class="state state--center">
+      <app-icon name="package" [size]="28" />
+      <p class="state__title">The catalogue is empty</p>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table class="data-table">
+        <caption class="sr-only">Every product in the catalogue</caption>
+        <thead>
           <tr>
-            <td>{{ product.name }}</td>
-            <td>{{ product.productType }}</td>
-            <td>{{ product.productBrand }}</td>
-            <td class="text-end">{{ product.price | currency }}</td>
+            <th scope="col">Product</th>
+            <th scope="col">Category</th>
+            <th scope="col">Brand</th>
+            <th scope="col" class="num">Price</th>
           </tr>
-        }
-      </tbody>
-    </table>
-  }
-
-  @if (!loading && !error && !products.length) {
-    <p>The catalogue is empty.</p>
+        </thead>
+        <tbody>
+          @for (product of products; track product.id) {
+            <tr>
+              <th scope="row">
+                <a [routerLink]="['/shop', product.id]">{{ product.name }}</a>
+              </th>
+              <td>{{ product.productType }}</td>
+              <td>{{ product.productBrand }}</td>
+              <td class="num figure">{{ product.price | currency }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   }
 </div>

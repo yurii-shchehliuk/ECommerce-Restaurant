@@ -1,0 +1,61 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+main {
+  flex: 1;
+}
+
+main:focus {
+  outline: none;
+}
+
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: -3rem;
+  z-index: 100;
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-control);
+  background: var(--color-moss-500);
+  color: #fff;
+  font-weight: 600;
+  transition: top 120ms ease;
+}
+
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+/* The wire. A 2px rule under the header that carries a travelling pulse while a
+   request is in flight, so the loading state costs no layout and no overlay. */
+.wire {
+  height: 2px;
+  background: var(--color-line);
+  overflow: hidden;
+}
+
+.wire__pulse {
+  display: block;
+  height: 100%;
+  width: 40%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-ember-500) 45%,
+    var(--color-ember-400),
+    transparent
+  );
+  animation: wire-travel 1100ms linear infinite;
+}
+
+@keyframes wire-travel {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(350%);
+  }
+}

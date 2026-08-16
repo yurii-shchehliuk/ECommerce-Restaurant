@@ -10,7 +10,6 @@ import { AsyncPipe } from '@angular/common';
 @Component({
     selector: 'app-checkout-review',
     templateUrl: './checkout-review.component.html',
-    styleUrls: ['./checkout-review.component.scss'],
     imports: [BasketSummaryComponent, CdkStepperPrevious, IconComponent, AsyncPipe]
 })
 export class CheckoutReviewComponent implements OnInit {

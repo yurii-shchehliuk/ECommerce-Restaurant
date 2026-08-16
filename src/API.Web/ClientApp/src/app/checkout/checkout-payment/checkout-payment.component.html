@@ -1,45 +1,51 @@
-<div class="mt-4" [formGroup]="checkoutForm()">
+<div [formGroup]="checkoutForm()">
+  <h2 class="step-heading">Payment</h2>
+
   @if (stripeUnavailable) {
-    <p class="text-danger">
-      Stripe.js did not load, so card details cannot be collected here. Orders can
-      still be placed against <code>POST /api/orders</code>.
-    </p>
+    <div class="state state--error" role="alert">
+      <app-icon name="alert" [size]="20" />
+      <div>
+        <p class="state__title">Stripe.js did not load</p>
+        <p class="state__body">
+          Card details cannot be collected here. Orders can still be placed against
+          <code>POST /api/orders</code>, which is the endpoint this step calls.
+        </p>
+      </div>
+    </div>
   }
 
-  <div class="row" formGroupName="paymentForm">
-    <div class="col-12">
-      <app-text-input label="Name on card" autocomplete="cc-name" formControlName="nameOnCard" />
-    </div>
+  <div formGroupName="paymentForm">
+    <app-text-input label="Name on card" autocomplete="cc-name" formControlName="nameOnCard" />
   </div>
 
-  <div class="row">
-    <div class="col-md-6 mb-3">
-      <label class="form-label" for="cardNumber">Card number</label>
-      <div #cardNumber id="cardNumber" class="form-control py-3"></div>
+  <div class="card-fields">
+    <div class="card-fields__number">
+      <span class="field-label" id="card-number-label">Card number</span>
+      <div #cardNumber class="field-control card-slot" aria-labelledby="card-number-label"></div>
     </div>
-    <div class="col-6 col-md-3 mb-3">
-      <label class="form-label" for="cardExpiry">Expiry</label>
-      <div #cardExpiry id="cardExpiry" class="form-control py-3"></div>
+    <div>
+      <span class="field-label" id="card-expiry-label">Expiry</span>
+      <div #cardExpiry class="field-control card-slot" aria-labelledby="card-expiry-label"></div>
     </div>
-    <div class="col-6 col-md-3 mb-3">
-      <label class="form-label" for="cardCvc">CVC</label>
-      <div #cardCvc id="cardCvc" class="form-control py-3"></div>
+    <div>
+      <span class="field-label" id="card-cvc-label">CVC</span>
+      <div #cardCvc class="field-control card-slot" aria-labelledby="card-cvc-label"></div>
     </div>
   </div>
 
   @if (cardErrors) {
-    <p class="text-danger" role="alert">{{ cardErrors }}</p>
+    <p class="field-error" role="alert">{{ cardErrors }}</p>
   }
 </div>
 
-<div class="d-flex justify-content-between gap-2 my-4">
-  <button type="button" class="btn btn-outline-secondary" cdkStepperPrevious>
+<div class="step-actions">
+  <button type="button" class="btn btn-ghost" cdkStepperPrevious>
     <app-icon name="chevron-left" [size]="16" /> Back to review
   </button>
-  <button type="button" class="btn btn-primary" [disabled]="!canSubmit" (click)="submitOrder()">
-    Submit order
-    @if (loading) {
-      <span class="spinner-border spinner-border-sm ms-2" aria-hidden="true"></span>
+  <button type="button" class="btn btn-accent" [disabled]="!canSubmit" (click)="submitOrder()">
+    {{ loading ? 'Placing the order…' : 'Place the order' }}
+    @if (!loading) {
+      <app-icon name="arrow-right" [size]="16" />
     }
   </button>
 </div>

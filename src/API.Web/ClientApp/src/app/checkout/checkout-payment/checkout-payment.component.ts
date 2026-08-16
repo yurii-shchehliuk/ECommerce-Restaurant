@@ -23,7 +23,7 @@ import { Stripe, StripeElement, StripeElementChangeEvent } from '../stripe';
 @Component({
   selector: 'app-checkout-payment',
   templateUrl: './checkout-payment.component.html',
-  styleUrls: ['./checkout-payment.component.scss'],
+  styleUrls: ['./checkout-payment.component.css'],
   imports: [ReactiveFormsModule, TextInputComponent, CdkStepperPrevious, IconComponent],
 })
 export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {

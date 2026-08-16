@@ -1,37 +1,29 @@
-<div class="mt-4" [formGroup]="checkoutForm()">
-  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-    <h2 class="h5 mb-0">Shipping address</h2>
-    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="saveUserAddress()"
+<div [formGroup]="checkoutForm()">
+  <div class="step-head">
+    <h2 class="step-heading">Where is it going?</h2>
+    <button type="button" class="btn btn-ghost btn-sm" (click)="saveUserAddress()"
       [disabled]="checkoutForm().controls.addressForm.invalid ||
                   !checkoutForm().controls.addressForm.dirty">
       Save as default
     </button>
   </div>
 
-  <div class="row" formGroupName="addressForm">
-    <div class="col-md-6">
-      <app-text-input label="First name" autocomplete="given-name" formControlName="firstName" />
-    </div>
-    <div class="col-md-6">
-      <app-text-input label="Last name" autocomplete="family-name" formControlName="lastName" />
-    </div>
-    <div class="col-12">
+  <div class="address-grid" formGroupName="addressForm">
+    <app-text-input label="First name" autocomplete="given-name" formControlName="firstName" />
+    <app-text-input label="Last name" autocomplete="family-name" formControlName="lastName" />
+    <div class="address-grid__full">
       <app-text-input label="Street" autocomplete="address-line1" formControlName="street" />
     </div>
-    <div class="col-md-6">
-      <app-text-input label="City" autocomplete="address-level2" formControlName="city" />
-    </div>
-    <div class="col-md-3">
+    <app-text-input label="City" autocomplete="address-level2" formControlName="city" />
+    <div class="address-grid__pair">
       <app-text-input label="State" autocomplete="address-level1" formControlName="state" />
-    </div>
-    <div class="col-md-3">
       <app-text-input label="Zip code" autocomplete="postal-code" formControlName="zipcode" />
     </div>
   </div>
 </div>
 
-<div class="d-flex justify-content-between gap-2 my-4">
-  <a class="btn btn-outline-secondary" routerLink="/basket">
+<div class="step-actions">
+  <a class="btn btn-ghost" routerLink="/basket">
     <app-icon name="chevron-left" [size]="16" /> Back to basket
   </a>
   <button type="button" class="btn btn-primary"

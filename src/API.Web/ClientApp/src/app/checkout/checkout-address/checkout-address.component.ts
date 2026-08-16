@@ -11,7 +11,7 @@ import { CheckoutForm } from '../checkout-form';
 @Component({
   selector: 'app-checkout-address',
   templateUrl: './checkout-address.component.html',
-  styleUrls: ['./checkout-address.component.scss'],
+  styleUrls: ['./checkout-address.component.css'],
   imports: [ReactiveFormsModule, TextInputComponent, RouterLink, IconComponent, CdkStepperNext],
 })
 export class CheckoutAddressComponent {

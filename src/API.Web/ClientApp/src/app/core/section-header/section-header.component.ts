@@ -19,7 +19,7 @@ export interface Crumb {
 @Component({
     selector: 'app-section-header',
     templateUrl: './section-header.component.html',
-    styleUrls: ['./section-header.component.scss'],
+    styleUrls: ['./section-header.component.css'],
     imports: [RouterLink]
 })
 export class SectionHeaderComponent implements OnInit, OnDestroy {

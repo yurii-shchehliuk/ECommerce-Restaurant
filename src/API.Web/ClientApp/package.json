@@ -19,7 +19,6 @@
     "@angular/platform-browser": "~20.3.28",
     "@angular/router": "~20.3.28",
     "@microsoft/signalr": "^8.0.7",
-    "bootstrap": "^5.2.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.5.0",
     "zone.js": "~0.15.1"
@@ -34,6 +33,7 @@
     "@angular/cli": "^20.3.34",
     "@angular/compiler-cli": "~20.3.28",
     "@angular/language-service": "~20.3.28",
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/jasmine": "~4.3.1",
     "@types/node": "^18.13.0",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
@@ -45,6 +45,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "^2.0.0",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5.8.3"
   }
 }

@@ -1,43 +1,62 @@
-<div class="container my-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h4 mb-0">All orders</h1>
-    <button type="button" class="btn btn-outline-secondary" (click)="exportData()"
-    [disabled]="!orders.length">Export JSON</button>
-  </div>
+<div class="shell page">
+  <header class="page__head page__head--split">
+    <div>
+      <p class="eyebrow">Machine room</p>
+      <h1 class="page__title">All orders</h1>
+      <p class="page__lede">
+        Every order <code>API.Basket</code> has written, across all buyers.
+      </p>
+    </div>
+    <button type="button" class="btn btn-ghost btn-sm" (click)="exportData()"
+      [disabled]="!orders.length">
+      <app-icon name="download" [size]="15" /> Export JSON
+    </button>
+  </header>
 
   @if (loading) {
-    <p>Loading&hellip;</p>
-  }
-  @if (error) {
-    <p class="text-danger">{{ error }}</p>
-  }
-
-  @if (!loading && !error && orders.length) {
-    <table class="table align-middle">
-      <thead>
-        <tr>
-          <th scope="col">Order</th>
-          <th scope="col">Buyer</th>
-          <th scope="col">Placed</th>
-          <th scope="col">Status</th>
-          <th scope="col" class="text-end">Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (order of orders; track order) {
+    <div class="skeleton__lines card" aria-hidden="true">
+      <span class="skeleton__line"></span>
+      <span class="skeleton__line"></span>
+      <span class="skeleton__line skeleton__line--short"></span>
+    </div>
+    <p class="sr-only" role="status">Loading orders</p>
+  } @else if (error) {
+    <div class="state state--error" role="alert">
+      <app-icon name="alert" [size]="22" />
+      <p class="state__title">{{ error }}</p>
+    </div>
+  } @else if (!orders.length) {
+    <div class="state state--center">
+      <app-icon name="inbox" [size]="28" />
+      <p class="state__title">No orders have been placed yet</p>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table class="data-table">
+        <caption class="sr-only">All orders, most recent first</caption>
+        <thead>
           <tr>
-            <td><a routerLink="/orders/{{ order.id }}">#{{ order.id }}</a></td>
-            <td>{{ order.buyerEmail }}</td>
-            <td>{{ order.orderDate | date: 'medium' }}</td>
-            <td>{{ order.status }}</td>
-            <td class="text-end">{{ order.total | currency }}</td>
+            <th scope="col">Order</th>
+            <th scope="col">Buyer</th>
+            <th scope="col">Placed</th>
+            <th scope="col">Status</th>
+            <th scope="col" class="num">Total</th>
           </tr>
-        }
-      </tbody>
-    </table>
-  }
-
-  @if (!loading && !error && !orders.length) {
-    <p>No orders have been placed yet.</p>
+        </thead>
+        <tbody>
+          @for (order of orders; track order.id) {
+            <tr>
+              <th scope="row">
+                <a class="figure" [routerLink]="['/orders', order.id]">#{{ order.id }}</a>
+              </th>
+              <td>{{ order.buyerEmail }}</td>
+              <td>{{ order.orderDate | date: 'd MMM y, HH:mm' }}</td>
+              <td><span class="pill">{{ order.status }}</span></td>
+              <td class="num figure">{{ order.total | currency }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   }
 </div>

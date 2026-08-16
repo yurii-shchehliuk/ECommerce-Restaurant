@@ -11,7 +11,7 @@ import { IconComponent } from '../shared/components/icon/icon.component';
 @Component({
     selector: 'app-basket',
     templateUrl: './basket.component.html',
-    styleUrls: ['./basket.component.scss'],
+    styleUrls: ['./basket.component.css'],
     imports: [BasketSummaryComponent, OrderTotalsComponent, RouterLink, IconComponent, AsyncPipe]
 })
 export class BasketComponent {

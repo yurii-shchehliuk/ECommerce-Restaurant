@@ -10,7 +10,7 @@ import { IconComponent } from '../../shared/components/icon/icon.component';
 @Component({
     selector: 'app-chat',
     templateUrl: './chat.component.html',
-    styleUrls: ['./chat.component.scss'],
+    styleUrls: ['./chat.component.css'],
     imports: [RouterLink, ReactiveFormsModule, FormsModule, IconComponent, DatePipe]
 })
 export class ChatComponent implements OnInit, OnDestroy {

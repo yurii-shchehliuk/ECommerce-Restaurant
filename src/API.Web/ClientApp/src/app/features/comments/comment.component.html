@@ -1,28 +1,30 @@
-<section class="mt-5">
-  <h2 class="h5 mb-3">Comments</h2>
+<section class="comments">
+  <h2 class="step-heading">Comments</h2>
 
   @if (userName) {
-    <form class="d-flex gap-2 mb-3" (ngSubmit)="send()">
-      <label class="visually-hidden" for="comment-body">Add a comment</label>
-      <input id="comment-body" class="form-control" [(ngModel)]="draft" name="draft"
+    <form class="comments__compose" (ngSubmit)="send()">
+      <label class="sr-only" for="comment-body">Add a comment</label>
+      <input id="comment-body" class="field-control" [(ngModel)]="draft" name="draft"
         placeholder="Add a comment" autocomplete="off" />
       <button type="submit" class="btn btn-primary" [disabled]="!draft.trim()">Post</button>
     </form>
   } @else {
-    <p class="text-muted"><a routerLink="/account/login">Sign in</a> to leave a comment.</p>
+    <p class="comments__hint">
+      <a routerLink="/account/login">Sign in</a> to leave a comment.
+    </p>
   }
 
-  @if (comments.length) {
-    <ul class="list-unstyled">
-      @for (comment of comments; track comment) {
-        <li class="border-top py-3">
+  <ul class="comments__list">
+    @for (comment of comments; track $index) {
+      <li class="comment">
+        <p class="comment__head">
           <strong>{{ comment.userName }}</strong>
-          <span class="text-muted small ms-2">{{ comment.createdAt | date: 'mediumDate' }}</span>
-          <p class="mb-0">{{ comment.messageBody }}</p>
-        </li>
-      }
-    </ul>
-  } @else {
-    <p class="text-muted mb-0">No comments yet.</p>
-  }
+          <span class="comment__date figure">{{ comment.createdAt | date: 'd MMM y' }}</span>
+        </p>
+        <p class="comment__body">{{ comment.messageBody }}</p>
+      </li>
+    } @empty {
+      <li class="comments__empty">No comments yet. Be the first.</li>
+    }
+  </ul>
 </section>

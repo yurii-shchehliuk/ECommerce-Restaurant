@@ -1,30 +1,34 @@
-<div class="mt-4" [formGroup]="checkoutForm()">
-  <h2 class="h5 mb-3">Choose a delivery method</h2>
+<div [formGroup]="checkoutForm()">
+  <h2 class="step-heading">How should it get there?</h2>
 
   @if (error) {
-    <p class="text-danger">{{ error }}</p>
+    <div class="state state--error" role="alert">
+      <app-icon name="alert" [size]="20" />
+      <p class="state__title">{{ error }}</p>
+    </div>
   }
 
-  <fieldset formGroupName="deliveryForm" class="row g-3">
-    <legend class="visually-hidden">Delivery method</legend>
+  <fieldset class="delivery" formGroupName="deliveryForm">
+    <legend class="sr-only">Delivery method</legend>
     @for (method of deliveryMethods; track method.id) {
-      <div class="col-md-6">
-        <div class="form-check border rounded p-3 ps-5 h-100">
-          <input class="form-check-input" type="radio" [id]="'delivery-' + method.id"
-            [value]="method.id.toString()" formControlName="deliveryMethod"
-            (change)="setShippingPrice(method)" />
-          <label class="form-check-label" [for]="'delivery-' + method.id">
-            <strong>{{ method.shortName }} &mdash; {{ method.price | currency }}</strong>
-            <span class="d-block text-muted small">{{ method.description }}</span>
-          </label>
-        </div>
-      </div>
+      <label class="option" [for]="'delivery-' + method.id">
+        <input class="option__input" type="radio" [id]="'delivery-' + method.id"
+          [value]="method.id.toString()" formControlName="deliveryMethod"
+          (change)="setShippingPrice(method)" />
+        <span class="option__body">
+          <span class="option__row">
+            <span class="option__name">{{ method.shortName }}</span>
+            <span class="option__price figure">{{ method.price | currency }}</span>
+          </span>
+          <span class="option__detail">{{ method.description }}</span>
+        </span>
+      </label>
     }
   </fieldset>
 </div>
 
-<div class="d-flex justify-content-between gap-2 my-4">
-  <button type="button" class="btn btn-outline-secondary" cdkStepperPrevious>
+<div class="step-actions">
+  <button type="button" class="btn btn-ghost" cdkStepperPrevious>
     <app-icon name="chevron-left" [size]="16" /> Back to address
   </button>
   <button type="button" class="btn btn-primary"

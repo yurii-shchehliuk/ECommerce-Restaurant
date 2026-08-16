@@ -1,38 +1,53 @@
-<div class="container my-5">
+<div class="shell page">
   @if (loading) {
-    <p>Loading&hellip;</p>
-  }
-  @if (error) {
-    <p class="text-danger">{{ error }}</p>
-  }
-
-  @if (!loading && !error && orders.length) {
-    <table class="table align-middle">
-      <thead>
-        <tr>
-          <th scope="col">Order</th>
-          <th scope="col">Placed</th>
-          <th scope="col">Status</th>
-          <th scope="col" class="text-end">Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (order of orders; track order) {
+    <div class="skeleton__lines card" aria-hidden="true">
+      <span class="skeleton__line"></span>
+      <span class="skeleton__line"></span>
+      <span class="skeleton__line skeleton__line--short"></span>
+    </div>
+    <p class="sr-only" role="status">Loading your orders</p>
+  } @else if (error) {
+    <div class="state state--error" role="alert">
+      <app-icon name="alert" [size]="22" />
+      <div>
+        <p class="state__title">{{ error }}</p>
+        <p class="state__body">API.Basket owns the order history and did not answer.</p>
+      </div>
+    </div>
+  } @else if (!orders.length) {
+    <div class="state state--center">
+      <app-icon name="receipt" [size]="28" />
+      <div>
+        <p class="state__title">No orders yet</p>
+        <p class="state__body">When you place one it will be listed here.</p>
+      </div>
+      <a routerLink="/shop" class="btn btn-accent">Browse the menu</a>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table class="data-table">
+        <caption class="sr-only">Your orders, most recent first</caption>
+        <thead>
           <tr>
-            <td><a routerLink="/orders/{{ order.id }}">#{{ order.id }}</a></td>
-            <td>{{ order.orderDate | date: 'medium' }}</td>
-            <td>{{ order.status }}</td>
-            <td class="text-end">{{ order.total | currency }}</td>
+            <th scope="col">Order</th>
+            <th scope="col">Placed</th>
+            <th scope="col">Status</th>
+            <th scope="col" class="num">Total</th>
           </tr>
-        }
-      </tbody>
-    </table>
-  }
-
-  @if (!loading && !error && !orders.length) {
-    <div>
-      <p>You have not placed an order yet.</p>
-      <a routerLink="/shop" class="btn btn-primary">Browse the menu</a>
+        </thead>
+        <tbody>
+          @for (order of orders; track order.id) {
+            <tr>
+              <th scope="row">
+                <a class="figure" [routerLink]="['/orders', order.id]">#{{ order.id }}</a>
+              </th>
+              <td>{{ order.orderDate | date: 'd MMM y, HH:mm' }}</td>
+              <td><span class="pill">{{ order.status }}</span></td>
+              <td class="num figure">{{ order.total | currency }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>
   }
 </div>

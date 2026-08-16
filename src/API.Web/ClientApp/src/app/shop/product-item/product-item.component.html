@@ -1,16 +1,20 @@
-<article class="card h-100">
-  <a [routerLink]="['/shop', product().id]" class="text-decoration-none text-reset">
-    <img [src]="product().pictureUrl" [alt]="product().name" class="card-img-top" />
-    <div class="card-body">
-      <h3 class="h6 mb-1">{{ product().name }}</h3>
-      <p class="mb-0">{{ product().price | currency }}</p>
+<article class="product">
+  <a class="product__link" [routerLink]="['/shop', product().id]">
+    <div class="product__frame">
+      <img class="product__image" [src]="product().pictureUrl" [alt]="product().name"
+        loading="lazy" decoding="async" />
+    </div>
+    <div class="product__body">
+      <p class="product__type">{{ product().productType }}</p>
+      <h3 class="product__name">{{ product().name }}</h3>
     </div>
   </a>
-  <div class="card-footer bg-transparent border-0">
-    <button type="button"
-      class="btn btn-outline-primary w-100 d-inline-flex align-items-center justify-content-center gap-2"
-      (click)="addItemToBasket()">
-      <app-icon name="cart" [size]="16" /> Add to basket
+
+  <div class="product__foot">
+    <p class="product__price figure">{{ product().price | currency }}</p>
+    <button type="button" class="btn btn-accent btn-sm" (click)="addItemToBasket()"
+      [attr.aria-label]="'Add ' + product().name + ' to basket'">
+      <app-icon name="plus" [size]="15" /> Add
     </button>
   </div>
 </article>

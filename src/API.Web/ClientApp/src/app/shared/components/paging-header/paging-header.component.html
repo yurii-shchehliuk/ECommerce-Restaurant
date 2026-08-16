@@ -1,7 +1,8 @@
-<p class="mb-0 text-muted" aria-live="polite">
+<p class="count" aria-live="polite">
   @if (totalCount() > 0) {
-    Showing <strong>{{ from() }}&ndash;{{ to() }}</strong> of <strong>{{ totalCount() }}</strong>
+    <span class="figure">{{ from() }}&ndash;{{ to() }}</span> of
+    <span class="figure">{{ totalCount() }}</span> items
   } @else {
-    No results
+    No items
   }
 </p>

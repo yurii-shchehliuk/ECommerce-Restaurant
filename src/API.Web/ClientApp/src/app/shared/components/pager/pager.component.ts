@@ -13,7 +13,7 @@ import { IconComponent } from '../icon/icon.component';
 @Component({
     selector: 'app-pager',
     templateUrl: './pager.component.html',
-    styleUrls: ['./pager.component.scss'],
+    styleUrls: ['./pager.component.css'],
     imports: [IconComponent]
 })
 export class PagerComponent {

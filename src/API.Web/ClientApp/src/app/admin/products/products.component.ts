@@ -1,13 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { IProduct } from 'src/app/shared/models/product';
-import { AdminProductsService } from './products.service';
 import { CurrencyPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { IconComponent } from '../../shared/components/icon/icon.component';
+import { AdminProductsService } from './products.service';
 
 @Component({
     selector: 'app-admin-products',
     templateUrl: './products.component.html',
-    styleUrls: ['./products.component.scss'],
-    imports: [CurrencyPipe]
+    imports: [CurrencyPipe, RouterLink, IconComponent]
 })
 export class ProductsComponent implements OnInit {
   private service = inject(AdminProductsService);

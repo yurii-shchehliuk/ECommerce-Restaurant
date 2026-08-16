@@ -16,7 +16,7 @@ import { CheckoutForm, createCheckoutForm } from './checkout-form';
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.component.html',
-  styleUrls: ['./checkout.component.scss'],
+  styleUrls: ['./checkout.component.css'],
   imports: [
     StepperComponent,
     CdkStep,

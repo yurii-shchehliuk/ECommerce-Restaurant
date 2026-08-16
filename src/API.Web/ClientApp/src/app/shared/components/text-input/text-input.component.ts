@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject, input } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, NgControl } from '@angular/forms';
 
 
@@ -14,7 +14,6 @@ let nextId = 0;
 @Component({
     selector: 'app-text-input',
     templateUrl: './text-input.component.html',
-    styleUrls: ['./text-input.component.scss'],
     imports: []
 })
 export class TextInputComponent implements OnInit, ControlValueAccessor {
@@ -22,9 +21,9 @@ export class TextInputComponent implements OnInit, ControlValueAccessor {
 
   @ViewChild('input', { static: true }) input!: ElementRef<HTMLInputElement>;
 
-  @Input() type = 'text';
-  @Input() label = '';
-  @Input() autocomplete: string | null = null;
+  readonly type = input('text');
+  readonly label = input('');
+  readonly autocomplete = input<string | null>(null);
 
   readonly inputId = `text-input-${nextId++}`;
 

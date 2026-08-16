@@ -1,108 +1,126 @@
-<header class="navbar navbar-expand-md bg-white border-bottom shadow-sm sticky-top">
-  <div class="container-fluid px-3 px-md-4">
-    <a class="navbar-brand p-0" routerLink="/" aria-label="Owlet home">
-      <img src="assets/images/logo_main.png" alt="Owlet" style="max-height: 56px" />
+<header class="site-header">
+  <div class="shell site-header__inner">
+    <a routerLink="/" class="brand" (click)="closeAll()" aria-label="Owlet, home">
+      <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <rect x="1" y="3" width="30" height="26" rx="11" fill="currentColor" />
+        <circle cx="11" cy="14" r="4.6" class="brand__eye" />
+        <circle cx="21" cy="14" r="4.6" class="brand__eye" />
+        <circle cx="11" cy="14" r="1.9" class="brand__pupil" />
+        <circle cx="21" cy="14" r="1.9" class="brand__pupil" />
+        <path d="M16 19.4 18.2 23h-4.4Z" class="brand__beak" />
+      </svg>
+      <span class="brand__word">owlet</span>
     </a>
 
-    <button type="button" class="btn btn-outline-secondary d-md-none ms-auto me-2"
-      (click)="toggleMenu()" [attr.aria-expanded]="menuOpen" aria-controls="primary-nav"
-      aria-label="Toggle navigation">
-      <app-icon [name]="menuOpen ? 'x' : 'menu'" />
+    <button type="button" class="btn btn-quiet site-header__burger" (click)="toggleMenu()"
+      [attr.aria-expanded]="menuOpen()" aria-controls="primary-nav"
+      [attr.aria-label]="menuOpen() ? 'Close menu' : 'Open menu'">
+      <app-icon [name]="menuOpen() ? 'x' : 'menu'" />
     </button>
 
-    <nav id="primary-nav" class="collapse navbar-collapse" [class.show]="menuOpen"
+    <nav id="primary-nav" class="site-header__nav" [class.is-open]="menuOpen()"
       aria-label="Primary">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/" routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }" (click)="closeAll()">Home</a>
+      <ul class="site-nav">
+        <li>
+          <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }"
+            (click)="closeAll()">Home</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/shop" routerLinkActive="active"
-          (click)="closeAll()">Shop</a>
+        <li>
+          <a routerLink="/shop" routerLinkActive="is-active" (click)="closeAll()">Menu</a>
         </li>
-        <li class="nav-item">
+        <li>
           <!-- Reads API.Admin's record of what it consumed off RabbitMQ. Unauthenticated,
-          like the endpoint behind it; see API.Admin/Controllers/OrderEventsController. -->
-          <a class="nav-link" routerLink="/admin/order-events" routerLinkActive="active"
-          (click)="closeAll()">Order events</a>
+               like the endpoint behind it; see API.Admin/Controllers/OrderEventsController. -->
+          <a routerLink="/admin/order-events" routerLinkActive="is-active" (click)="closeAll()">
+            Order events
+          </a>
         </li>
       </ul>
 
-      <div class="d-flex align-items-center gap-2 py-2 py-md-0">
-        <a routerLink="/basket" class="btn btn-outline-secondary position-relative"
-          (click)="closeAll()" [attr.aria-label]="'Basket, ' + itemCount(basket$ | async) + ' items'">
-          <app-icon name="cart" />
-          @if (itemCount(basket$ | async); as count) {
-            <span
-              class="badge rounded-pill bg-primary position-absolute top-0 start-100 translate-middle">
-              {{ count }}
-            </span>
+      <div class="site-header__actions">
+        <button type="button" class="btn btn-quiet" (click)="cycleTheme()"
+          [attr.aria-label]="'Theme: ' + themePreference() + '. Switch theme.'">
+          <app-icon [name]="themeIcon()" [size]="18" />
+        </button>
+
+        <a routerLink="/basket" class="btn btn-quiet basket-link" (click)="closeAll()"
+          [attr.aria-label]="itemCount() === 1 ? 'Basket, 1 item' : 'Basket, ' + itemCount() + ' items'">
+          <app-icon name="cart" [size]="18" />
+          @if (itemCount()) {
+            <span class="basket-link__count figure">{{ itemCount() }}</span>
           }
         </a>
 
-        @if ((currentUser$ | async); as user) {
-          <div class="position-relative">
-            <button type="button" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2"
-              (click)="toggleAccount()" [attr.aria-expanded]="accountOpen">
-              <app-icon name="user" />
-              <span class="d-none d-lg-inline">{{ user.displayName }}</span>
-              <app-icon name="chevron-down" [size]="14" />
+        @if (user(); as signedIn) {
+          <div class="account">
+            <button type="button" class="btn btn-ghost btn-sm account__trigger"
+              (click)="toggleAccount()" [attr.aria-expanded]="accountOpen()"
+              aria-controls="account-menu">
+              <app-icon name="user" [size]="16" />
+              <span class="account__name">{{ signedIn.displayName }}</span>
+              <app-icon name="chevron-down" [size]="13" />
             </button>
-            <ul class="dropdown-menu dropdown-menu-end mt-1" [class.show]="accountOpen">
-              <li>
-                <a class="dropdown-item d-flex align-items-center gap-2" routerLink="/orders"
-                  (click)="closeAll()">
-                  <app-icon name="receipt" [size]="16" /> My orders
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item d-flex align-items-center gap-2" routerLink="/basket"
-                  (click)="closeAll()">
-                  <app-icon name="cart" [size]="16" /> My basket
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item d-flex align-items-center gap-2" routerLink="/features/chat"
-                  (click)="closeAll()">
-                  <app-icon name="send" [size]="16" /> Chat
-                </a>
-              </li>
-              @if (user.isAdmin) {
-                <li><hr class="dropdown-divider" /></li>
+
+            @if (accountOpen()) {
+              <ul id="account-menu" class="account__menu card">
                 <li>
-                  <a class="dropdown-item d-flex align-items-center gap-2"
-                    routerLink="/admin/completed-orders" (click)="closeAll()">
-                    <app-icon name="inbox" [size]="16" /> All orders
+                  <a routerLink="/orders" (click)="closeAll()">
+                    <app-icon name="receipt" [size]="16" /> Your orders
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item d-flex align-items-center gap-2"
-                    routerLink="/admin/menu-management" (click)="closeAll()">
-                    <app-icon name="package" [size]="16" /> Products
+                  <a routerLink="/basket" (click)="closeAll()">
+                    <app-icon name="cart" [size]="16" /> Your basket
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item d-flex align-items-center gap-2"
-                    routerLink="/test-error" (click)="closeAll()">
-                    <app-icon name="shield" [size]="16" /> API diagnostics
+                  <a routerLink="/features/chat" (click)="closeAll()">
+                    <app-icon name="send" [size]="16" /> Chat
                   </a>
                 </li>
-              }
-              <li><hr class="dropdown-divider" /></li>
-              <li>
-                <button type="button" class="dropdown-item d-flex align-items-center gap-2"
-                  (click)="logout()">
-                  <app-icon name="logout" [size]="16" /> Sign out
-                </button>
-              </li>
-            </ul>
+
+                @if (signedIn.isAdmin) {
+                  <li class="account__section">
+                    <span class="eyebrow">Machine room</span>
+                  </li>
+                  <li>
+                    <a routerLink="/admin/order-events" (click)="closeAll()">
+                      <app-icon name="activity" [size]="16" /> Order events
+                    </a>
+                  </li>
+                  <li>
+                    <a routerLink="/admin/completed-orders" (click)="closeAll()">
+                      <app-icon name="inbox" [size]="16" /> All orders
+                    </a>
+                  </li>
+                  <li>
+                    <a routerLink="/admin/menu-management" (click)="closeAll()">
+                      <app-icon name="package" [size]="16" /> Catalogue
+                    </a>
+                  </li>
+                  <li>
+                    <a routerLink="/test-error" (click)="closeAll()">
+                      <app-icon name="shield" [size]="16" /> API diagnostics
+                    </a>
+                  </li>
+                }
+
+                <li class="account__section">
+                  <button type="button" (click)="signOut()">
+                    <app-icon name="logout" [size]="16" /> Sign out
+                  </button>
+                </li>
+              </ul>
+            }
           </div>
         } @else {
-          <a routerLink="/account/login" class="btn btn-outline-secondary" (click)="closeAll()">Sign in</a>
-          <a routerLink="/account/register" class="btn btn-primary" (click)="closeAll()">Sign up</a>
+          <a routerLink="/account/login" class="btn btn-ghost btn-sm" (click)="closeAll()">
+            Sign in
+          </a>
+          <a routerLink="/account/register" class="btn btn-primary btn-sm" (click)="closeAll()">
+            Sign up
+          </a>
         }
-
       </div>
     </nav>
   </div>

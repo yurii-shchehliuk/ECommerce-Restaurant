@@ -8,7 +8,7 @@ import { CurrencyPipe } from '@angular/common';
 @Component({
     selector: 'app-product-item',
     templateUrl: './product-item.component.html',
-    styleUrls: ['./product-item.component.scss'],
+    styleUrls: ['./product-item.component.css'],
     imports: [RouterLink, IconComponent, CurrencyPipe]
 })
 export class ProductItemComponent {

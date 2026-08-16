@@ -1,14 +1,31 @@
-<div class="mt-4">
-    @if ((basket$ | async); as basket) {
-      <app-basket-summary [items]="basket.items" [editable]="false" />
-    }
+<div>
+  <h2 class="step-heading">Check the order</h2>
+
+  @if (basket$ | async; as basket) {
+    <app-basket-summary [items]="basket.items" [editable]="false" />
+  }
+
+  @if (error) {
+    <div class="state state--error" role="alert">
+      <app-icon name="alert" [size]="20" />
+      <div>
+        <p class="state__title">{{ error }}</p>
+        <p class="state__body">
+          The payment step needs a Stripe secret key on API.Basket. Orders can still be
+          placed against the API the wizard calls.
+        </p>
+      </div>
+    </div>
+  }
 </div>
 
-<div class="float-none d-flex justify-content-between flex-column flex-lg-row mb-5">
-    <button class="btn btn-outline-primary" cdkStepperPrevious>
-        <app-icon name="chevron-left" [size]="16" /> Back to delivery
-    </button>
-    <button class="btn btn-primary" (click)="createPaymentIntent()" >
-        Go to payment <app-icon name="chevron-right" [size]="16" />
-    </button>
+<div class="step-actions">
+  <button type="button" class="btn btn-ghost" cdkStepperPrevious>
+    <app-icon name="chevron-left" [size]="16" /> Back to delivery
+  </button>
+  <button type="button" class="btn btn-primary" (click)="createPaymentIntent()"
+    [disabled]="creatingIntent">
+    {{ creatingIntent ? 'Preparing payment…' : 'Go to payment' }}
+    <app-icon name="chevron-right" [size]="16" />
+  </button>
 </div>

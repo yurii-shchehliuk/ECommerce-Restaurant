@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { IconComponent } from '../../shared/components/icon/icon.component';
 import { EMAIL_PATTERN } from 'src/app/shared/validators/email';
 import { AccountService } from '../account.service';
 import { TextInputComponent } from '../../shared/components/text-input/text-input.component';
@@ -9,8 +10,8 @@ import { TextInputComponent } from '../../shared/components/text-input/text-inpu
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss'],
-    imports: [ReactiveFormsModule, TextInputComponent, RouterLink]
+    styleUrls: ['./login.component.css'],
+    imports: [ReactiveFormsModule, TextInputComponent, RouterLink, IconComponent]
 })
 export class LoginComponent implements OnInit {
   private accountService = inject(AccountService);

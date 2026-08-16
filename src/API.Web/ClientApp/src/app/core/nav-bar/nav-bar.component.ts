@@ -1,53 +1,57 @@
-import { Component, ElementRef, HostListener, OnInit, inject } from '@angular/core';
-import { Observable } from 'rxjs';
-import { BasketService } from 'src/app/basket/basket.service';
-import { IBasket } from 'src/app/shared/models/basket';
-import { IUser } from 'src/app/shared/models/user';
-import { AccountService } from 'src/app/account/account.service';
+import { Component, ElementRef, HostListener, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AccountService } from 'src/app/account/account.service';
+import { BasketService } from 'src/app/basket/basket.service';
 import { IconComponent } from '../../shared/components/icon/icon.component';
-import { AsyncPipe } from '@angular/common';
+import { ThemeService } from '../services/theme.service';
 
 @Component({
-    selector: 'app-nav-bar',
-    templateUrl: './nav-bar.component.html',
-    styleUrls: ['./nav-bar.component.scss'],
-    imports: [RouterLink, IconComponent, RouterLinkActive, AsyncPipe]
+  selector: 'app-nav-bar',
+  templateUrl: './nav-bar.component.html',
+  styleUrls: ['./nav-bar.component.css'],
+  imports: [RouterLink, RouterLinkActive, IconComponent],
 })
-export class NavBarComponent implements OnInit {
-  private basketService = inject(BasketService);
-  private accountService = inject(AccountService);
+export class NavBarComponent {
   private host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private accountService = inject(AccountService);
+  private theme = inject(ThemeService);
 
-  basket$!: Observable<IBasket | null>;
-  currentUser$!: Observable<IUser | null>;
+  readonly basket = toSignal(inject(BasketService).basket$, { initialValue: null });
+  readonly user = toSignal(this.accountService.currentUser$, { initialValue: null });
 
-  menuOpen = false;
-  accountOpen = false;
+  readonly itemCount = computed(
+    () => this.basket()?.items.reduce((total, item) => total + item.quantity, 0) ?? 0
+  );
 
-  ngOnInit(): void {
-    this.basket$ = this.basketService.basket$;
-    this.currentUser$ = this.accountService.currentUser$;
-  }
+  readonly themePreference = this.theme.preference;
+  readonly themeIcon = computed(() => {
+    const preference = this.themePreference();
+    return preference === 'dark' ? 'moon' : preference === 'light' ? 'sun' : 'contrast';
+  });
 
-  itemCount(basket: IBasket | null): number {
-    return basket ? basket.items.reduce((sum, item) => sum + item.quantity, 0) : 0;
+  readonly menuOpen = signal(false);
+  readonly accountOpen = signal(false);
+
+  toggleMenu(): void {
+    this.menuOpen.update((open) => !open);
+    this.accountOpen.set(false);
   }
 
   toggleAccount(): void {
-    this.accountOpen = !this.accountOpen;
-  }
-
-  toggleMenu(): void {
-    this.menuOpen = !this.menuOpen;
+    this.accountOpen.update((open) => !open);
   }
 
   closeAll(): void {
-    this.accountOpen = false;
-    this.menuOpen = false;
+    this.menuOpen.set(false);
+    this.accountOpen.set(false);
   }
 
-  logout(): void {
+  cycleTheme(): void {
+    this.theme.cycle();
+  }
+
+  signOut(): void {
     this.closeAll();
     this.accountService.logout();
   }
