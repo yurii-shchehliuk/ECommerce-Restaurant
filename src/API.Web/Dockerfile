@@ -5,7 +5,7 @@
 #
 # Build context is the repository root.
 
-FROM node:18-alpine AS clientbuild
+FROM node:24-alpine AS clientbuild
 WORKDIR /client
 # package.json and the lock file first, so `npm ci` is cached independently of source.
 COPY ["src/API.Web/ClientApp/package.json", "src/API.Web/ClientApp/package-lock.json", "./"]
@@ -34,7 +34,8 @@ RUN dotnet publish "API.Web.csproj" -c Release -o /app/publish /p:UseAppHost=fal
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-# AddSpaStaticFiles(RootPath = "wwwroot/dist") resolves relative to the content root.
+# AddSpaStaticFiles(RootPath = "wwwroot/dist") resolves relative to the content root,
+# which is why angular.json pins outputPath.browser to "" and keeps dist/ flat.
 COPY --from=clientbuild /client/dist ./wwwroot/dist
 EXPOSE 80
 ENTRYPOINT ["dotnet", "API.Web.dll"]
