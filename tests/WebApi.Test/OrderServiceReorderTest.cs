@@ -12,15 +12,16 @@ using Xunit;
 namespace WebApi.Test
 {
     /// <summary>
-    /// Regression tests for a defect found by placing two orders against the running
-    /// stack rather than by reading the code.
+    /// What <c>OrderService</c> does with a basket that carries no payment intent,
+    /// which is every basket when Stripe is not configured.
     ///
     /// <c>OrderByPaymentIntentIdSpecification</c> compares <c>PaymentIntentId</c> for
-    /// equality. With a null intent that matches every order that also has a null
-    /// intent, so the second checkout of the day found the *first* order ever placed,
-    /// deleted it, and called <c>CreateOrUpdatePaymentIntent(null)</c> - which throws
-    /// when Stripe is not configured. The visible symptom was that the first order
-    /// after a fresh start always worked and every later one returned 500.
+    /// equality, and a null intent matches every other order whose intent is also null.
+    /// So the service skips the existing-order lookup entirely when there is no intent,
+    /// rather than finding an unrelated order, deleting it, and calling
+    /// <c>CreateOrUpdatePaymentIntent(null)</c>, which throws without Stripe. These
+    /// tests hold both branches: no lookup and no Stripe call without an intent, both
+    /// with one.
     /// </summary>
     public class OrderServiceReorderTest
     {

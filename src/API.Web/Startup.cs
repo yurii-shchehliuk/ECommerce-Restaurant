@@ -20,13 +20,10 @@ namespace API.Web
         {
             services.AddControllersExtension();
 
-            // API.Web used to call UseAuthentication()/UseAuthorization() without ever
-            // registering an authentication scheme, and carried a Token configuration
-            // section that nothing read. That is not a vulnerability — with no scheme
-            // registered nothing was protected in the first place — but it is dead
-            // pipeline that reads like working security. It now registers the same
-            // JwtBearer validation as Basket and Admin, against the same key and
-            // issuer, so [Authorize] here means what it means everywhere else.
+            // The same JwtBearer validation Basket and Admin register, against the same
+            // key and issuer. It is what puts a scheme behind the
+            // UseAuthentication()/UseAuthorization() pair below, so [Authorize] here
+            // means what it means everywhere else.
             services.AddCommonIdentity(_config);
 
             services.AddApplicationServices(_config);
@@ -61,7 +58,6 @@ namespace API.Web
                 // Unmatched /api/* requests get an explicit 404 from the API rather than
                 // the SPA's index.html, which would otherwise be returned with a 200 and
                 // look to a client like a successful call returning HTML.
-                // (The action this used to point at, SpaFallback, was commented out.)
                 endpoints.MapControllerRoute(
                         name: "apiFallback",
                         pattern: "api/{*endpointName}",

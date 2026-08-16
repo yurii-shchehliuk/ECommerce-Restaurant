@@ -9,21 +9,19 @@ using Xunit;
 namespace WebApi.Test
 {
     /// <summary>
-    /// The test whose absence is the whole reason this repository's message bus was
-    /// broken for three years.
+    /// The asynchronous path's end-to-end assertion: a published <c>OrderPlaced</c>
+    /// reaches <see cref="OrderPlacedConsumer"/> and lands in the sink.
     ///
-    /// Everything about the old asynchronous path looked right from a distance: there
-    /// was a contracts project, a publisher, two consumers, RabbitMQ in
-    /// docker-compose.yml, and a RabbitMqHost setting in configuration. What there was
-    /// not, anywhere, was a single assertion that a published message reaches a
-    /// consumer. So nobody noticed that <c>OrderReceivedConsumer</c> extended
-    /// RabbitMQ.Client's <c>DefaultBasicConsumer</c> while exposing a MassTransit-shaped
-    /// <c>Consume(ConsumeContext&lt;T&gt;)</c> without implementing
-    /// <see cref="IConsumer{T}"/> - a class neither library would ever have called.
+    /// A contracts project, a publisher, a consumer, a broker in docker-compose.yml and
+    /// a <c>RabbitMqHost</c> setting all look right from a distance whether or not a
+    /// message ever crosses between them. Only an assertion that a consumer ran
+    /// separates the two, and that is the assertion these tests make. A consumer that
+    /// does not implement <see cref="IConsumer{T}"/> is invisible to MassTransit, and
+    /// invisible to a reader too.
     ///
-    /// These tests run on MassTransit's in-memory transport, so they need no broker,
-    /// no Docker and no network. That matters: a test that needs infrastructure is a
-    /// test that gets skipped, and a skipped test is how this happened.
+    /// They run on MassTransit's in-memory transport, so they need no broker, no Docker
+    /// and no network. That matters: a test that needs infrastructure is a test that
+    /// gets skipped.
     /// </summary>
     public class OrderPlacedContractTest
     {
@@ -94,8 +92,8 @@ namespace WebApi.Test
 
             // Two distinct assertions on purpose. The first says the message was
             // published and routed; the second says a consumer was actually invoked.
-            // The old code would have passed neither, but it is the second that
-            // catches the IConsumer<T> mistake specifically.
+            // A consumer that does not implement IConsumer<T> passes the first and
+            // fails the second, which is the failure worth catching here.
             Assert.True(await harness.Published.Any<OrderPlaced>());
             Assert.True(await harness.Consumed.Any<OrderPlaced>());
 

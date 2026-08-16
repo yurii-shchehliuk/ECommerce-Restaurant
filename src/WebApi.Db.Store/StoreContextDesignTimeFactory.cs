@@ -7,13 +7,12 @@ namespace WebApi.Db.Store
     /// Lets <c>dotnet ef</c> build a <see cref="StoreContext"/> without booting an
     /// ASP.NET host.
     ///
-    /// The old <c>build/migrations.store.bat</c> passed <c>--startup-project API.Identity</c>,
-    /// which meant regenerating migrations required the whole web host — its
-    /// configuration, its connection string, and the ASP.NET Core runtime — to be
-    /// resolvable on the machine doing it. Migrations are a design-time concern of this
-    /// project alone, so the factory lives here and the connection string is a
-    /// placeholder: EF only needs the provider to work out what SQL to emit, and never
-    /// opens this connection for `migrations add` or `migrations script`.
+    /// Migrations are a design-time concern of this project alone, so the factory
+    /// lives here and regenerating one needs no startup project: no web host
+    /// configuration, no real connection string, and no ASP.NET Core runtime to
+    /// resolve on the machine doing it. The connection string below is a placeholder,
+    /// because EF needs the provider only to work out what SQL to emit and never opens
+    /// this connection for <c>migrations add</c> or <c>migrations script</c>.
     /// </summary>
     public class StoreContextDesignTimeFactory : IDesignTimeDbContextFactory<StoreContext>
     {

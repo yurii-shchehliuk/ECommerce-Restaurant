@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
 using Serilog;
 using System;
@@ -26,10 +26,10 @@ namespace API.Admin.Functions.ProductFunc.Commands
             }
             public async Task<Unit> Handle(CreateProductCommand request, CancellationToken cancellationToken)
             {
-                // The AddAsync call used to be un-awaited (CS4014), so Complete() could
-                // race the add and commit nothing. The try/catch around it also swallowed
-                // the failure and then reported success, which is how a create could
-                // return 200 having saved no product.
+                // Both calls are awaited and neither is wrapped in a catch: the add has
+                // to reach the change tracker before Complete() runs, and a failure in
+                // either has to reach the caller rather than return 200 for a product
+                // that was never saved.
                 var product = _mapper.Map<Product>(request.Product);
 
                 await _unitOfWork.Repository<Product>().AddAsync(product);

@@ -28,15 +28,13 @@ namespace WebApi.Infrastructure.StartupExtensions.ApiWeb
         }
 
         /// <summary>
-        /// Two modes, and the distinction is the fix for "the container never serves the SPA":
+        /// Two modes:
         ///
-        /// - <b>Development</b>: proxy to the Angular CLI dev server, so you get
-        ///   hot reload. This is what the project always did.
-        /// - <b>Anything else</b>: serve the pre-built bundle from
-        ///   <c>wwwroot/dist</c>. Previously this branch did not exist —
-        ///   <c>UseSpaStaticFiles()</c> was never called, <c>wwwroot/dist</c> was never
-        ///   produced, and the container answered every SPA route by trying to launch
-        ///   `npm start` inside an image with no Node.js in it.
+        /// - <b>Development</b>: proxy to the Angular CLI dev server, for hot reload.
+        /// - <b>Anything else</b>: serve the bundle the Dockerfile's node stage built
+        ///   into <c>wwwroot/dist</c>, through <c>UseSpaStaticFiles()</c>. The container
+        ///   image carries no Node.js, so this branch is the one that lets it answer an
+        ///   SPA route at all.
         /// </summary>
         public static void UseAngular(this IApplicationBuilder app, IWebHostEnvironment env)
         {

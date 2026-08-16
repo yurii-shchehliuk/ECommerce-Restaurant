@@ -25,7 +25,7 @@ namespace API.Identity
         {
             services.AddMediatR(typeof(Startup));
             services.AddAutoMapper(typeof(Helpers.MappingProfiles));
-            ///<todo>move to infrastrucutre</todo>
+            // The validators live in this host because the view models they validate do.
             services.AddValidatorsFromAssemblyContaining<CommentCreate>();
 
             services.AddControllersExtension();

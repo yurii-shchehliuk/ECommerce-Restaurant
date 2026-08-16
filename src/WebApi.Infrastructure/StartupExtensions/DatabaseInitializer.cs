@@ -8,21 +8,17 @@ namespace WebApi.Infrastructure.StartupExtensions
     /// <summary>
     /// Applies migrations at start-up, with retries.
     ///
-    /// Two problems this solves, both of which used to bite on every cold
-    /// <c>docker compose up</c>:
+    /// Two things this pins down:
     ///
-    /// 1. The services used to call <c>EnsureCreatedAsync()</c> *and*
-    ///    <c>MigrateAsync()</c>. Those are mutually exclusive strategies —
-    ///    <c>EnsureCreated</c> builds the schema from the model and writes no
-    ///    <c>__EFMigrationsHistory</c>, so the subsequent <c>Migrate</c> then tries to
-    ///    create tables that already exist. With migrations now committed, migrating is
-    ///    the only strategy, and an existing database has an upgrade path.
+    /// 1. Migrating is the only schema strategy. <c>EnsureCreated</c> builds the schema
+    ///    from the model and writes no <c>__EFMigrationsHistory</c>, so mixing the two
+    ///    leaves <c>Migrate</c> trying to create tables that already exist. The
+    ///    migrations are committed, so an existing database has an upgrade path.
     ///
-    /// 2. <c>depends_on</c> in Compose orders container *start*, not readiness. SQL
-    ///    Server takes tens of seconds to accept connections on a cold volume, so the
-    ///    first migration attempt lost the race and the service came up with no schema.
-    ///    Compose health checks fix most of it; this retry loop covers the rest, and
-    ///    covers the non-Docker path where there is no health check at all.
+    /// 2. <c>depends_on</c> in Compose orders container *start*, not readiness, and SQL
+    ///    Server takes tens of seconds to accept connections on a cold volume. Compose
+    ///    health checks cover most of that; this retry loop covers the rest, and covers
+    ///    the non-Docker path, where there is no health check at all.
     /// </summary>
     public static class DatabaseInitializer
     {

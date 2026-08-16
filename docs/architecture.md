@@ -118,8 +118,10 @@ give you: the basket survives a restart of `API.Basket` (verified with
 `docker compose restart api.basket`), and two instances behind a load balancer see
 the same basket. Values are `System.Text.Json` blobs with a fixed 30-day expiry —
 absolute, not sliding, so an actively used basket still dies 30 days after it was
-first written. The class is unfortunately named `BasketContext` and sits in
-`WebApi.Db.Store`; it is not an EF Core context and the name is a mistake.
+first written. The implementation is `BasketContext` in `WebApi.Db.Store`, which
+sits alongside `StoreContext` but is a `StackExchange.Redis` client rather than an
+EF Core `DbContext`: `IBasketRepository` is the type the rest of the code depends
+on, and swapping the store behind it means writing one class.
 
 **Querying.** The generic repository is paired with a specification pattern
 (`WebApi.Domain/Specifications/`) so `Include`s, filters, sorting and paging

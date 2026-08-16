@@ -88,8 +88,9 @@ services:
     networks:
       - owletnet
 
-  # Was commented out of this file entirely, which is why "four services" was a claim
-  # the stack could not back up. It is the consumer half of the order bus.
+  # The consumer half of the order bus: nothing arrives on /admin/order-events
+  # unless this container is running, and the queue is durable so nothing is lost
+  # while it is not.
   api.admin:
     container_name: owlet-admin
     image: ${DOCKER_REGISTRY-}apiadmin

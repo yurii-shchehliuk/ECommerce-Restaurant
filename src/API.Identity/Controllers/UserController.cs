@@ -159,8 +159,15 @@ namespace API.Identity.Controllers
                 return NotFound(Result<LoginVM>.Fail("Invalid credentials"));
 
             var token = await UserManager.GeneratePasswordResetTokenAsync(user);
-            ///<todo>email sender i.e.smtp4dev or MailJet+Protonmail</todo>
-            //_emailSender.SendEmailAsync(user.Email, "Reset password", $"<a href=\"{token}\">Click to reset password</a>");
+
+            // The reset link goes out over SMTP, which under Compose is the smtp4dev
+            // container on http://localhost:5010. The token is never returned in the
+            // response, so possession of the mailbox is what proves the request.
+            await _emailSender.SendEmailAsync(
+                user.Email,
+                "Reset password",
+                $"<a href=\"{token}\">Click to reset password</a>");
+
             return Ok();
         }
 
@@ -192,11 +199,11 @@ namespace API.Identity.Controllers
             return Ok();
         }
 
-        ///<todo>External logins, e.g. google/facebook</todo>
-        ///<todo>Two factor authentication</todo>
-        ///<todo>crud user claims</todo>
-
-
+        /// <summary>
+        /// The claims a token carries: the user's email and id, one entry per role the
+        /// user holds, and every claim attached to the user or to one of those roles.
+        /// <c>TokenService</c> takes this list and signs it.
+        /// </summary>
         private async Task<List<Claim>> GetValidClaims(AppUser user)
         {
             IdentityOptions _options = new IdentityOptions();
