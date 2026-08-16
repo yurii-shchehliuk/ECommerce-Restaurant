@@ -1,9 +1,6 @@
 # API.Basket — basket, payments, order creation, publisher of OrderPlaced.
-# Build context is the repository root.
-#
-# The COPY paths here used to be missing their `src/` prefix, so the restore layer
-# never resolved and the whole restore fell back to the `COPY . .` below — slow, and
-# silently wrong the moment a csproj changed.
+# Build context is the repository root, so every COPY path is prefixed with `src/`;
+# that is what lets the csproj-only restore layer resolve and stay cached.
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src

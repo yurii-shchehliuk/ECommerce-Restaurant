@@ -3,13 +3,6 @@
 Two ways: everything in Docker, or the infrastructure in Docker and the services
 from your IDE.
 
-> **Status:** the Compose path was run end to end on 16 August 2026 — eleven
-> containers, register, sign in, add to basket, place an order, and the order
-> event consumed off RabbitMQ by `API.Admin`. What that run proved, and what it
-> did not, is listed in the README under "Verified, not asserted".
-
----
-
 ## Prerequisites
 
 | | Version |
@@ -45,8 +38,8 @@ falling back to a committed default.
 ### `Common.env` — the signing key
 
 `TokenService` signs with **HS512**, so `Token:Key` must be at least 64 bytes /
-512 bits. Anything shorter is accepted by the token library but is weaker than the
-algorithm requires — see the README, "What is still wrong", item 3.
+512 bits — RFC 7518 §3.2 requires a key at least as large as the algorithm's hash
+output. The token library's own floor is lower, so generate the full 64 bytes:
 
 ```bash
 openssl rand -base64 64
@@ -76,9 +69,8 @@ Or set `StripeSettings__SecretKey` in `Common.env`.
 
 ### Preferred local approach: user-secrets
 
-Rather than editing `appsettings.json` — which is how this repository's
-credentials got committed in the first place — use user-secrets. They live outside
-the repository entirely:
+Use user-secrets rather than editing `appsettings.json`. They live outside the
+repository entirely, so there is nothing to accidentally commit:
 
 ```bash
 cd src/API.Identity
@@ -97,17 +89,17 @@ want.
 docker compose up --build
 ```
 
-That is the whole command. The compose file lives next to `Owlet.sln` because the
-build context is the repository root; it used to live in `docker/` and had to be
-copied up one directory by hand first.
+That is the whole command. The compose file lives next to `Owlet.sln`, because the
+build context is the repository root and Docker resolves it relative to the
+compose file.
 
 First run pulls SQL Server 2019, Redis, RabbitMQ, Seq, smtp4dev and
-redis-commander, then builds five images — including a `node:18-alpine` stage that
-runs `npm ci` and `ng build` for the Angular client. Expect ten minutes cold.
+redis-commander, then builds five images — including a Node stage that runs
+`npm ci` and `ng build` for the Angular client. Expect ten minutes cold.
 
 The services wait for SQL Server, Redis and RabbitMQ to report healthy before they
-start, and then retry their migrations on top of that, so a cold start no longer
-races the database.
+start, and retry their migrations on top of that, so a cold start meets a database
+that is already accepting connections.
 
 ### Ports
 

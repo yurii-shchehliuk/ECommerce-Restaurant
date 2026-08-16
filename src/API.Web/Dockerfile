@@ -1,9 +1,7 @@
-# API.Web — ASP.NET Core host that serves the Angular 15 single-page app.
+# API.Web — ASP.NET Core host that serves the Angular single-page app.
 #
 # Three stages: build the SPA with the Angular CLI, publish the .NET host, then
-# assemble both into the runtime image. The image used to contain neither `npm` nor
-# a built bundle, while the host was configured to launch `ng serve` at runtime, so
-# the container could not serve the client at all. It can now.
+# assemble both into the runtime image, so the runtime image needs no Node.js.
 #
 # Build context is the repository root.
 

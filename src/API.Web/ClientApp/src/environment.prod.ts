@@ -15,11 +15,6 @@
 // the CORS configuration unnecessary in production rather than merely permissive.
 // See src/nginx/nginx.local.conf.
 //
-// The old version of this file was never used: angular.json pointed its
-// fileReplacements at src/environments/environment.ts, a path that does not exist,
-// so `ng build --configuration production` failed outright. It also had a flatter
-// shape than the code expects (environment.identityApi.api), so it would have thrown
-// at runtime if it ever had been used.
 export const environment = {
   production: true,
   adminApi: '/svc/admin/api/',

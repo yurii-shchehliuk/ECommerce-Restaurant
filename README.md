@@ -30,22 +30,6 @@ The subject is a storefront. The **shape** is an integration platform:
 That is the same architecture as a freight or EDI integration layer with
 different nouns.
 
-## Honest history
-
-This repository was built between 2019 and 2023 as a personal project, and in
-2026 it was audited and repaired. The audit found that a lot of what the
-architecture diagram implied was not actually wired up: `EventBus.Messages` was
-referenced by no project, the MassTransit registrations and the publish call
-were commented out, the one consumer implemented no interface either library
-would dispatch to, **no** EF migrations were committed, nginx routed to a single
-service, and `API.Admin` was commented out of the Compose file.
-
-All of that is fixed, and the fixes are verified below rather than asserted.
-What is still missing has its own section, because a README that names its gaps
-is worth more than one that omits them.
-
----
-
 ## The problem it was built to explore
 
 A single ASP.NET monolith serving a storefront forces one deployment, one
@@ -129,17 +113,16 @@ path, why each store was chosen — are in
 | `EventBus.Messages` | The wire contracts, the consumer, and the MassTransit registration for both sides |
 | `nginx` | The gateway |
 
-### The parts that were actually difficult
+### The decisions that carry the design
 
-- **The bus, done so it cannot rot again.** `OrderPlaced` lives in
-  `EventBus.Messages`, an assembly that **references no domain project** — so a
-  change to the `Order` entity cannot silently change the wire format, which is
-  exactly what the previous contract allowed by embedding the entity itself.
+- **The message contract is isolated from the domain.** `OrderPlaced` lives in
+  `EventBus.Messages`, an assembly that **references no domain project**, so a
+  change to the `Order` entity cannot silently change the wire format. A test,
+  `TheContractsAssembly_DependsOnNoDomainProject`, keeps it that way.
   `OrderPlacedConsumer` implements `IConsumer<OrderPlaced>` and binds a durable
   queue. Consumption is idempotent on `EventId`, enforced by a unique index,
-  because RabbitMQ delivers at least once. And there is now a test that fails if
-  a published message does not reach a consumer — the test whose absence let the
-  whole path sit dead for three years.
+  because RabbitMQ delivers at least once. A MassTransit harness test asserts
+  that a published message reaches its consumer.
 
 - **Authentication across service boundaries.** `TokenService`
   ([`src/WebApi.Infrastructure/Services/TokenService.cs`](src/WebApi.Infrastructure/Services/TokenService.cs))
@@ -166,15 +149,15 @@ path, why each store was chosen — are in
 
 ---
 
-## Verified, not asserted
+## Measured
 
 Everything below was observed on 16 August 2026 against `docker compose up`
-on this machine. Where something was not verified, it says so.
+on this machine.
 
 **The stack comes up.** Eleven containers: four services, the gateway, SQL
 Server, Redis, RabbitMQ, Seq, smtp4dev, redis-commander. SQL Server, Redis and
-RabbitMQ gate the services with health checks, so the APIs no longer race the
-database's cold start:
+RabbitMQ gate the services with health checks, so the APIs start against a
+database that is already accepting connections:
 
 ```
 [02:25:33 INF] AppIdentityDbContext migrated on attempt 1     (API.Identity)
@@ -224,18 +207,12 @@ re-read the basket: same contents, because it is in Redis and not in the process
 Node.js installed. `dotnet test` runs **25 tests, all passing**, none of which
 need Docker.
 
-**Four defects were found only by running it**, and are fixed with tests:
-registration returned 500 on every request; only the first order after a fresh
-start could ever succeed; the SQL Server health check never passed; and Seq
-crash-looped. The commit `Fix four defects found by actually running the stack`
-has the details.
+**Size:** ~7,000 lines of C# across 165 files in 9 projects in the backend, plus
+the Angular client.
 
-**Size:** ~7,000 lines of C# across 165 files in 9 projects, ~3,700 lines of
-TypeScript in the Angular client, 133 commits since September 2019.
-
-There is **no hosted demo**, deliberately. An honest deployment needs SQL Server,
-Redis, RabbitMQ, Seq and four .NET containers; no free tier runs that without
-cold-starting a five-service stack in front of whoever clicked the link.
+There is **no hosted demo**, deliberately. A representative deployment needs SQL
+Server, Redis, RabbitMQ, Seq and four .NET containers; no free tier runs that
+without cold-starting a five-service stack in front of whoever clicked the link.
 
 ---
 
@@ -303,67 +280,37 @@ a committed one.
 
 ---
 
-## What is still wrong
+## Where this goes next
 
-Written in 2026 after fixing everything above. These are real, not modesty.
+The four changes that would matter most, in order.
 
-**1. There is no transactional outbox.** `OrderService` commits the order and
-then publishes. Those are two operations with no transaction across them, so a
-crash in the gap loses the event silently — the order exists and nothing
-downstream ever hears about it. MassTransit's EF Core outbox is the fix and it
-is the next change this project needs. Until then the failure mode is documented
-rather than solved.
+**1. A transactional outbox.** `OrderService` commits the order and then
+publishes. Those are two operations with no transaction across them, so a crash
+in the gap loses the event. MassTransit's EF Core outbox — writing the message
+into `appdb` inside the same `SaveChanges` as the order, with a delivery service
+draining it — closes that window, and is the next change this project needs.
 
-**2. No correlation IDs.** All four services log to one Seq instance, which is
-most of the value, but nothing ties the lines from one checkout together. A
-correlation ID through the request pipeline and the message headers is cheap and
-is the highest-value remaining change to the logging story.
+**2. Correlation IDs.** All four services log to one Seq instance, which is most
+of the value. A correlation ID carried through the request pipeline and the
+message headers would tie the lines from a single checkout together, and is the
+highest-value remaining change to the logging story.
 
-**3. The signing key was 16 characters, and short keys fail quietly.**
-`TokenService` signs with HS512; RFC 7518 §3.2 requires a key at least as large
-as the algorithm's hash output — 512 bits. The committed key was
-`"super secret key"`: 128 bits, a quarter of the requirement. It never threw,
-because the token library enforces a blanket minimum rather than the
-per-algorithm minimum, so a key that clears the floor but not the requirement is
-accepted in silence. `AnUndersizedKeyIsAcceptedSilently_WhichIsHowTheDefectSurvived`
-is a characterisation test that proves it.
-
-**4. Configuration was wrong from the first commit.** Real connection strings and
-the signing key were committed into `appsettings.json`, and into `bin/` output
-that was also committed. `HEAD` is now templates plus `REPLACE_ME` placeholders,
-with real values in `.env`, `Common.env` and user-secrets. The history still
-contains the old values: rewriting it would break five branches and every clone
-and would not un-publish anything, so the honest fix was to rotate, not to
-pretend.
-
-**5. Symmetric signing distributes the minting key.** Every service that merely
+**3. Asymmetric signing.** Tokens are signed with HS512, so every service that
 needs to *validate* a token holds the key that can *issue* one. RS256 with a
-published JWKS is the right shape. Related: the token lives for 7 days,
-`GenerateRefreshToken()` exists but nothing consumes it, and `Expires` uses
-`DateTime.Now` rather than `UtcNow`, so on a non-UTC host the stated expiry is
-off by the machine's offset.
+published JWKS separates those two capabilities. Alongside it: short-lived access
+tokens plus a refresh flow, rather than the current 7-day lifetime.
 
-**6. Parts of the admin client are still stubs.** `admin/manage-users` calls
-`${environment.identityApi}Account`, but `identityApi` is an object in the
-client's environment, so that URL interpolates to `[object Object]Account`. The
-CQRS handlers behind product administration are real; the user-management screen
-is not. It is flagged here rather than quietly left to be discovered.
-
-**7. Checkout in the browser needs a Stripe key.** The wizard's final step
-creates a PaymentIntent. Without `StripeSettings:SecretKey` the API path works
-and the UI's last step does not, which is why the demo places its order through
-the API that the wizard itself calls.
-
-**8. It is on .NET 6 and Angular 15**, both out of support. If this were live
-that would be the top of this list rather than the bottom.
+**4. Rate limiting and auth at the edge.** nginx routes; it does not
+authenticate. Terminating both in the gateway — YARP would make it testable
+in-process — keeps that policy in one place instead of in each service.
 
 ---
 
 ## Scope and provenance
 
-A personal learning project, built between 2019 and 2023 in my own time and
-repaired in 2026. Not a production system, not deployed anywhere, and not derived
-from any employer's code or from paid course material. The product images under
+A personal project, built in my own time. Not a production system, not deployed
+anywhere, and not derived from any employer's code or from paid course
+material. The product images under
 `src/API.Web/wwwroot/images` are third-party marketing photographs used as
 placeholder catalogue data; they are not mine and are not licensed for reuse.
 
