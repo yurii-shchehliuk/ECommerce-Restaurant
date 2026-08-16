@@ -1,4 +1,4 @@
-﻿using API.Admin.Functions.ProductFunc.Commands;
+using API.Admin.Functions.ProductFunc.Commands;
 using API.Admin.Functions.ProductFunc.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +12,12 @@ using WebApi.Infrastructure.Controllers;
 namespace API.Admin.Controllers
 {
     /// <summary>
-    /// user's products management
+    /// Catalogue administration over MediatR/CQRS.
+    ///
+    /// Reads need a validated token; the three writes need the Admin role, because they
+    /// change what every buyer sees and there is no per-user catalogue.
     /// </summary>
-    [Authorize(Roles = UserRole.User)]
+    [Authorize]
     public class ProductController : BaseApiControllerV1
     {
         [HttpGet("id")]
@@ -30,18 +33,21 @@ namespace API.Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<IActionResult> Create(ProductCreateDto product)
         {
             return Ok(await Mediator.Send(new CreateProductCommand { Product = product }));
         }
 
         [HttpPut("id")]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<IActionResult> Edit(int id, Product product)
         {
             product.Id = id;
             return Ok(await Mediator.Send(new UpdateProductCommand { Product = product }));
         }
         [HttpDelete("id")]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<IActionResult> Delete(int id)
         {
             return Ok(await Mediator.Send(new DeleteProductCommand { Id = id }));

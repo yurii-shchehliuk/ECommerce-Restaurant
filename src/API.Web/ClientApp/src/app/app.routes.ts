@@ -42,12 +42,6 @@ export const routes: Routes = [
     loadChildren: () => import('./features/features.routes').then((m) => m.routes),
   },
   {
-    path: 'test-error',
-    loadComponent: () =>
-      import('./core/test-error/test-error.component').then((m) => m.TestErrorComponent),
-    title: 'API diagnostics - Owlet',
-  },
-  {
     path: 'server-error',
     loadComponent: () =>
       import('./core/server-error/server-error.component').then((m) => m.ServerErrorComponent),

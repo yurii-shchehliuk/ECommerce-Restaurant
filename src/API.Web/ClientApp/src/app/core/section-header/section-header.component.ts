@@ -59,7 +59,6 @@ export class SectionHeaderComponent implements OnInit, OnDestroy {
     'menu-management': 'Catalogue',
     features: 'Features',
     chat: 'Chat',
-    'test-error': 'API diagnostics',
   };
 
   ngOnInit(): void {

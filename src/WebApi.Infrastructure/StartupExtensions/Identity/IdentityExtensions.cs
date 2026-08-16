@@ -22,13 +22,11 @@ namespace WebApi.Infrastructure.StartupExtensions.Identity
         #region service
         public static void AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
-            ///<todo>separate database for comments</todo>
             services.AddIdentityDb(config);
             services.AddStoreDb(config);
 
             services.AddScoped<ITokenService, TokenService>();
             services.AddTransient<IEmailSender>(s => new EmailSender(config));
-            services.AddScoped(typeof(IIdentityGenericRepository<>), typeof(IdentityGenericRepository<>));
 
             services.AddSignalR(hubOptions =>
             {
