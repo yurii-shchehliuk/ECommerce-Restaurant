@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -17,7 +16,6 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
   bootstrap: [AppComponent],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
     AppRoutingModule,
     SharedModule,
     CoreModule,

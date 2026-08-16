@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { ToastrService } from 'ngx-toastr';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 /**
  * Turns HTTP failures into something the user can see.
@@ -14,7 +14,7 @@ import { ToastrService } from 'ngx-toastr';
  */
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-  constructor(private router: Router, private toastr: ToastrService) {}
+  constructor(private router: Router, private toastr: ToastService) {}
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(req).pipe(

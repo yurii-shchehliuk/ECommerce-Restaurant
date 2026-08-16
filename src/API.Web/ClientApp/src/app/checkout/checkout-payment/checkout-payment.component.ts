@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { ToastService } from 'src/app/core/services/toast.service';
 import { firstValueFrom } from 'rxjs';
 import { BasketService } from 'src/app/basket/basket.service';
 import { IBasket } from 'src/app/shared/models/basket';
@@ -45,7 +45,7 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
   constructor(
     private basketService: BasketService,
     private checkoutService: CheckoutService,
-    private toastr: ToastrService,
+    private toastr: ToastService,
     private router: Router
   ) {}
 

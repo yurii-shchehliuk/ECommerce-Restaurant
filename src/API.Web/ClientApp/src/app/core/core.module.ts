@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ToastrModule } from 'ngx-toastr';
 
 import { NavBarComponent } from './nav-bar/nav-bar.component';
+import { ToastHostComponent } from './toast-host/toast-host.component';
 import { TestErrorComponent } from './test-error/test-error.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { ServerErrorComponent } from './server-error/server-error.component';
@@ -17,16 +17,13 @@ import { SharedModule } from '../shared/shared.module';
     NotFoundComponent,
     ServerErrorComponent,
     SectionHeaderComponent,
+    ToastHostComponent,
   ],
   imports: [
     CommonModule,
     RouterModule,
     SharedModule,
-    ToastrModule.forRoot({
-      positionClass: 'toast-bottom-right',
-      preventDuplicates: true,
-    }),
   ],
-  exports: [NavBarComponent, SectionHeaderComponent],
+  exports: [NavBarComponent, SectionHeaderComponent, ToastHostComponent],
 })
 export class CoreModule {}

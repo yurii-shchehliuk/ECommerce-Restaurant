@@ -11,7 +11,6 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "~19.2.25",
     "@angular/cdk": "^19.2.19",
     "@angular/common": "~19.2.25",
     "@angular/compiler": "~19.2.25",
@@ -22,7 +21,6 @@
     "@angular/router": "~19.2.25",
     "@microsoft/signalr": "^8.0.7",
     "bootstrap": "^5.2.3",
-    "ngx-toastr": "^16.0.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.5.0",
     "zone.js": "~0.15.1"

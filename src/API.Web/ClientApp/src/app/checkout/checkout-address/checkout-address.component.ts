@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AccountService } from 'src/app/account/account.service';
-import { ToastrService } from 'ngx-toastr';
+import { ToastService } from 'src/app/core/services/toast.service';
 import { IAddress } from 'src/app/shared/models/address';
 
 @Component({
@@ -13,7 +13,7 @@ import { IAddress } from 'src/app/shared/models/address';
 export class CheckoutAddressComponent {
   @Input() checkoutForm: FormGroup;
 
-  constructor(private accountService: AccountService, private toastr: ToastrService) { }
+  constructor(private accountService: AccountService, private toastr: ToastService) { }
 
   saveUserAddress() {
     this.accountService.updateUserAddress(this.checkoutForm.get('addressForm').value)

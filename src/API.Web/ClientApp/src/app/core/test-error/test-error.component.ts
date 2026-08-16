@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
+import { ToastService } from 'src/app/core/services/toast.service';
 import { environment } from 'src/environment';
 
 interface Probe {
@@ -54,7 +54,7 @@ export class TestErrorComponent {
   validationErrors: string[] = [];
   lastResult: { path: string; status: string; ok: boolean } | null = null;
 
-  constructor(private http: HttpClient, private toastr: ToastrService) {}
+  constructor(private http: HttpClient, private toastr: ToastService) {}
 
   run(probe: Probe): void {
     this.validationErrors = [];
