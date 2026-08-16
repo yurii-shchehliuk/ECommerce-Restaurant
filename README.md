@@ -184,8 +184,10 @@ database's cold start:
 [02:25:34 INF] Bus started: rabbitmq://rabbitowlet/
 ```
 
-**The whole loop runs.** Register → sign in → add to basket → place an order →
-the event arrives on the admin side. The GIF above is that loop. The order's
+**The whole loop runs from an empty volume.** `docker compose down -v`, then
+`docker compose up -d --build`, then register → sign in → add to basket → place an
+order → the event arrives on the admin side, 239 ms after publication, on a
+database that did not exist a minute earlier. The GIF above is that loop. The order's
 subtotal is re-priced from the database, not taken from the basket: the demo
 basket claimed $9.50 for an item the catalogue prices at $1.00, and the order
 was written at the catalogue price.

@@ -137,10 +137,11 @@ curl -X POST http://localhost:5200/svc/identity/api/user/register \
 # 2. Keep the token from that response.
 TOKEN=...
 
-# 3. Put something in a basket.
+# 3. Put something in a basket. pictureUrl, brand and type are required by
+#    BasketItem's validation; omitting them returns a 400 that lists them.
 curl -X POST http://localhost:5200/svc/basket/api/basket \
   -H "Content-Type: application/json" \
-  -d '{"id":"b1","items":[{"id":12,"productName":"10 Piece Wicked","price":16.00,"quantity":2}],"deliveryMethodId":2}'
+  -d '{"id":"b1","deliveryMethodId":2,"items":[{"id":12,"productName":"10 Piece Wicked","price":16.00,"quantity":2,"pictureUrl":"x.jpg","brand":"KFC","type":"Snacks"}]}'
 
 # 4. Place the order.
 curl -X POST http://localhost:5200/svc/basket/api/orders \
