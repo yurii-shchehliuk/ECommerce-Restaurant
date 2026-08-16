@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { PageLabelService } from '../services/page-label.service';
 import { SectionHeaderComponent } from './section-header.component';
 
 @Component({ template: 'page', standalone: true })
@@ -73,6 +74,26 @@ describe('SectionHeaderComponent', () => {
 
     expect(fixture.componentInstance.crumbs).toEqual([]);
     expect(fixture.nativeElement.querySelector('h1')).toBeNull();
+  });
+
+  it('shows the name a page supplies instead of the raw id', async () => {
+    await goTo('/shop/42');
+    TestBed.inject(PageLabelService).set('10 Piece Wicked');
+    TestBed.tick();
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.title).toBe('10 Piece Wicked');
+  });
+
+  it('drops a supplied name on the next navigation', async () => {
+    await goTo('/shop/42');
+    TestBed.inject(PageLabelService).set('10 Piece Wicked');
+    TestBed.tick();
+    fixture.detectChanges();
+
+    await goTo('/shop');
+
+    expect(fixture.componentInstance.title).toBe('Menu');
   });
 
   it('marks the last crumb as the current page', async () => {

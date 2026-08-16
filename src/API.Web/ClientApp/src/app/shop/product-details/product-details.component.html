@@ -24,9 +24,10 @@
         <img [src]="item.pictureUrl" [alt]="item.name" />
       </figure>
 
+      <!-- The name is the page title, set on the breadcrumb bar once the record
+           loads, so it is not repeated here. -->
       <div class="detail__buy">
         <p class="eyebrow">{{ item.productType }} &middot; {{ item.productBrand }}</p>
-        <h1 class="detail__name">{{ item.name }}</h1>
         <p class="detail__price figure">{{ item.price | currency }}</p>
 
         <div class="detail__controls">

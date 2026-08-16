@@ -232,10 +232,12 @@ and delivery steps of the checkout wizard, place the order, and find it on
 `/orders` and on `/admin/order-events` — the second row on that page is the event
 the checkout published, consumed 233 ms later.
 
-**Build and tests.** `dotnet build Owlet.sln` succeeds with no warnings and no
-Node.js installed. `dotnet test` runs **25 tests, all passing**, none of which
-need Docker. `npm run test:ci` in the client runs **72 tests, all passing**, and
-`ng lint` reports no errors.
+**Build and tests.** `dotnet build Owlet.sln` succeeds with no errors and
+without Node.js installed (12 analyser warnings, all CA2017 in
+`PaymentsController`). `dotnet test` runs **25 tests, all passing**, none of
+which need Docker. In the client, `npm ci && npm run build` succeeds from a clean
+tree, `npm run test:ci` runs **72 tests, all passing**, and `ng lint` reports no
+errors and no warnings.
 
 **The client audits clean.** Across thirteen routes at 1360px and 360px: exactly
 one `h1` per page, no horizontal scroll, no unlabelled form control, no button or

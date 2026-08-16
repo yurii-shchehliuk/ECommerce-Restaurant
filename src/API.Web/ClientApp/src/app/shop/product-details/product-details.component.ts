@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BasketService } from 'src/app/basket/basket.service';
 import { IProduct } from 'src/app/shared/models/product';
+import { PageLabelService } from 'src/app/core/services/page-label.service';
 import { ShopService } from '../shop.service';
 import { CurrencyPipe } from '@angular/common';
 import { IconComponent } from '../../shared/components/icon/icon.component';
@@ -17,6 +18,7 @@ export class ProductDetailsComponent implements OnInit {
   private shopService = inject(ShopService);
   private route = inject(ActivatedRoute);
   private basketService = inject(BasketService);
+  private pageLabel = inject(PageLabelService);
 
   product: IProduct | null = null;
   productId = '';
@@ -30,6 +32,8 @@ export class ProductDetailsComponent implements OnInit {
       next: (product) => {
         this.product = product;
         this.loading = false;
+        // The breadcrumb shows the product's name rather than its id.
+        this.pageLabel.set(product.name);
       },
       error: () => {
         this.error = 'That product could not be loaded.';

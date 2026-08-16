@@ -1,6 +1,7 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, effect, inject } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 import { Subscription, filter, startWith } from 'rxjs';
+import { PageLabelService } from '../services/page-label.service';
 
 export interface Crumb {
   label: string;
@@ -26,10 +27,25 @@ export interface Crumb {
 export class SectionHeaderComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private pageLabel = inject(PageLabelService);
 
   crumbs: Crumb[] = [];
 
   private subscription = new Subscription();
+
+  constructor() {
+    // A record's name arrives after its page has fetched it, which is always after
+    // the navigation that rendered this bar; patch the trailing crumb when it does.
+    effect(() => {
+      const label = this.pageLabel.label();
+      if (label && this.crumbs.length) {
+        this.crumbs = [
+          ...this.crumbs.slice(0, -1),
+          { ...this.crumbs[this.crumbs.length - 1], label },
+        ];
+      }
+    });
+  }
 
   private static readonly LABELS: Record<string, string> = {
     shop: 'Menu',
@@ -53,7 +69,12 @@ export class SectionHeaderComponent implements OnInit, OnDestroy {
           filter((event): event is NavigationEnd => event instanceof NavigationEnd),
           startWith(null)
         )
-        .subscribe(() => this.build())
+        .subscribe(() => {
+          // Dropped before the new page has a chance to set one, so a name from the
+          // page just left can never appear against the page just arrived at.
+          this.pageLabel.clear();
+          this.build();
+        })
     );
   }
 

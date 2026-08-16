@@ -3,6 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { IconComponent } from '../../shared/components/icon/icon.component';
 import { IOrder } from 'src/app/shared/models/order';
+import { PageLabelService } from 'src/app/core/services/page-label.service';
 import { OrdersService } from '../orders.service';
 
 import { BasketSummaryComponent } from '../../shared/components/basket-summary/basket-summary.component';
@@ -17,6 +18,7 @@ import { OrderTotalsComponent } from '../../shared/components/order-totals/order
 export class OrderDetailedComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private ordersService = inject(OrdersService);
+  private pageLabel = inject(PageLabelService);
 
   order: IOrder | null = null;
   loading = true;
@@ -28,6 +30,7 @@ export class OrderDetailedComponent implements OnInit {
       next: (order) => {
         this.order = order;
         this.loading = false;
+        this.pageLabel.set(`Order #${order.id}`);
       },
       error: () => {
         this.error = 'That order could not be loaded.';
