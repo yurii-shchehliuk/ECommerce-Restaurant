@@ -1,6 +1,6 @@
 # install packages in src\API.Web\ClientApp
 npm install
-npm i -g @angular/cli@15.1.6
+npm i -g @angular/cli@20
 ## check angular build
 ng build
 
@@ -22,11 +22,21 @@ https://chocolatey.org/install
 cmd: redis-server
 	 redis-cli
 
+# Catalogue art
+`generate-catalogue-art.py` draws every image under
+`src/API.Web/wwwroot/images/products` with Pillow, one archetype per dish shape,
+and `catalogue.py` holds the names, prices and copy the seed file is built from.
+Run it with the images directory as its argument:
+
+```bash
+python build/generate-catalogue-art.py src/API.Web/wwwroot/images/products
+```
+
 # Trubleshooting
 ## if error ng.ps1 appears 
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-## use $nvm to manage dove versions https://github.com/coreybutler/nvm-windows#readme
-install node version  16.13.0  https://gist.github.com/LayZeeDK/c822cc812f75bb07b7c55d07ba2719b3
+## use $nvm to manage node versions https://github.com/coreybutler/nvm-windows#readme
+Angular 20 needs Node 20.19+, 22.12+ or 24.
 
 ## docker
 Move all the files from the docker folder to the folder where the *.sln file is located.

@@ -6,20 +6,20 @@ import { BasketSummaryComponent } from './basket-summary.component';
 
 const basketItem: IBasketItem = {
   id: 12,
-  productName: '10 Piece Wicked',
+  productName: 'Ten-Piece Grill Box',
   price: 16,
   quantity: 2,
-  pictureUrl: '/img/wicked.jpg',
-  brand: 'KFC',
+  pictureUrl: '/img/grill-box.jpg',
+  brand: 'Owlet',
   type: 'Snacks',
 };
 
 const orderItem: IOrderItem = {
   productId: 12,
-  productName: '10 Piece Wicked',
+  productName: 'Ten-Piece Grill Box',
   price: 16,
   quantity: 2,
-  pictureUrl: '/img/wicked.jpg',
+  pictureUrl: '/img/grill-box.jpg',
 };
 
 describe('BasketSummaryComponent', () => {

@@ -349,9 +349,11 @@ in-process — keeps that policy in one place instead of in each service.
 
 A personal project, built in my own time. Not a production system, not deployed
 anywhere, and not derived from any employer's code or from paid course
-material. The product images under
-`src/API.Web/wwwroot/images` are third-party marketing photographs used as
-placeholder catalogue data; they are not mine and are not licensed for reuse.
+material. Owlet is a fictional restaurant: the catalogue's names, prices and
+copy are invented, and every image under `src/API.Web/wwwroot/images/products`
+is drawn by [`build/generate-catalogue-art.py`](build/generate-catalogue-art.py),
+which takes the dish list in `build/catalogue.py` and renders one flat
+illustration per shape with Pillow.
 
 ## Licence
 

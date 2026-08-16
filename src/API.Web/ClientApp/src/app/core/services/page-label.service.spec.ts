@@ -14,13 +14,13 @@ describe('PageLabelService', () => {
   });
 
   it('carries the name a page hands it', () => {
-    service.set('10 Piece Wicked');
+    service.set('Ten-Piece Grill Box');
 
-    expect(service.label()).toBe('10 Piece Wicked');
+    expect(service.label()).toBe('Ten-Piece Grill Box');
   });
 
   it('clears, so a name cannot outlive the page that set it', () => {
-    service.set('10 Piece Wicked');
+    service.set('Ten-Piece Grill Box');
     service.clear();
 
     expect(service.label()).toBeNull();

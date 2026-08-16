@@ -20,7 +20,7 @@ const page = (ids: number[], count = ids.length): IPagination => ({
     price: id,
     pictureUrl: '',
     productType: 'Snacks',
-    productBrand: 'KFC',
+    productBrand: 'Owlet',
   })),
 });
 

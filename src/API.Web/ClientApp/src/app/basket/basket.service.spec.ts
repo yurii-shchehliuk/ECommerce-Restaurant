@@ -9,12 +9,12 @@ import { BasketService } from './basket.service';
 
 const product: IProduct = {
   id: 12,
-  name: '10 Piece Wicked',
+  name: 'Ten-Piece Grill Box',
   description: 'A bucket.',
   price: 16,
-  pictureUrl: '/img/wicked.jpg',
+  pictureUrl: '/img/grill-box.jpg',
   productType: 'Snacks',
-  productBrand: 'KFC',
+  productBrand: 'Owlet',
 };
 
 describe('BasketService', () => {
@@ -47,8 +47,8 @@ describe('BasketService', () => {
     const line = sent.items[0];
 
     // Omitting any of these three returns a 400 that lists them.
-    expect(line.pictureUrl).toBe('/img/wicked.jpg');
-    expect(line.brand).toBe('KFC');
+    expect(line.pictureUrl).toBe('/img/grill-box.jpg');
+    expect(line.brand).toBe('Owlet');
     expect(line.type).toBe('Snacks');
     expect(line.quantity).toBe(1);
 

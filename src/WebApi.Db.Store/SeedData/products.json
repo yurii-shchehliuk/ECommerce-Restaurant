@@ -1,251 +1,226 @@
 [
   {
-    "Name": "Veggie Rice",
-    "Description": "A deliciously sweet mini cob of golden corn, served with steamed Tex Mex rice, fresh lettuce, chopped tomatoes and a bean salsa, drizzled with sour cream sauce. Light, filling and delicious. Served with a drink.",
-    "PictureUrl": "images/products/itm1.jpg",
+    "Name": "Harvest Grain Bowl",
+    "Description": "Warm barley and roasted squash with charred sweetcorn, baby leaves and a lemon-herb dressing, finished with toasted seeds. Served with a drink.",
+    "PictureUrl": "images/products/harvest-grain-bowl.jpg",
     "Price": 8,
     "ProductTypeId": 1,
     "ProductBrandId": 1
   },
   {
-    "Name": "Zinger Rice",
-    "Description": "One piece of our fiery Zinger chicken with steamed Tex Mex rice, fresh lettuce and a bean salsa, drizzled with sour cream sauce. Light, filling and spicy.",
-    "PictureUrl": "images/products/417c9c86-a20d-462f-967b-6b7d11a2d538.jpg",
+    "Name": "Ember Chicken Bowl",
+    "Description": "A grilled chicken fillet sliced over warm barley, with charred sweetcorn, baby leaves and a smoked paprika dressing. Served with a drink.",
+    "PictureUrl": "images/products/ember-chicken-bowl.jpg",
     "Price": 10,
     "ProductTypeId": 1,
     "ProductBrandId": 1
   },
   {
-    "Name": "Zinger Burger",
-    "Description": "Our simple, succulent 100% chicken breast Fillet burger, plus spine-tingling Zing. With regular fries and a regular drink.",
-    "PictureUrl": "images/products/7a2a492c-7fe0-48ae-99c3-6cb3ead9b97f.jpg",
+    "Name": "Ember Fillet Burger",
+    "Description": "A grilled chicken fillet in a toasted brioche bun with crisp lettuce, tomato and our house ember sauce. Comes with regular fries and a regular drink.",
+    "PictureUrl": "images/products/ember-fillet-burger.jpg",
     "Price": 6,
     "ProductTypeId": 1,
     "ProductBrandId": 1
   },
-
   {
-    "Name": "Kids PopCorn Chicken",
-    "Description": "Our one hundred chicken breast Popcorn Chicken pieces. A fun, bite-sized snack.",
-    "PictureUrl": "images/products/e47c1579-3d7f-4eb5-a013-108fa815d0a9.jpg",
+    "Name": "Little Owl Nuggets",
+    "Description": "Six lightly breaded chicken bites, sized for smaller appetites, with a regular side and a small drink.",
+    "PictureUrl": "images/products/little-owl-nuggets.jpg",
     "Price": 10,
     "ProductTypeId": 1,
     "ProductBrandId": 1
   },
   {
-    "Name": "Boneless Banquet",
-    "Description": "A banquet of three chicken breast Mini Fillets, plus Popcorn Chicken, regular fries, regular side, one Johnny's burger Original Dip and drink. A fuss-free dipper's delight.",
-    "PictureUrl": "images/products/49524aa0-a499-4add-af0a-2f88941c24d8.jpg",
+    "Name": "Roast Plate",
+    "Description": "Two pieces of slow-roasted chicken with regular fries, a regular side and a dip of your choosing.",
+    "PictureUrl": "images/products/roast-plate.jpg",
     "Price": 10,
     "ProductTypeId": 1,
     "ProductBrandId": 1
   },
-
   {
-    "Name": "Boneless Dips",
-    "Description": "Four of our chicken breast Mini Fillets, with two Johnny's burger Original Dips, a regular side and drink. A no-fuss feast.",
-    "PictureUrl": "images/products/ff5a9d55-20cf-4d5e-a2e9-bfdd3f20d799.jpg",
+    "Name": "Twin Fillet Plate",
+    "Description": "Two grilled fillets with two house dips, a regular side and a drink. Straightforward and generous.",
+    "PictureUrl": "images/products/twin-fillet-plate.jpg",
     "Price": 11,
     "ProductTypeId": 1,
     "ProductBrandId": 1
   },
-
   {
-    "Name": "Mighty Bucket",
-    "Description": "Two pieces of Original Recipe chicken, two chicken breast Mini Fillets and a pair of spicy hot wings.",
-    "PictureUrl": "images/products/5a2526be-596e-4403-9d6b-f9ab7409edb6.jpg",
+    "Name": "Grill Sampler",
+    "Description": "Two pieces of roast chicken, two grilled mini fillets and a pair of glazed wings, for when you cannot choose.",
+    "PictureUrl": "images/products/grill-sampler.jpg",
     "Price": 8,
     "ProductTypeId": 1,
     "ProductBrandId": 1
   },
-
   {
-    "Name": "Zinger Stacker",
-    "Description": "Made with two fiery zinger fillets, topped with two slices of cheese, supercharger and sweet chilli sauce. Fiery and delicious. With regular fries and drink.",
-    "PictureUrl": "images/products/c1e1738c-e5cd-4d75-b2b7-82c1e24cdc90.jpg",
+    "Name": "Double Ember Stack",
+    "Description": "Two grilled fillets stacked with melted cheese, pickles and ember sauce in a toasted bun. With regular fries and a drink.",
+    "PictureUrl": "images/products/double-ember-stack.jpg",
     "Price": 8,
     "ProductTypeId": 1,
     "ProductBrandId": 1
   },
-
   {
-    "Name": "6 Piece Wicked Variety",
-    "Description": "Eight hot wings, six pieces of Original Recipe chicken and four chicken breast Mini Fillets, with four regular fries. A full-on fiery family feast.",
-    "PictureUrl": "images/products/4619f98a-142a-40fa-932d-17bd26480b6c.jpg",
+    "Name": "Sharing Box for Two",
+    "Description": "Six glazed wings, four pieces of roast chicken and two grilled fillets, with two regular fries. Enough for two, at a push three.",
+    "PictureUrl": "images/products/sharing-box-for-two.jpg",
     "Price": 11,
     "ProductTypeId": 4,
     "ProductBrandId": 1
   },
-
   {
-    "Name": "14 Piece Bargain",
-    "Description": "A bumper bargain bucket of fourteen pieces of our famous Original Recipe chicken pieces, with four regular fries. A feast fit for the whole family.",
-    "PictureUrl": "images/products/0c4dc53d-ebad-45b1-b0b2-d6e2373d782e.jpg",
+    "Name": "Family Roast Box",
+    "Description": "Fourteen pieces of slow-roasted chicken with four regular fries. Built for a table rather than a tray.",
+    "PictureUrl": "images/products/family-roast-box.jpg",
     "Price": 25,
     "ProductTypeId": 4,
     "ProductBrandId": 1
   },
-
   {
-    "Name": "14 Piece Party",
-    "Description": "It's the ultimate Johnny's burger bucket! Fourteen pieces of our famous Original Recipe chicken, with eight  chicken breast Mini Fillets, eight Hot Wings, one large Popcorn Chicken, two large sides and six regular fries, plus a large bottle of drink for sharing. The most delicious way to cater for any party.",
-    "PictureUrl": "images/products/835a7de0-6d03-425a-a9d2-a01756a3009a.jpg",
+    "Name": "Party Platter",
+    "Description": "Fourteen pieces of roast chicken, eight grilled mini fillets, eight glazed wings, a large tub of golden bites, two large sides, six regular fries and a large bottle of cola to share.",
+    "PictureUrl": "images/products/party-platter.jpg",
     "Price": 22,
     "ProductTypeId": 4,
     "ProductBrandId": 1
   },
-
-
   {
-    "Name": "10 Piece Wicked",
-    "Description": "Eight hot wings, ten pieces of Original Recipe chicken and four chicken breast Mini Fillets, with four regular fries. A full-on fiery family feast.",
-    "PictureUrl": "images/products/9e1f71b1-9e26-4bd4-8226-677ce38747af.jpg",
+    "Name": "Dipper's Dozen",
+    "Description": "Twelve grilled mini fillets and a large tub of golden bites with four house dips: smoked barbecue, ember hot, sweet chilli and garlic buttermilk. Four regular fries and two large sides included.",
+    "PictureUrl": "images/products/dippers-dozen.jpg",
+    "Price": 21,
+    "ProductTypeId": 4,
+    "ProductBrandId": 1
+  },
+  {
+    "Name": "Ten-Piece Grill Box",
+    "Description": "Eight glazed wings, ten pieces of roast chicken and four grilled mini fillets, with four regular fries.",
+    "PictureUrl": "images/products/ten-piece-grill-box.jpg",
     "Price": 16,
     "ProductTypeId": 5,
     "ProductBrandId": 1
   },
-
   {
-    "Name": "REGULAR FRIES",
-    "Description": "Golden french fries. Unsalted so you can have them how you like them",
-    "PictureUrl": "images/products/239babe0-7ea7-47ef-8bec-76bf477a3d39.jpg",
+    "Name": "House Fries",
+    "Description": "Skin-on fries, fried golden and left unsalted so you can season them the way you like them.",
+    "PictureUrl": "images/products/house-fries.jpg",
     "Price": 1,
     "ProductTypeId": 5,
     "ProductBrandId": 1
   },
-
   {
-    "Name": "Corn Cob",
-    "Description": "A deliciously sweet mini cob of golden corn. Suitable for vegetarians",
-    "PictureUrl": "images/products/1aaf55bd-2874-4aa3-add4-ccf6bb2aca54.jpg",
+    "Name": "Sweetcorn Cob",
+    "Description": "A short cob of sweetcorn, char-grilled and brushed with herb butter. Suitable for vegetarians.",
+    "PictureUrl": "images/products/sweetcorn-cob.jpg",
     "Price": 1,
     "ProductTypeId": 5,
     "ProductBrandId": 1
   },
-
   {
-    "Name": "Popcorn Chicken",
-    "Description": "Our chicken breast Popcorn Chicken pieces. A fun, bite-sized snack.",
-    "PictureUrl": "images/products/34cba219-6beb-465a-a697-d1a3f09101e1.jpg",
+    "Name": "Golden Bites",
+    "Description": "Small pieces of lightly breaded chicken breast. A bite-sized snack that shares badly and travels well.",
+    "PictureUrl": "images/products/golden-bites.jpg",
     "Price": 3,
     "ProductTypeId": 5,
     "ProductBrandId": 1
   },
-
   {
-    "Name": "Regular Beans",
-    "Description": "Baked beans with a hint of Kentucky BBQ sauce. The simple family favourite",
-    "PictureUrl": "images/products/f982aa3b-b6f3-433a-b974-746f45e13f02.jpg",
+    "Name": "Smoky Beans",
+    "Description": "Slow-cooked beans in a smoked tomato sauce. The plain, dependable side.",
+    "PictureUrl": "images/products/smoky-beans.jpg",
     "Price": 1,
     "ProductTypeId": 5,
     "ProductBrandId": 1
   },
-
   {
     "Name": "Garden Salad",
-    "Description": "A fresh and crunchy garden salad with sweetcorn, tomatoes and buttermilk dressing, that also provides one of your 5 a day.",
-    "PictureUrl": "images/products/3334ac30-3944-4df5-ae5d-bdb62add6695.jpg",
+    "Description": "Crisp leaves with sweetcorn, tomato and a buttermilk dressing on the side.",
+    "PictureUrl": "images/products/garden-salad.jpg",
     "Price": 2,
     "ProductTypeId": 5,
     "ProductBrandId": 1
   },
-
   {
-    "Name": "Cherry Sundae",
-    "Description": "A smooth soft serve ice cream Sundae topped with irresistible cherry sauce",
-    "PictureUrl": "images/products/5eb1699f-1c89-4173-8a20-a028f877622f.jpg",
+    "Name": "Cherry Swirl Sundae",
+    "Description": "Soft-serve ice cream under a cherry sauce, with a spoon that is never quite long enough.",
+    "PictureUrl": "images/products/cherry-swirl-sundae.jpg",
     "Price": 2,
     "ProductTypeId": 6,
     "ProductBrandId": 1
   },
-
   {
-    "Name": "Chocolate Sundae",
-    "Description": "A little treat with smooth soft serve ice cream topped with irresistible chocolate sauce",
-    "PictureUrl": "images/products/932bb4aa-18d0-40eb-9fa7-ca48cc7b1e65.jpg",
+    "Name": "Chocolate Swirl Sundae",
+    "Description": "Soft-serve ice cream under a dark chocolate sauce, finished with cocoa crumb.",
+    "PictureUrl": "images/products/chocolate-swirl-sundae.jpg",
     "Price": 2,
     "ProductTypeId": 6,
     "ProductBrandId": 1
   },
-
   {
-    "Name": "Caramel Waffle Krushem",
-    "Description": "Our Krushem Soft Serve has waffle pieces and a caramel drizzle, topped with soft serve ice cream, more sauce and a chocolate bolo tie.",
-    "PictureUrl": "images/products/b7c5cf32-2ce0-4fdb-8865-81b0dc3cff3f.jpg",
+    "Name": "Caramel Waffle Shake",
+    "Description": "A thick shake blended with waffle pieces and salted caramel, topped with soft-serve and more caramel.",
+    "PictureUrl": "images/products/caramel-waffle-shake.jpg",
     "Price": 3,
     "ProductTypeId": 6,
     "ProductBrandId": 1
   },
-
   {
-    "Name": "4 Cookies",
-    "Description": "A pack of four classic chocolate chip cookies.",
-    "PictureUrl": "images/products/58981fed-3a72-4aa2-a787-eee5fe6f7225.jpg",
+    "Name": "Four Oat Cookies",
+    "Description": "Four oat and dark chocolate cookies, baked soft in the middle.",
+    "PictureUrl": "images/products/four-oat-cookies.jpg",
     "Price": 2,
     "ProductTypeId": 6,
     "ProductBrandId": 1
   },
-
   {
-    "Name": "Regular Pepsi",
-    "Description": "The original Pepsi. Chilled and thirst-quenching",
-    "PictureUrl": "images/products/51c568ce-45cb-4c1b-8677-9d88fc550fe2.jpg",
-    "Price": 2,
-    "ProductTypeId": 6,
-    "ProductBrandId": 1
-  },
-
-
-  {
-    "Name": "Regular Diet Pepsi",
-    "Description": "The low calorie alternative. Chilled and thirst-quenching.",
-    "PictureUrl": "images/products/8ccb9bf4-13d8-4561-bc1f-0e2c3c6d1c4d.jpg",
-    "Price": 1,
-    "ProductTypeId": 7,
-    "ProductBrandId": 1
-  },
-
-  {
-    "Name": "Regular 7UP",
-    "Description": "The classic crisp lemon-lime sugar-free drink. Chilled and thirst-quenching.",
-    "PictureUrl": "images/products/8ae733fd-b7a5-4461-84ff-399ecb49df94.jpg",
-    "Price": 1,
-    "ProductTypeId": 7,
-    "ProductBrandId": 1
-  },
-
-
-  {
-    "Name": "Regular Robinsons",
-    "Description": "Made with real apple and blackcurrant juice. Revive and hydrate.",
-    "PictureUrl": "images/products/f6245c0c-4083-4547-8597-2420e8e46427.jpg",
+    "Name": "Owlet Cola",
+    "Description": "Our own cola, poured over ice. Chilled and thirst-quenching.",
+    "PictureUrl": "images/products/owlet-cola.jpg",
     "Price": 2,
     "ProductTypeId": 7,
     "ProductBrandId": 1
   },
-
   {
-    "Name": "Water",
-    "Description": "Simple, essential, thirst-quenching.",
-    "PictureUrl": "images/products/bb537fae-cea2-48b0-9909-544d1e19876c.jpg",
+    "Name": "Owlet Cola No Sugar",
+    "Description": "The same cola with no sugar in it. Chilled and thirst-quenching.",
+    "PictureUrl": "images/products/owlet-cola-no-sugar.jpg",
+    "Price": 1,
+    "ProductTypeId": 7,
+    "ProductBrandId": 1
+  },
+  {
+    "Name": "Citrus Press",
+    "Description": "A crisp lemon and lime press, unsweetened and served over ice.",
+    "PictureUrl": "images/products/citrus-press.jpg",
+    "Price": 1,
+    "ProductTypeId": 7,
+    "ProductBrandId": 1
+  },
+  {
+    "Name": "Apple and Blackcurrant",
+    "Description": "Pressed apple with blackcurrant, served long over ice.",
+    "PictureUrl": "images/products/apple-and-blackcurrant.jpg",
+    "Price": 2,
+    "ProductTypeId": 7,
+    "ProductBrandId": 1
+  },
+  {
+    "Name": "Still Water",
+    "Description": "Still water, chilled. Simple and essential.",
+    "PictureUrl": "images/products/still-water.jpg",
     "Price": 1,
     "ProductTypeId": 7,
     "ProductBrandId": 1
   },
   {
     "Name": "Hot Chocolate",
-    "Description": "One of the nation's favourites. Smooth and deliciously warming Hot Chocolate.",
-    "PictureUrl": "images/products/43b21f4d-8e83-49ac-9ce6-e839b7363d18.jpg",
+    "Description": "Steamed milk with dark chocolate, topped with a spoon of cream.",
+    "PictureUrl": "images/products/hot-chocolate.jpg",
     "Price": 3,
     "ProductTypeId": 7,
-    "ProductBrandId": 1
-  },
-  {
-    "Name": "12 Piece Dipping Boneless",
-    "Description": "A feast of twelve chicken breast Mini Fillets plus Popcorn Chicken served with Original Dips, including Kentucky Smoky BBQ sauce, Original Hot Sauce, Sticky Sweet Chilli Sauce and Garlic Buttermilk Mayo. This dipper's delight also comes with four regular fries, two large sides, and a large b",
-    "PictureUrl": "images/products/15d8f399-9751-4f81-87c9-9296b48b2587.jpg",
-    "Price": 21,
-    "ProductTypeId": 4,
     "ProductBrandId": 1
   }
 ]

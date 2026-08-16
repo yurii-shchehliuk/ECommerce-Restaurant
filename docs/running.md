@@ -133,7 +133,7 @@ TOKEN=...
 #    BasketItem's validation; omitting them returns a 400 that lists them.
 curl -X POST http://localhost:5200/svc/basket/api/basket \
   -H "Content-Type: application/json" \
-  -d '{"id":"b1","deliveryMethodId":2,"items":[{"id":12,"productName":"10 Piece Wicked","price":16.00,"quantity":2,"pictureUrl":"x.jpg","brand":"KFC","type":"Snacks"}]}'
+  -d '{"id":"b1","deliveryMethodId":2,"items":[{"id":13,"productName":"Ten-Piece Grill Box","price":16.00,"quantity":2,"pictureUrl":"x.jpg","brand":"Owlet","type":"Snacks"}]}'
 
 # 4. Place the order.
 curl -X POST http://localhost:5200/svc/basket/api/orders \
@@ -196,9 +196,12 @@ through `API.Web` once `ng serve` is up. In Development the client uses
 gateway — so `API.Identity`, `API.Basket` and `API.Admin` all have to be
 reachable on 5041, 5031 and 5011 for the pages to fill in.
 
-Product images are served by `API.Web` itself: the catalogue rows carry absolute
-URLs pointing at its port, so run it as well as `ng serve` if you want the menu
-to have pictures.
+Product images are served by `API.Web` itself. On this path `API.Basket`'s
+`appsettings.json` prefixes each catalogue row's picture with
+`http://localhost:5021/wwwroot/`, so run `API.Web` as well as `ng serve` if you
+want the menu to have pictures. Under Compose the prefix is `/content/` instead
+and the gateway routes it, which is what keeps the deployed bundle on one
+origin.
 
 ### Client checks
 

@@ -78,16 +78,16 @@ describe('SectionHeaderComponent', () => {
 
   it('shows the name a page supplies instead of the raw id', async () => {
     await goTo('/shop/42');
-    TestBed.inject(PageLabelService).set('10 Piece Wicked');
+    TestBed.inject(PageLabelService).set('Ten-Piece Grill Box');
     TestBed.tick();
     fixture.detectChanges();
 
-    expect(fixture.componentInstance.title).toBe('10 Piece Wicked');
+    expect(fixture.componentInstance.title).toBe('Ten-Piece Grill Box');
   });
 
   it('drops a supplied name on the next navigation', async () => {
     await goTo('/shop/42');
-    TestBed.inject(PageLabelService).set('10 Piece Wicked');
+    TestBed.inject(PageLabelService).set('Ten-Piece Grill Box');
     TestBed.tick();
     fixture.detectChanges();
 
