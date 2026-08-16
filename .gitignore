@@ -83,3 +83,10 @@ GETTING-STARTED.md
 **/ssl/*.pem
 **/ssl/*.pfx
 *.pfx
+
+# Angular build output. `/dist` above is root-relative and did not cover this one.
+src/API.Web/ClientApp/dist/
+src/API.Web/ClientApp/out-tsc/
+
+# per-developer project state
+*.*proj.user

@@ -5,14 +5,18 @@
     <DockerTargetOS>Linux</DockerTargetOS>
     <ProjectGuid>c9f9518d-5063-4437-90d9-735477927ebf</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger/index.html</DockerServiceUrl>
-    <DockerServiceName>api.web</DockerServiceName>
+    <DockerServiceUrl>{Scheme}://localhost:5200</DockerServiceUrl>
+    <DockerServiceName>reverseproxy</DockerServiceName>
+    <!--
+      The compose files live next to Owlet.sln, because their build context is the
+      repository root and Docker resolves that context relative to the compose file.
+      Keeping them here meant every run had to be preceded by copying them up one
+      directory by hand.
+    -->
+    <DockerComposeBaseFilePath>..\docker-compose</DockerComposeBaseFilePath>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="docker-compose.override.yml">
-      <DependentUpon>docker-compose.yml</DependentUpon>
-    </None>
-    <None Include="docker-compose.yml" />
-    <None Include=".dockerignore" />
+    <None Include="..\docker-compose.yml" />
+    <None Include="..\.dockerignore" />
   </ItemGroup>
 </Project>

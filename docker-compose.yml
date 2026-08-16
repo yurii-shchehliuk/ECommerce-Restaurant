@@ -1,0 +1,234 @@
+# Owlet — the whole system, one command:
+#
+#     cp .env.template .env                                   # set SA_PASSWORD
+#     cp src/WebApi.Domain/Common.env.template src/WebApi.Domain/Common.env
+#     docker compose up --build
+#
+# These files live next to Owlet.sln on purpose. They used to live in docker/ while
+# declaring `context: .` and Dockerfiles that COPY from `src/...`, so they only worked
+# if you first copied them up a directory — which the docker/README.md told you to do,
+# alongside a .dockerignore that did not exist. Now the build context is the directory
+# the compose file is in, and `.env` is picked up from the same place.
+#
+# `version:` is omitted deliberately: it is obsolete in the Compose spec, and the
+# `depends_on: condition: service_healthy` used below is not available under the old
+# version 3.4 schema.
+
+services:
+
+  ## ---------------------------------------------------------------- gateway
+  reverseproxy:
+    container_name: owlet-gateway
+    build:
+      context: .
+      dockerfile: src/nginx/nginx.Dockerfile
+    ports:
+      - "5200:5200"
+    depends_on:
+      - api.web
+      - api.identity
+      - api.basket
+      - api.admin
+    networks:
+      - owletnet
+    restart: unless-stopped
+
+  ## ---------------------------------------------------------------- services
+  api.identity:
+    container_name: owlet-identity
+    image: ${DOCKER_REGISTRY-}apiidentity
+    build:
+      context: .
+      dockerfile: src/API.Identity/Dockerfile
+    env_file:
+      - src/WebApi.Domain/Common.env
+    environment:
+      - ASPNETCORE_URLS=http://*:80
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
+      # Composed from SA_PASSWORD so the database password exists in exactly one
+      # place. It used to be written into .env AND into both connection strings in
+      # Common.env, and getting one of the three wrong produced a login failure that
+      # looked like a schema problem.
+      - ConnectionStrings__IdentityConnection=Server=owletsql;Database=identitydb;User Id=sa;Password=${SA_PASSWORD};MultipleActiveResultSets=true;TrustServerCertificate=True
+      - ConnectionStrings__DefaultConnection=Server=owletsql;Database=appdb;User Id=sa;Password=${SA_PASSWORD};MultipleActiveResultSets=true;TrustServerCertificate=True
+    ports:
+      - "5041:80"
+    depends_on:
+      owletsql:
+        condition: service_healthy
+      owletseq:
+        condition: service_started
+    networks:
+      - owletnet
+
+  api.basket:
+    container_name: owlet-basket
+    image: ${DOCKER_REGISTRY-}apibasket
+    build:
+      context: .
+      dockerfile: src/API.Basket/Dockerfile
+    env_file:
+      - src/WebApi.Domain/Common.env
+    environment:
+      - ASPNETCORE_URLS=http://*:80
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
+      # appsettings.json says "localhost", which inside a container is the container
+      # itself. These two are the difference between a working stack and one that
+      # comes up and then fails on the first basket read.
+      - ConnectionStrings__Redis=redis
+      - RabbitMqHost=amqp://guest:guest@rabbitowlet:5672
+      - ConnectionStrings__DefaultConnection=Server=owletsql;Database=appdb;User Id=sa;Password=${SA_PASSWORD};MultipleActiveResultSets=true;TrustServerCertificate=True
+      - ConnectionStrings__IdentityConnection=Server=owletsql;Database=identitydb;User Id=sa;Password=${SA_PASSWORD};MultipleActiveResultSets=true;TrustServerCertificate=True
+    ports:
+      - "5031:80"
+    depends_on:
+      owletsql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitowlet:
+        condition: service_healthy
+    networks:
+      - owletnet
+
+  # Was commented out of this file entirely, which is why "four services" was a claim
+  # the stack could not back up. It is the consumer half of the order bus.
+  api.admin:
+    container_name: owlet-admin
+    image: ${DOCKER_REGISTRY-}apiadmin
+    build:
+      context: .
+      dockerfile: src/API.Admin/Dockerfile
+    env_file:
+      - src/WebApi.Domain/Common.env
+    environment:
+      - ASPNETCORE_URLS=http://*:80
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
+      - RabbitMqHost=amqp://guest:guest@rabbitowlet:5672
+      - ConnectionStrings__DefaultConnection=Server=owletsql;Database=appdb;User Id=sa;Password=${SA_PASSWORD};MultipleActiveResultSets=true;TrustServerCertificate=True
+      - ConnectionStrings__IdentityConnection=Server=owletsql;Database=identitydb;User Id=sa;Password=${SA_PASSWORD};MultipleActiveResultSets=true;TrustServerCertificate=True
+    ports:
+      - "5011:80"
+    depends_on:
+      owletsql:
+        condition: service_healthy
+      rabbitowlet:
+        condition: service_healthy
+    networks:
+      - owletnet
+
+  api.web:
+    container_name: owlet-web
+    image: ${DOCKER_REGISTRY-}apiweb
+    build:
+      context: .
+      dockerfile: src/API.Web/Dockerfile
+    env_file:
+      - src/WebApi.Domain/Common.env
+    environment:
+      - ASPNETCORE_URLS=http://*:80
+      # Production, not Development: in Development API.Web proxies to the Angular CLI
+      # dev server, which is not in this image. In Production it serves the bundle the
+      # Dockerfile's node stage built into wwwroot/dist.
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports:
+      - "5021:80"
+    networks:
+      - owletnet
+
+  ## ---------------------------------------------------------------- data
+  owletsql:
+    container_name: owlet-sqlserver
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    restart: always
+    ports:
+      - "1433:1433"
+    environment:
+      - "ACCEPT_EULA=Y"
+      - "SA_PASSWORD=${SA_PASSWORD:?set SA_PASSWORD in .env}"
+    volumes:
+      - sqldata:/var/opt/mssql
+    healthcheck:
+      # depends_on used to order container *start* only, so the APIs raced SQL Server's
+      # 30-second cold start and lost. This is the readiness gate that was missing.
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P \"$$SA_PASSWORD\" -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    networks:
+      - owletnet
+
+  redis:
+    container_name: owlet-redis
+    image: redis:6.0.10-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - owletnet
+
+  rabbitowlet:
+    container_name: owlet-rabbitmq
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - "5672:5672"
+      - "8088:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    networks:
+      - owletnet
+
+  ## ---------------------------------------------------------------- observability and dev tools
+  owletseq:
+    container_name: owlet-seq
+    image: datalust/seq
+    restart: unless-stopped
+    ports:
+      - "5342:80"
+    environment:
+      - ACCEPT_EULA=Y
+    networks:
+      - owletnet
+
+  owletsmtp:
+    container_name: owlet-smtp4dev
+    image: rnwood/smtp4dev
+    restart: always
+    ports:
+      - "5010:80"
+    networks:
+      - owletnet
+
+  redis-commander:
+    container_name: owlet-redis-commander
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - owletnet
+
+volumes:
+  sqldata:
+  redis-data:
+
+networks:
+  owletnet: {}

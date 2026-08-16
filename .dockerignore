@@ -1,0 +1,42 @@
+# Build context is the repository root. Keeping node_modules, bin/ and obj/ out of it
+# is the difference between a context of a few MB and one of several hundred: the
+# Angular client's node_modules alone is ~400 MB, and the node stage in
+# src/API.Web/Dockerfile installs its own from package-lock.json anyway.
+**/.git
+**/.gitignore
+**/.vs
+**/.vscode
+**/.idea
+**/.angular
+**/.classpath
+**/.project
+**/.settings
+**/.toolstarget
+**/*.*proj.user
+**/*.dbmdl
+**/*.jfm
+**/azds.yaml
+**/bin
+**/obj
+**/charts
+**/node_modules
+**/npm-debug.log
+**/secrets.dev.yaml
+**/values.dev.yaml
+**/Dockerfile*
+**/docker-compose*
+src/API.Web/ClientApp/dist
+src/API.Web/ClientApp/out-tsc
+
+# Never let a real secret into a build context.
+**/.env
+!**/.env.template
+**/Common.env
+**/appsettings.Local.json
+**/*.pfx
+**/ssl/*.key
+
+LICENSE
+README.md
+docs
+PORTFOLIO-PLAN.md

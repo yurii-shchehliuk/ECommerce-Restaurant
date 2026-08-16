@@ -16,10 +16,11 @@ namespace API.Web
                 .UseSerilog((ctx, provider, loggerConfig) =>
                 {
                     loggerConfig
-                        .ReadFrom.Configuration(ctx.Configuration) // minimum levels defined per project in json files 
+                        .ReadFrom.Configuration(ctx.Configuration)
                         .Enrich.FromLogContext()
+                        .Enrich.WithProperty("Service", "API.Web")
                         .WriteTo.Console()
-                        .WriteTo.Seq("http://owletseq"); //localhost:5341
+                        .WriteTo.Seq(ctx.Configuration["Seq:ServerUrl"] ?? "http://owletseq");
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
