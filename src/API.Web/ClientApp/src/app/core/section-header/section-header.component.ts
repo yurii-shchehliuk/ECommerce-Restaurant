@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { Subscription, filter, startWith } from 'rxjs';
+import { NgIf, NgFor } from '@angular/common';
 
 export interface Crumb {
   label: string;
@@ -19,7 +20,7 @@ export interface Crumb {
     selector: 'app-section-header',
     templateUrl: './section-header.component.html',
     styleUrls: ['./section-header.component.scss'],
-    standalone: false
+    imports: [NgIf, RouterLink, NgFor]
 })
 export class SectionHeaderComponent implements OnInit, OnDestroy {
   crumbs: Crumb[] = [];

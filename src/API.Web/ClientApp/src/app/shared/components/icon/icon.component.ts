@@ -86,8 +86,7 @@ const PATHS: Record<IconName, string> = {
     focusable="false"
     [innerHTML]="markup"
   ></svg>`,
-    styles: [':host{display:inline-flex;line-height:0}'],
-    standalone: false
+    styles: [':host{display:inline-flex;line-height:0}']
 })
 export class IconComponent {
   /** Edge length in px. Icons are square. */

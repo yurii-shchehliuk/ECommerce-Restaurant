@@ -2,12 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IOrder } from 'src/app/shared/models/order';
 import { OrdersService } from '../orders.service';
+import { NgIf } from '@angular/common';
+import { BasketSummaryComponent } from '../../shared/components/basket-summary/basket-summary.component';
+import { OrderTotalsComponent } from '../../shared/components/order-totals/order-totals.component';
 
 @Component({
     selector: 'app-order-detailed',
     templateUrl: './order-detailed.component.html',
     styleUrls: ['./order-detailed.component.scss'],
-    standalone: false
+    imports: [NgIf, BasketSummaryComponent, OrderTotalsComponent]
 })
 export class OrderDetailedComponent implements OnInit {
   order: IOrder | null = null;

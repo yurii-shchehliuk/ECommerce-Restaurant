@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CdkStepper } from '@angular/cdk/stepper';
+import { NgFor, NgTemplateOutlet } from '@angular/common';
 
 /**
  * Checkout progress control over `CdkStepper`.
@@ -13,7 +14,7 @@ import { CdkStepper } from '@angular/cdk/stepper';
     templateUrl: './stepper.component.html',
     styleUrls: ['./stepper.component.scss'],
     providers: [{ provide: CdkStepper, useExisting: StepperComponent }],
-    standalone: false
+    imports: [NgFor, NgTemplateOutlet]
 })
 export class StepperComponent extends CdkStepper implements OnInit {
   @Input() linearModeSelected = true;

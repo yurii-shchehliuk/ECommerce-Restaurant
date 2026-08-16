@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { IProduct } from 'src/app/shared/models/product';
 import { AdminProductsService } from './products.service';
+import { NgIf, NgFor, CurrencyPipe } from '@angular/common';
 
 @Component({
     selector: 'app-admin-products',
     templateUrl: './products.component.html',
     styleUrls: ['./products.component.scss'],
-    standalone: false
+    imports: [NgIf, NgFor, CurrencyPipe]
 })
 export class ProductsComponent implements OnInit {
   products: IProduct[] = [];

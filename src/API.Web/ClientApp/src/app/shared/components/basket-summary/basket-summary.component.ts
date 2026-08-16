@@ -1,12 +1,15 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IBasketItem } from '../../models/basket';
 import { IOrderItem } from '../../models/order';
+import { NgIf, NgFor, CurrencyPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { IconComponent } from '../icon/icon.component';
 
 @Component({
     selector: 'app-basket-summary',
     templateUrl: './basket-summary.component.html',
     styleUrls: ['./basket-summary.component.scss'],
-    standalone: false
+    imports: [NgIf, NgFor, RouterLink, IconComponent, CurrencyPipe]
 })
 export class BasketSummaryComponent {
   @Input() items: (IBasketItem | IOrderItem)[] = [];

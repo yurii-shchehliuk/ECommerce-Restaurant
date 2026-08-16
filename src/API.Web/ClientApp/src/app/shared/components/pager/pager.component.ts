@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { NgIf, NgFor } from '@angular/common';
+import { IconComponent } from '../icon/icon.component';
 
 /**
  * Page control for the shop grid.
@@ -12,7 +14,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
     selector: 'app-pager',
     templateUrl: './pager.component.html',
     styleUrls: ['./pager.component.scss'],
-    standalone: false
+    imports: [NgIf, IconComponent, NgFor]
 })
 export class PagerComponent {
   @Input() totalCount = 0;

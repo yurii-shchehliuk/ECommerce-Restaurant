@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMAIL_PATTERN } from 'src/app/shared/validators/email';
 import { AccountService } from '../account.service';
+import { TextInputComponent } from '../../shared/components/text-input/text-input.component';
+import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
-    standalone: false
+    imports: [ReactiveFormsModule, TextInputComponent, NgIf, RouterLink]
 })
 export class LoginComponent implements OnInit {
   loginForm = new FormGroup({

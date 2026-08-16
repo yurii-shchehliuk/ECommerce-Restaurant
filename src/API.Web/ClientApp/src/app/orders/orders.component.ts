@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { IOrder } from '../shared/models/order';
 import { OrdersService } from './orders.service';
+import { NgIf, NgFor, CurrencyPipe, DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-orders',
     templateUrl: './orders.component.html',
     styleUrls: ['./orders.component.scss'],
-    standalone: false
+    imports: [NgIf, NgFor, RouterLink, CurrencyPipe, DatePipe]
 })
 export class OrdersComponent implements OnInit {
   orders: IOrder[] = [];

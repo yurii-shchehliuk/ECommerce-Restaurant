@@ -2,12 +2,16 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { MessageVM } from '../models/MessageVM';
 import { SignalRService } from '../signalr.service';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { IconComponent } from '../../shared/components/icon/icon.component';
 
 @Component({
     selector: 'app-chat',
     templateUrl: './chat.component.html',
     styleUrls: ['./chat.component.scss'],
-    standalone: false
+    imports: [NgIf, RouterLink, NgFor, ReactiveFormsModule, FormsModule, IconComponent, DatePipe]
 })
 export class ChatComponent implements OnInit, OnDestroy {
   messages: MessageVM[] = [];

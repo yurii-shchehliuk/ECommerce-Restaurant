@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription, interval, startWith, switchMap } from 'rxjs';
 import { OrderEventsService, ReceivedOrderEvent } from './order-events.service';
+import { NgIf, NgFor, CurrencyPipe, DatePipe } from '@angular/common';
 
 /**
  * Live view of what API.Admin has consumed off RabbitMQ.
@@ -14,7 +15,7 @@ import { OrderEventsService, ReceivedOrderEvent } from './order-events.service';
     selector: 'app-order-events',
     templateUrl: './order-events.component.html',
     styleUrls: ['./order-events.component.scss'],
-    standalone: false
+    imports: [NgIf, NgFor, CurrencyPipe, DatePipe]
 })
 export class OrderEventsComponent implements OnInit, OnDestroy {
   events: ReceivedOrderEvent[] = [];

@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { IOrder } from 'src/app/shared/models/order';
 import { CompletedOrdersService } from './completed-orders.service';
+import { NgIf, NgFor, CurrencyPipe, DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-completed-orders',
     templateUrl: './completed-orders.component.html',
     styleUrls: ['./completed-orders.component.scss'],
-    standalone: false
+    imports: [NgIf, NgFor, RouterLink, CurrencyPipe, DatePipe]
 })
 export class CompletedOrdersComponent implements OnInit {
   orders: IOrder[] = [];

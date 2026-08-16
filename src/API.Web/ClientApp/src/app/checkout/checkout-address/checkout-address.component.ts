@@ -1,14 +1,18 @@
 import { Component, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AccountService } from 'src/app/account/account.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { IAddress } from 'src/app/shared/models/address';
+import { TextInputComponent } from '../../shared/components/text-input/text-input.component';
+import { RouterLink } from '@angular/router';
+import { IconComponent } from '../../shared/components/icon/icon.component';
+import { CdkStepperNext } from '@angular/cdk/stepper';
 
 @Component({
     selector: 'app-checkout-address',
     templateUrl: './checkout-address.component.html',
     styleUrls: ['./checkout-address.component.scss'],
-    standalone: false
+    imports: [ReactiveFormsModule, TextInputComponent, RouterLink, IconComponent, CdkStepperNext]
 })
 export class CheckoutAddressComponent {
   @Input() checkoutForm: FormGroup;

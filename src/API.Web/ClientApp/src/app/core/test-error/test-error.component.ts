@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { environment } from 'src/environment';
+import { NgFor, NgIf } from '@angular/common';
 
 interface Probe {
   label: string;
@@ -21,7 +22,7 @@ interface Probe {
     selector: 'app-test-error',
     templateUrl: './test-error.component.html',
     styleUrls: ['./test-error.component.scss'],
-    standalone: false
+    imports: [NgFor, NgIf]
 })
 export class TestErrorComponent {
   private baseUrl = environment.identityApi.api;

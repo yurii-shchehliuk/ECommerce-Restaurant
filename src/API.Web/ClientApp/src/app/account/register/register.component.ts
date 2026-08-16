@@ -1,16 +1,18 @@
 import { Component } from '@angular/core';
-import { AsyncValidatorFn, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { AsyncValidatorFn, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { of, timer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { EMAIL_PATTERN } from 'src/app/shared/validators/email';
 import { AccountService } from '../account.service';
+import { TextInputComponent } from '../../shared/components/text-input/text-input.component';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
     selector: 'app-register',
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
-    standalone: false
+    imports: [ReactiveFormsModule, TextInputComponent, NgIf, NgFor, RouterLink]
 })
 export class RegisterComponent {
   registerForm = this.fb.group({

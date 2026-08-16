@@ -1,5 +1,6 @@
 import { Component, ElementRef, Input, OnInit, Self, ViewChild } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, NgControl } from '@angular/forms';
+import { NgIf } from '@angular/common';
 
 let nextId = 0;
 
@@ -14,7 +15,7 @@ let nextId = 0;
     selector: 'app-text-input',
     templateUrl: './text-input.component.html',
     styleUrls: ['./text-input.component.scss'],
-    standalone: false
+    imports: [NgIf]
 })
 export class TextInputComponent implements OnInit, ControlValueAccessor {
   @ViewChild('input', { static: true }) input!: ElementRef<HTMLInputElement>;

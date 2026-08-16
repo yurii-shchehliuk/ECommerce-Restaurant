@@ -3,12 +3,17 @@ import { Observable } from 'rxjs';
 import { AccountService } from './account/account.service';
 import { BasketService } from './basket/basket.service';
 import { BusyService } from './core/services/busy.service';
+import { NavBarComponent } from './core/nav-bar/nav-bar.component';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { SectionHeaderComponent } from './core/section-header/section-header.component';
+import { RouterOutlet } from '@angular/router';
+import { ToastHostComponent } from './core/toast-host/toast-host.component';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
-    standalone: false
+    imports: [NavBarComponent, NgIf, SectionHeaderComponent, RouterOutlet, ToastHostComponent, AsyncPipe]
 })
 export class AppComponent implements OnInit {
   busy$: Observable<boolean>;

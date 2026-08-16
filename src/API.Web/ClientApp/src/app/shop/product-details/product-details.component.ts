@@ -3,12 +3,15 @@ import { ActivatedRoute } from '@angular/router';
 import { BasketService } from 'src/app/basket/basket.service';
 import { IProduct } from 'src/app/shared/models/product';
 import { ShopService } from '../shop.service';
+import { NgIf, CurrencyPipe } from '@angular/common';
+import { IconComponent } from '../../shared/components/icon/icon.component';
+import { CommentComponent } from '../../features/comments/comment.component';
 
 @Component({
     selector: 'app-product-details',
     templateUrl: './product-details.component.html',
     styleUrls: ['./product-details.component.scss'],
-    standalone: false
+    imports: [NgIf, IconComponent, CommentComponent, CurrencyPipe]
 })
 export class ProductDetailsComponent implements OnInit {
   product: IProduct | null = null;

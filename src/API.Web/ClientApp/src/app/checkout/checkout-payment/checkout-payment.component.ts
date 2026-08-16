@@ -6,7 +6,7 @@ import {
   OnDestroy,
   ViewChild,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { firstValueFrom } from 'rxjs';
@@ -15,12 +15,16 @@ import { IBasket } from 'src/app/shared/models/basket';
 import { environment } from 'src/environment';
 import { CheckoutService } from '../checkout.service';
 import { StripeElement, StripeElementChangeEvent, Stripe } from '../stripe';
+import { TextInputComponent } from '../../shared/components/text-input/text-input.component';
+import { NgIf } from '@angular/common';
+import { CdkStepperPrevious } from '@angular/cdk/stepper';
+import { IconComponent } from '../../shared/components/icon/icon.component';
 
 @Component({
     selector: 'app-checkout-payment',
     templateUrl: './checkout-payment.component.html',
     styleUrls: ['./checkout-payment.component.scss'],
-    standalone: false
+    imports: [ReactiveFormsModule, TextInputComponent, NgIf, CdkStepperPrevious, IconComponent]
 })
 export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
   @Input() checkoutForm!: FormGroup;

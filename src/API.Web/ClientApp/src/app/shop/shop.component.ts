@@ -4,12 +4,17 @@ import { IProduct } from '../shared/models/product';
 import { IType } from '../shared/models/productType';
 import { ShopParams } from '../shared/models/shopParams';
 import { ShopService } from './shop.service';
+import { NgFor, NgIf } from '@angular/common';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { PagingHeaderComponent } from '../shared/components/paging-header/paging-header.component';
+import { ProductItemComponent } from './product-item/product-item.component';
+import { PagerComponent } from '../shared/components/pager/pager.component';
 
 @Component({
     selector: 'app-shop',
     templateUrl: './shop.component.html',
     styleUrls: ['./shop.component.scss'],
-    standalone: false
+    imports: [NgFor, ReactiveFormsModule, PagingHeaderComponent, FormsModule, NgIf, ProductItemComponent, PagerComponent]
 })
 export class ShopComponent implements OnInit {
   @ViewChild('search') searchTerm!: ElementRef<HTMLInputElement>;

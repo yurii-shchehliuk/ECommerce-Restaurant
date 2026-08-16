@@ -4,12 +4,20 @@ import { AccountService } from '../account/account.service';
 import { BasketService } from '../basket/basket.service';
 import { Observable } from 'rxjs';
 import { IBasketTotals } from '../shared/models/basket';
+import { StepperComponent } from '../shared/components/stepper/stepper.component';
+import { CdkStep } from '@angular/cdk/stepper';
+import { CheckoutAddressComponent } from './checkout-address/checkout-address.component';
+import { CheckoutDeliveryComponent } from './checkout-delivery/checkout-delivery.component';
+import { CheckoutReviewComponent } from './checkout-review/checkout-review.component';
+import { CheckoutPaymentComponent } from './checkout-payment/checkout-payment.component';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { OrderTotalsComponent } from '../shared/components/order-totals/order-totals.component';
 
 @Component({
     selector: 'app-checkout',
     templateUrl: './checkout.component.html',
     styleUrls: ['./checkout.component.scss'],
-    standalone: false
+    imports: [StepperComponent, CdkStep, CheckoutAddressComponent, CheckoutDeliveryComponent, CheckoutReviewComponent, CheckoutPaymentComponent, NgIf, OrderTotalsComponent, AsyncPipe]
 })
 export class CheckoutComponent implements OnInit {
   basketTotals$: Observable<IBasketTotals>;

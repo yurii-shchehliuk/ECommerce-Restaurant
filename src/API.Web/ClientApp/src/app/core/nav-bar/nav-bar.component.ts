@@ -4,12 +4,15 @@ import { BasketService } from 'src/app/basket/basket.service';
 import { IBasket } from 'src/app/shared/models/basket';
 import { IUser } from 'src/app/shared/models/user';
 import { AccountService } from 'src/app/account/account.service';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { IconComponent } from '../../shared/components/icon/icon.component';
+import { NgIf, AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'app-nav-bar',
     templateUrl: './nav-bar.component.html',
     styleUrls: ['./nav-bar.component.scss'],
-    standalone: false
+    imports: [RouterLink, IconComponent, RouterLinkActive, NgIf, AsyncPipe]
 })
 export class NavBarComponent implements OnInit {
   basket$: Observable<IBasket>;

@@ -2,6 +2,9 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { MessageVM } from '../models/MessageVM';
 import { SignalRService } from '../signalr.service';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 /**
  * Product comments, delivered over the same hub as the chat.
@@ -14,7 +17,7 @@ import { SignalRService } from '../signalr.service';
     selector: 'app-comment',
     templateUrl: './comment.component.html',
     styleUrls: ['./comment.component.scss'],
-    standalone: false
+    imports: [NgIf, ReactiveFormsModule, FormsModule, RouterLink, NgFor, DatePipe]
 })
 export class CommentComponent implements OnInit, OnDestroy {
   @Input() productId!: string;
