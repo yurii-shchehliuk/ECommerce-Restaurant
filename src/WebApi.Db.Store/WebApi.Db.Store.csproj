@@ -14,6 +14,15 @@
 
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.10" />
 
+    <!-- Provider and design-time tooling live here, not in a web host, so that
+         `dotnet ef migrations add` works against this project on its own. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10" />
+
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+
     <PackageReference Include="Serilog" Version="2.12.0" />
 
     <PackageReference Include="StackExchange.Redis" Version="2.6.90" />

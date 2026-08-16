@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -7,6 +6,7 @@ using Serilog;
 using System;
 using System.Threading.Tasks;
 using WebApi.Db.Store;
+using WebApi.Infrastructure.StartupExtensions;
 
 namespace API.Basket
 {
@@ -15,22 +15,25 @@ namespace API.Basket
         public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
+
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+                var logger = loggerFactory.CreateLogger<Program>();
                 var context = services.GetRequiredService<StoreContext>();
+
                 try
                 {
-                    Log.ForContext("ConnectionString:", context.Database.GetDbConnection().ConnectionString).Information("Information");
-                    await context.Database.EnsureCreatedAsync();
-                    await context.Database.MigrateAsync();
-                    await StoreContextSeed.SeedAsync(context, loggerFactory);
+                    // API.Basket owns appdb's schema. API.Admin reads it and waits.
+                    await DatabaseInitializer.MigrateWithRetryAsync(
+                        context,
+                        logger,
+                        afterMigrate: () => StoreContextSeed.SeedAsync(context, loggerFactory));
                 }
                 catch (Exception ex)
                 {
-                    var logger = loggerFactory.CreateLogger<Program>();
-                    logger.LogError(ex, String.Format("An error occured during migration {0}", context.Database.GetDbConnection().ConnectionString));
+                    logger.LogError(ex, "An error occurred migrating or seeding appdb");
                 }
             }
 
@@ -42,10 +45,11 @@ namespace API.Basket
                 .UseSerilog((ctx, provider, loggerConfig) =>
                 {
                     loggerConfig
-                        .ReadFrom.Configuration(ctx.Configuration) // minimum levels defined per project in json files 
+                        .ReadFrom.Configuration(ctx.Configuration)
                         .Enrich.FromLogContext()
+                        .Enrich.WithProperty("Service", "API.Basket")
                         .WriteTo.Console()
-                        .WriteTo.Seq("http://owletseq"); //host.docker.internal
+                        .WriteTo.Seq(ctx.Configuration["Seq:ServerUrl"] ?? "http://owletseq");
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
