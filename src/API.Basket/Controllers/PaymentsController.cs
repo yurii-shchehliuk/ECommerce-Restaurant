@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -17,18 +18,30 @@ namespace API.Basket.Controllers
     {
         private readonly IPaymentService _paymentService;
         private readonly string _whSecret;
+        private readonly string _stripeKey;
         private readonly ILogger<IPaymentService> _logger;
         public PaymentsController(IPaymentService paymentService, ILogger<IPaymentService> logger, IConfiguration config)
         {
             _logger = logger;
             _paymentService = paymentService;
             _whSecret = config.GetSection("StripeSettings:WhSecret").Value;
+            _stripeKey = config.GetSection("StripeSettings:SecretKey").Value;
         }
 
         [Authorize]
         [HttpPost("{basketId}")]
         public async Task<ActionResult<CustomerBasket>> CreateOrUpdatePaymentIntent(string basketId)
         {
+            // A deployment without a Stripe key has no payment provider, which is a fact
+            // about the deployment rather than a failure of this request. 503 says so and
+            // lets the checkout wizard offer the unpaid path instead of the card step;
+            // throwing here would surface as a 500 and an error page.
+            if (string.IsNullOrWhiteSpace(_stripeKey))
+            {
+                return StatusCode(StatusCodes.Status503ServiceUnavailable,
+                    Result<CustomerBasket>.Fail("Card payment is not configured on this deployment."));
+            }
+
             var basket = await _paymentService.CreateOrUpdatePaymentIntent(basketId);
 
             if (basket == null) return BadRequest(Result<CustomerBasket>.Fail("Problem with your basket"));

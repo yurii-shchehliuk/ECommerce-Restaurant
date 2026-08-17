@@ -5,14 +5,16 @@
     <app-basket-summary [items]="basket.items" [editable]="false" />
   }
 
-  @if (error) {
-    <div class="state state--error" role="alert">
+  @if (paymentsUnavailable) {
+    <div class="state state--error" role="status">
       <app-icon name="alert" [size]="20" />
       <div>
-        <p class="state__title">{{ error }}</p>
+        <p class="state__title">Card payment is not configured on this deployment</p>
         <p class="state__body">
-          The payment step needs a Stripe secret key on API.Basket. Orders can still be
-          placed against the API the wizard calls.
+          <code>API.Basket</code> has no Stripe secret key, so there is no card step to go
+          to. The order can still be placed: it is written, priced from the database and
+          published to the queue exactly as a paid one is, and its status stays
+          <strong>Pending</strong> because no payment confirms it.
         </p>
       </div>
     </div>
@@ -23,9 +25,19 @@
   <button type="button" class="btn btn-ghost" cdkStepperPrevious>
     <app-icon name="chevron-left" [size]="16" /> Back to delivery
   </button>
-  <button type="button" class="btn btn-primary" (click)="createPaymentIntent()"
-    [disabled]="creatingIntent">
-    {{ creatingIntent ? 'Preparing payment…' : 'Go to payment' }}
-    <app-icon name="chevron-right" [size]="16" />
-  </button>
+
+  @if (paymentsUnavailable) {
+    <button type="button" class="btn btn-accent" (click)="placeOrder()" [disabled]="placing">
+      {{ placing ? 'Placing the order…' : 'Place the order' }}
+      @if (!placing) {
+        <app-icon name="arrow-right" [size]="16" />
+      }
+    </button>
+  } @else {
+    <button type="button" class="btn btn-primary" (click)="createPaymentIntent()"
+      [disabled]="creatingIntent">
+      {{ creatingIntent ? 'Preparing payment…' : 'Go to payment' }}
+      <app-icon name="chevron-right" [size]="16" />
+    </button>
+  }
 </div>
