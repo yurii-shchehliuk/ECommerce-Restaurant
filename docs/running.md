@@ -106,7 +106,7 @@ that is already accepting connections.
 | Service | URL | Notes |
 |---|---|---|
 | Gateway / storefront | http://localhost:5200 | the only URL you need |
-| Order events (live) | http://localhost:5200/admin/order-events | what Admin consumed off the bus |
+| Order events (live) | http://localhost:5200/admin/order-events | what Admin consumed off the bus; sign in as `bob@test.com` / `Pa$$w0rd` |
 | `API.Identity` | http://localhost:5041 | `/swagger` |
 | `API.Basket` | http://localhost:5031 | `/swagger` |
 | `API.Admin` | http://localhost:5011 | `/swagger` |
@@ -146,7 +146,9 @@ curl http://localhost:5200/svc/admin/api/orderevents
 
 Step 5 returning a row is the proof: nothing writes that table except
 `OrderPlacedConsumer`, and nothing invokes the consumer except a delivered
-message.
+message. The same rows are on `/admin/order-events` in the client, which is
+behind `adminGuard` — sign in as the seeded administrator, `bob@test.com` /
+`Pa$$w0rd`, to see them there.
 
 To see the queue itself hold a message, stop the consumer first:
 
@@ -254,9 +256,11 @@ dotnet build Owlet.sln
 dotnet test tests/WebApi.Test
 ```
 
-Both work from a clean clone with no Node.js and no Docker. 25 tests, none of
+Both work from a clean clone with no Node.js and no Docker. 28 tests, none of
 which need infrastructure — including the MassTransit in-memory harness test that
-asserts a published `OrderPlaced` reaches its consumer.
+asserts a published `OrderPlaced` reaches its consumer, and the TestServer tests
+that assert `api/orders/allOrders` answers 401 to an anonymous caller and 403 to
+a signed-in one without the Admin role.
 
 If you have a newer SDK but not the .NET 6 *runtime*, the test host rolls forward
 automatically (`RollForward=Major` in the test project).

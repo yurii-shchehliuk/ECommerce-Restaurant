@@ -6,13 +6,18 @@ Server databases, an order event published to RabbitMQ by one service and
 consumed by another, Serilog shipping structured logs from all four to Seq, and
 the whole stack in one `docker compose up`.
 
-![Placing an order in the storefront and watching the event arrive on the admin side](docs/owlet-demo.gif)
+![The whole purchase, from the storefront to the event arriving on the admin side](docs/owlet-demo.gif)
 
-*Sign in, add to the basket, then place an order while sitting on the admin
-**Order events** page. The new row appears within the page's two-second poll —
-it exists only because `API.Basket` published an `OrderPlaced` message and
-`API.Admin` consumed it off RabbitMQ. Recorded against the Compose stack; the
-whole clip is real pages on `http://localhost:5200`.*
+*One take, no cut. Sign in as the seeded administrator, open the menu, add two
+items, review the basket, then work through the checkout wizard: address,
+delivery, and a review step that says this deployment has no Stripe key and
+offers to place the order anyway. The place-order click is on screen. So is the
+confirmation, and the **Order events** page it links to, where the row for that
+order is already waiting — it exists only because `API.Basket` published an
+`OrderPlaced` message and `API.Admin` consumed it off RabbitMQ. Recorded
+headless against the Compose stack on `http://localhost:5200` by
+[`build/record-demo.js`](build/record-demo.js), which captures the page's own
+viewport: every frame is the application and nothing else.*
 
 ---
 
@@ -66,6 +71,7 @@ flowchart LR
 
     BR --> NX
     NX -->|"/"| WEB
+    NX -->|"/content/"| WEB
     NX -->|"/svc/identity/"| ID
     NX -->|"/svc/basket/"| BK
     NX -->|"/svc/admin/"| AD
@@ -124,6 +130,14 @@ path, why each store was chosen — are in
   because RabbitMQ delivers at least once. A MassTransit harness test asserts
   that a published message reaches its consumer.
 
+- **Authorization is on the endpoint, not on the page.** `OrdersController`
+  carries `[Authorize]`, and `allOrders` — the one action that returns other
+  buyers' names and addresses — is scoped to the Admin role. `API.Admin`'s three
+  catalogue writes need the same role. The client's `/admin` branch is behind
+  `adminGuard`, but that is a courtesy to the user rather than the control:
+  `OrdersAuthorizationTest` drives the real controller through a real MVC
+  pipeline and asserts the anonymous 401 and the non-admin 403.
+
 - **Authentication across service boundaries.** `TokenService`
   ([`src/WebApi.Infrastructure/Services/TokenService.cs`](src/WebApi.Infrastructure/Services/TokenService.cs))
   signs with `HmacSha512Signature`. Basket, Admin and Web each validate
@@ -145,10 +159,13 @@ path, why each store was chosen — are in
 - **A gateway, not a reverse proxy in front of one service.** nginx serves the
   SPA at `/` and routes `/svc/identity/`, `/svc/basket/` and `/svc/admin/`,
   stripping the prefix. The `/svc` prefix exists because the Angular router
-  already owns `/basket`, `/admin`, `/orders` and `/shop`.
+  already owns `/basket`, `/admin`, `/orders` and `/shop`. `/content/` is routed
+  to `API.Web`'s `wwwroot`, so the catalogue's picture URLs are relative too and
+  every request the page makes is on one origin.
 
-- **A client with eight runtime dependencies.** Standalone Angular 20 with
-  signals and the built-in control flow, styled by one Tailwind v4 `@theme` block
+- **A client with eleven runtime dependencies**, of which eight are imported by
+  application code. Standalone Angular 20 with signals and the built-in control
+  flow, styled by one Tailwind v4 `@theme` block
   that every colour, radius, type step and spacing value in the application
   resolves to. `@angular/cdk` drives the checkout stepper because it is a state
   machine with no opinion about how the steps should look; the icons, the toasts,
@@ -156,19 +173,20 @@ path, why each store was chosen — are in
   Every asynchronous view has a loading, an error and an empty state, and the
   error names the service that did not answer.
 
-- **The machine room is a visible register, not a hidden page.**
+- **The machine room is a page in the application, not a debug endpoint.**
   `/admin/order-events` renders what `API.Admin` consumed off RabbitMQ in mono
   with tabular figures, and draws each message's time on the queue as a bar
   scaled against the slowest hop on screen. A hop that waited out a stopped
   consumer is drawn in a different colour from one that crossed in five
-  milliseconds, because those are different facts.
+  milliseconds, because those are different facts. It sits in the navigation for
+  an administrator, styled like every other page, rather than behind a flag.
 
 ---
 
 ## Measured
 
-Everything below was observed on 16 August 2026 against `docker compose up`
-on this machine.
+Everything below was observed on 17 August 2026 against `docker compose up`
+on this machine, on a stack rebuilt from `docker compose down -v`.
 
 **The stack comes up.** Eleven containers: four services, the gateway, SQL
 Server, Redis, RabbitMQ, Seq, smtp4dev, redis-commander. SQL Server, Redis and
@@ -176,28 +194,34 @@ RabbitMQ gate the services with health checks, so the APIs start against a
 database that is already accepting connections:
 
 ```
-[02:25:33 INF] AppIdentityDbContext migrated on attempt 1     (API.Identity)
-[02:25:33 INF] StoreContext migrated on attempt 1             (API.Basket)
-[02:25:37 INF] StoreContext reachable on attempt 2            (API.Admin)
-[02:25:37 INF] Configured endpoint owlet-order-placed, Consumer: EventBus.Messages.Consumers.OrderPlacedConsumer
-[02:25:34 INF] Bus started: rabbitmq://rabbitowlet/
+[23:57:45 INF] AppIdentityDbContext migrated on attempt 1     (API.Identity)
+[00:18:26 INF] StoreContext migrated on attempt 1             (API.Basket)
+[23:57:48 INF] StoreContext reachable on attempt 2            (API.Admin)
+[23:57:48 INF] Configured endpoint owlet-order-placed, Consumer: EventBus.Messages.Consumers.OrderPlacedConsumer
+[23:57:49 INF] Bus started: rabbitmq://rabbitowlet/
 ```
 
 **The whole loop runs from an empty volume.** `docker compose down -v`, then
-`docker compose up -d --build`, then register → sign in → add to basket → place an
-order → the event arrives on the admin side, 239 ms after publication, on a
-database that did not exist a minute earlier. The GIF above is that loop. The order's
-subtotal is re-priced from the database, not taken from the basket: the demo
-basket claimed $9.50 for an item the catalogue prices at $1.00, and the order
-was written at the catalogue price.
+`docker compose up -d --build`, then sign in → add to basket → place an order →
+the event arrives on the admin side, on a database that did not exist a minute
+earlier. The GIF above is that loop, and its order is `#7`: published at
+`00:20:14.889`, consumed at `00:20:14.893`, 4 ms later, event `f7a6f09a`.
 
-**The message really travels.** With Admin running, an order published at
-`02:44:28.4939` was consumed at `02:44:28.4990` — 5 ms:
+The order's subtotal is re-priced from the database rather than taken from the
+basket. A basket claiming `$9.50` for `House Fries`, which the catalogue prices
+at `$1.00`, produced an order with a subtotal of `$1.00`.
+
+**The message really travels.** Seq's record of the same order, and of the one
+placed after it:
 
 ```
-[INF] Consumed OrderPlaced 402e0db1-191f-429f-969c-2eb1bdab9348
-      for order 6 (demo@owlet.local, 1 items, total 26.00)
+[19:20:14 INF] Consumed OrderPlaced f7a6f09a-0335-4d75-a628-fa85a31acd4e
+               for order 7 (bob@test.com, 2 items, total 9)
+[19:22:36 INF] Consumed OrderPlaced f6dd42fc-bf2f-44d8-8ba0-23fd2c8772df
+               for order 9 (bob@test.com, 1 items, total 21)
 ```
+
+Order `#9` crossed in 5 ms.
 
 **A durable queue means Admin can be down.** `docker compose stop api.admin`,
 then place an order. Checkout still returns 200, and the broker holds the
@@ -208,44 +232,50 @@ name                 messages  consumers
 owlet-order-placed          1          0
 ```
 
-Start Admin again and it drains, 14.3 seconds after publication — the exact
-length of the outage. That row is still visible in
-[docs/order-events.png](docs/order-events.png) with a `14280 ms` bus latency.
+Start Admin again and it drains. Order `#8` was published at `00:22:13.260` and
+consumed at `00:22:32.985` — 19,725 ms, the length of the outage. That row is
+the second one in [docs/order-events.png](docs/order-events.png), drawn in a
+different colour from the four-millisecond hops around it.
 
 **The basket survives a restart.** `docker compose restart api.basket`, then
-re-read the basket: same contents, because it is in Redis and not in the process.
+re-read the basket: byte-for-byte the same three-item body, because it is in
+Redis and not in the process.
 
-**All four services log to Seq.** 23 events from `API.Admin`, 22 from
-`API.Basket`, 16 from `API.Identity`, 6 from `API.Web`, each tagged with a
-`Service` property — [docs/seq.png](docs/seq.png).
+**All four services log to Seq,** each event tagged with a `Service` property,
+which is the filter [docs/seq.png](docs/seq.png) is taken under.
 
 **The client is the same one the container serves.** With the stack up, the
 gateway on `:5200` answers `/`, `/shop`, `/basket`, `/orders`,
 `/admin/order-events` and `/account/register` with 200 and renders the built
 bundle. The menu draws 9 of 28 products from `/svc/basket`; the order-events page
-draws consumed rows from `/svc/admin`. Every request the bundle makes is a
-relative `/svc` path, so the browser talks to one origin and CORS does no work.
+draws consumed rows from `/svc/admin`; the pictures on the menu come from
+`/content/`, which the gateway routes to `API.Web`'s `wwwroot`. Every request the
+bundle makes is a relative path on `:5200`, so the browser talks to one origin
+and CORS does no work.
 
-**The whole purchase runs through the pages.** Driven headless against the stack:
-register, add two items, open a product, review the basket, complete the address
-and delivery steps of the checkout wizard, place the order, and find it on
-`/orders` and on `/admin/order-events` — the second row on that page is the event
-the checkout published, consumed 233 ms later.
+**The whole purchase runs through the pages,** which is what the GIF is: the
+recorder in [`build/record-demo.js`](build/record-demo.js) drives the built
+bundle headless from the storefront to the order-events row without touching an
+API directly.
 
 **Build and tests.** `dotnet build Owlet.sln` succeeds with no errors and
-without Node.js installed (12 analyser warnings, all CA2017 in
-`PaymentsController`). `dotnet test` runs **25 tests, all passing**, none of
-which need Docker. In the client, `npm ci && npm run build` succeeds from a clean
-tree, `npm run test:ci` runs **77 tests, all passing**, and `ng lint` reports no
-errors and no warnings.
+without Node.js installed. It emits 8 warnings, all `NETSDK1138`: one per host
+project per build pass, saying `net6.0` is out of support. `dotnet test` runs
+**28 tests, all passing**, none of which need Docker. In the client,
+`npm ci && npm run build` succeeds from a clean tree, `npm run test:ci` runs
+**77 tests, all passing**, and `ng lint` reports no errors and no warnings.
 
-**The client audits clean.** Across thirteen routes at 1360px and 360px: exactly
-one `h1` per page, no horizontal scroll, no unlabelled form control, no button or
-link without an accessible name, no image without alt text, and no text below
-WCAG AA contrast in either the light or the dark theme.
+**The client audits clean.** `node build/audit-client.js` drives the built
+bundle through the gateway across all sixteen routes at 1360px and 360px in both
+themes — 64 page checks — and asserts on each one: exactly one `h1`, no
+horizontal scroll, an accessible name on every form control, button and link, an
+`alt` attribute on every image, and WCAG AA contrast on every run of text against
+its own computed background. **0 problems.** The output it printed is committed
+as [docs/client-audit.txt](docs/client-audit.txt).
 
-**Size:** ~7,000 lines of C# across 165 files in 9 projects in the backend, plus
-the Angular client. The client's initial payload is 378 kB, 109 kB transferred.
+**Size:** 7,415 lines of C# across 156 files in 9 projects in the backend
+(`git ls-files 'src/*.cs' | xargs cat | wc -l`), plus the Angular client. The
+client's initial payload is 375 kB raw, 107 kB transferred.
 
 There is **no hosted demo**, deliberately. A representative deployment needs SQL
 Server, Redis, RabbitMQ, Seq and four .NET containers; no free tier runs that
@@ -260,12 +290,16 @@ without cold-starting a five-service stack in front of whoever clicked the link.
 StackExchange.Redis 2.6, Swashbuckle 6.5, Serilog (+ Seq sink)
 **Front end** — Angular 20 (standalone, signals, built-in control flow),
 TypeScript 5.8, RxJS 7.8, Tailwind CSS v4, `@angular/cdk` for the checkout
-stepper, `@microsoft/signalr` for chat. Eight runtime dependencies in total.
+stepper, `@microsoft/signalr` for chat. Eleven entries under `dependencies` in
+`package.json`: the seven `@angular/*` packages, `@microsoft/signalr`, `rxjs`,
+and the two the framework needs at runtime rather than the application,
+`tslib` and `zone.js`.
 **Infrastructure** — Docker Compose, nginx, SQL Server 2019, Redis 6, RabbitMQ 3,
 Seq, smtp4dev, redis-commander
-**Tests** — xUnit 2.4, 25 tests, including a MassTransit in-memory harness test
-that asserts a published message reaches its consumer; Karma and Jasmine, 77
-tests on the client
+**Tests** — xUnit 2.4, 28 tests, including a MassTransit in-memory harness test
+that asserts a published message reaches its consumer and a TestServer test that
+asserts `api/orders/allOrders` answers 401 anonymously; Karma and Jasmine, 77
+tests on the client; a puppeteer accessibility and layout audit over every route
 
 ---
 
@@ -295,13 +329,16 @@ open **http://localhost:5200**.
 |---|---|
 | Storefront and gateway | http://localhost:5200 |
 | Order events (the async path, live) | http://localhost:5200/admin/order-events |
+| Seeded administrator | `bob@test.com` / `Pa$$w0rd` |
 | Seq (logs from all four services) | http://localhost:5342 |
 | RabbitMQ management (`guest`/`guest`) | http://localhost:8088 |
 | redis-commander | http://localhost:8081 |
 | smtp4dev | http://localhost:5010 |
 | Swagger | :5041, :5031, :5011 `/swagger` |
 
-Swagger is registered only in the Development environment. The three API services
+The `/admin` pages are behind `adminGuard`, so sign in as the seeded
+administrator to reach the order-events register. Swagger is registered only in
+the Development environment. The three API services
 run as Development under Compose; `API.Web` runs as Production because that is
 what makes it serve the built bundle instead of trying to launch the Angular CLI,
 so it has no Swagger and answers `/swagger` with the SPA's index page.

@@ -29,7 +29,7 @@ src/
 
   nginx/                 the gateway
 tests/
-  WebApi.Test/           xUnit — 25 tests
+  WebApi.Test/           xUnit — 28 tests
 docker-compose.yml       next to Owlet.sln, because that is the build context
 sql/                     an optional custom SQL Server image
 build/                   migration helper scripts
@@ -248,6 +248,7 @@ message headers, is the highest-value remaining change here.
 | Path | Upstream |
 |---|---|
 | `/` | `api.web` — the built Angular bundle |
+| `/content/` | `api.web` — its `wwwroot`, which is where the product images are |
 | `/svc/identity/` | `api.identity` |
 | `/svc/basket/` | `api.basket` |
 | `/svc/admin/` | `api.admin` |
@@ -262,17 +263,23 @@ locations would collide with those client-side routes — nginx would answer a d
 link to `/basket` with a 301 to `/basket/` and hand it to `API.Basket`, which
 404s. Under the `/svc` prefix both deep links return 200.
 
-Because the production bundle uses those relative prefixes, the browser talks to
-one origin and CORS does no work in production. The permissive CORS policy remains
-for the `ng serve` development path, where the client is on :4200 and the services
-are on their own ports.
+`/content/` is there so that the images are relative too. `API.Basket` composes
+each catalogue row's picture URL from `ContentSrcUrl`, which Compose sets to
+`/content/`; without it the rows would carry `http://localhost:5021/wwwroot/...`
+and the page would load its pictures from a second origin. With it, every request
+the production bundle makes is a relative path on `:5200`, so the browser talks
+to one origin and CORS does no work in production. The permissive CORS policy
+remains for the `ng serve` development path, where the client is on :4200, the
+services are on their own ports, and `appsettings.json`'s absolute
+`ContentSrcUrl` applies instead.
 
 **The SPA.** `src/API.Web/Dockerfile` has a `node:24-alpine` stage that runs
 `npm ci` and `ng build --configuration production` and copies the output into
 `wwwroot/dist`. `UseAngular` serves that with `UseSpaStaticFiles()` outside
 Development and proxies to the Angular CLI dev server inside it. The production
 configuration swaps `src/environment.ts` for `src/environment.prod.ts`, whose
-URLs are all gateway-relative, so the deployed bundle is single-origin.
+URLs are all gateway-relative, so the deployed bundle is single-origin — images
+included, through `/content/`.
 
 `AddSpaStaticFiles(RootPath = "wwwroot/dist")` expects a flat directory, which is
 why `angular.json` pins `outputPath.browser` to `""`: the v20 application builder
@@ -328,10 +335,12 @@ it exists. Three states - light, dark, and follow the system - because an
 explicit choice has to be able to win against the system preference in both
 directions, which a boolean cannot express.
 
-**Dependencies.** Eight at runtime: the six `@angular/*` packages the application
-actually imports, `@microsoft/signalr` for the chat hub, and `rxjs`. Tailwind is
-a build dependency. `@angular/cdk` is the only component library, and only for
-`CdkStepper`, which supplies the checkout wizard's state machine and no styling.
+**Dependencies.** Eleven entries under `dependencies` in `package.json`. Eight
+are imported by application code: the six `@angular/*` packages it names in its
+own files, `@microsoft/signalr` for the chat hub, and `rxjs`. The other three are
+`@angular/cdk`, which the checkout wizard imports for `CdkStepper` alone — a
+state machine with no styling — and `tslib` and `zone.js`, which the framework
+needs at runtime rather than the application. Tailwind is a build dependency.
 
 **Contracts the client has to honour.** Two are worth naming because getting
 either wrong produces a 400 that reads like something else:
@@ -347,6 +356,13 @@ They cover the pager's windowing, the basket service's guards and its
 re-pricing-from-the-response rule, the catalogue cache, the breadcrumb
 derivation, the theme preference, toast de-duplication, the password rules and
 the order-event latency scaling.
+
+**The audit.** `build/audit-client.js` drives the built bundle through the
+gateway across all sixteen routes at 1360px and 360px in both themes, and checks
+each page for a single `h1`, no horizontal scroll, an accessible name on every
+form control, button and link, an `alt` on every image, and WCAG AA contrast on
+every run of text against its own computed background. 64 page checks; the run
+is committed as `docs/client-audit.txt`.
 
 ---
 
