@@ -20,7 +20,7 @@ main:focus {
   padding: 0.5rem 0.875rem;
   border-radius: var(--radius-control);
   background: var(--color-moss-500);
-  color: #fff;
+  color: var(--color-on-brand);
   font-weight: 600;
   transition: top 120ms ease;
 }

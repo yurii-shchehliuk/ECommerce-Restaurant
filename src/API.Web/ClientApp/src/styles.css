@@ -33,9 +33,13 @@
   --color-ember-500: #e4870b;
   --color-ember-600: #b96a05;
 
-  /* Reserved for live system state. Nothing else may use it. */
+  /* Reserved for live system state. Nothing else may use it.
+     -500 is the fill and the border; -text is the same hue at the weight that
+     clears 4.5:1 against the tint the pill puts behind it, which is darker in the
+     light theme and the brighter mint in the dark one. */
   --color-signal-400: #2dd4a7;
   --color-signal-500: #14b88f;
+  --color-signal-text: #0a6b53;
   --color-signal-900: #08312a;
 
   --color-danger-100: #fbe0dd;
@@ -48,7 +52,8 @@
   --color-ink-800: #16261d;
   --color-ink-700: #24382d;
   --color-ink-500: #4c6255;
-  --color-ink-400: #6b8074;
+  --color-ink-400: #5a6f63;
+  --color-ink-300: #8fa398;
   --color-ink-200: #c3cec7;
   --color-ink-100: #e2e8e4;
   --color-ink-50: #f0f3f1;
@@ -63,6 +68,7 @@
   --color-body: var(--color-ink-900);
   --color-body-muted: var(--color-ink-500);
   --color-body-faint: var(--color-ink-400);
+  --color-on-brand: #ffffff;
 
   /* Type ------------------------------------------------------------------
      Two roles, and the seam between them is the point. The sans carries prose;
@@ -125,7 +131,9 @@
       --color-line-strong: var(--color-ink-700);
       --color-body: var(--color-ink-50);
       --color-body-muted: var(--color-ink-200);
-      --color-body-faint: var(--color-ink-400);
+      --color-body-faint: var(--color-ink-300);
+      --color-on-brand: var(--color-ink-950);
+      --color-signal-text: var(--color-signal-400);
       --color-moss-500: #4fa878;
       --color-moss-600: #67bd8e;
       --color-ember-500: #f0a63a;
@@ -142,7 +150,9 @@
     --color-line-strong: var(--color-ink-700);
     --color-body: var(--color-ink-50);
     --color-body-muted: var(--color-ink-200);
-    --color-body-faint: var(--color-ink-400);
+    --color-body-faint: var(--color-ink-300);
+    --color-on-brand: var(--color-ink-950);
+    --color-signal-text: var(--color-signal-400);
     --color-moss-500: #4fa878;
     --color-moss-600: #67bd8e;
     --color-ember-500: #f0a63a;
@@ -171,7 +181,7 @@
 
   ::selection {
     background: var(--color-moss-500);
-    color: #fff;
+    color: var(--color-on-brand);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -232,7 +242,7 @@
 
   .btn-primary {
     background: var(--color-moss-500);
-    color: #fff;
+    color: var(--color-on-brand);
   }
 
   .btn-primary:not(:disabled):hover {
@@ -246,7 +256,7 @@
 
   .btn-accent:not(:disabled):hover {
     background: var(--color-ember-600);
-    color: #fff;
+    color: var(--color-ink-950);
   }
 
   .btn-ghost {
@@ -379,6 +389,7 @@
 
   .state__title {
     margin: 0;
+    font-size: 1rem;
     font-weight: 650;
     color: var(--color-body);
   }
@@ -463,7 +474,7 @@
   .pill--live {
     border-color: color-mix(in srgb, var(--color-signal-500) 45%, transparent);
     background: color-mix(in srgb, var(--color-signal-500) 12%, transparent);
-    color: var(--color-signal-500);
+    color: var(--color-signal-text);
   }
 
   .pill--down {
@@ -502,7 +513,7 @@
   .chip.is-on {
     background: var(--color-moss-500);
     border-color: var(--color-moss-500);
-    color: #fff;
+    color: var(--color-on-brand);
   }
 
   /* Loading placeholders. Shaped like the content they stand in for, so the page

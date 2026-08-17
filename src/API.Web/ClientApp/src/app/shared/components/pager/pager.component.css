@@ -44,7 +44,7 @@
 .pager__page.is-current {
   background: var(--color-moss-500);
   border-color: var(--color-moss-500);
-  color: #fff;
+  color: var(--color-on-brand);
 }
 
 .pager__gap {

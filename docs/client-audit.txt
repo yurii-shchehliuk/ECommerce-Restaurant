@@ -1,0 +1,78 @@
+Owlet client audit
+
+Run:      2026-08-17T00:10:08.531Z
+Target:   http://localhost:5200 (the Compose stack, gateway on 5200)
+Harness:  build/audit-client.js, puppeteer 25.7.0
+Routes:   16
+Widths:   1360px, 360px
+Themes:   light, dark
+Checks:   one h1 per page; no horizontal scroll; every form control, button and
+          link has an accessible name; every img has alt; every run of text meets
+          WCAG AA contrast (4.5:1, or 3:1 for large text) against its own
+          computed background
+
+Result:   64 page checks, 0 problems
+PASS  light 1360px  /                          home
+PASS  light 1360px  /shop                      menu
+PASS  light 1360px  /shop/26                   product details
+PASS  light 1360px  /basket                    basket
+PASS  light 1360px  /checkout                  checkout wizard
+PASS  light 1360px  /checkout/success          order placed
+PASS  light 1360px  /orders                    your orders
+PASS  light 1360px  /orders/5                  order detail
+PASS  light 1360px  /account/login             sign in
+PASS  light 1360px  /account/register          create an account
+PASS  light 1360px  /admin/order-events        order events
+PASS  light 1360px  /admin/completed-orders    all orders
+PASS  light 1360px  /admin/menu-management     catalogue
+PASS  light 1360px  /features/chat             chat
+PASS  light 1360px  /server-error              server error
+PASS  light 1360px  /no-such-page              not found
+PASS  light 360px   /                          home
+PASS  light 360px   /shop                      menu
+PASS  light 360px   /shop/26                   product details
+PASS  light 360px   /basket                    basket
+PASS  light 360px   /checkout                  checkout wizard
+PASS  light 360px   /checkout/success          order placed
+PASS  light 360px   /orders                    your orders
+PASS  light 360px   /orders/5                  order detail
+PASS  light 360px   /account/login             sign in
+PASS  light 360px   /account/register          create an account
+PASS  light 360px   /admin/order-events        order events
+PASS  light 360px   /admin/completed-orders    all orders
+PASS  light 360px   /admin/menu-management     catalogue
+PASS  light 360px   /features/chat             chat
+PASS  light 360px   /server-error              server error
+PASS  light 360px   /no-such-page              not found
+PASS  dark  1360px  /                          home
+PASS  dark  1360px  /shop                      menu
+PASS  dark  1360px  /shop/26                   product details
+PASS  dark  1360px  /basket                    basket
+PASS  dark  1360px  /checkout                  checkout wizard
+PASS  dark  1360px  /checkout/success          order placed
+PASS  dark  1360px  /orders                    your orders
+PASS  dark  1360px  /orders/5                  order detail
+PASS  dark  1360px  /account/login             sign in
+PASS  dark  1360px  /account/register          create an account
+PASS  dark  1360px  /admin/order-events        order events
+PASS  dark  1360px  /admin/completed-orders    all orders
+PASS  dark  1360px  /admin/menu-management     catalogue
+PASS  dark  1360px  /features/chat             chat
+PASS  dark  1360px  /server-error              server error
+PASS  dark  1360px  /no-such-page              not found
+PASS  dark  360px   /                          home
+PASS  dark  360px   /shop                      menu
+PASS  dark  360px   /shop/26                   product details
+PASS  dark  360px   /basket                    basket
+PASS  dark  360px   /checkout                  checkout wizard
+PASS  dark  360px   /checkout/success          order placed
+PASS  dark  360px   /orders                    your orders
+PASS  dark  360px   /orders/5                  order detail
+PASS  dark  360px   /account/login             sign in
+PASS  dark  360px   /account/register          create an account
+PASS  dark  360px   /admin/order-events        order events
+PASS  dark  360px   /admin/completed-orders    all orders
+PASS  dark  360px   /admin/menu-management     catalogue
+PASS  dark  360px   /features/chat             chat
+PASS  dark  360px   /server-error              server error
+PASS  dark  360px   /no-such-page              not found
