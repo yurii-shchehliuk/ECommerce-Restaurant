@@ -194,11 +194,11 @@ RabbitMQ gate the services with health checks, so the APIs start against a
 database that is already accepting connections:
 
 ```
-[23:57:45 INF] AppIdentityDbContext migrated on attempt 1     (API.Identity)
-[00:18:26 INF] StoreContext migrated on attempt 1             (API.Basket)
-[23:57:48 INF] StoreContext reachable on attempt 2            (API.Admin)
-[23:57:48 INF] Configured endpoint owlet-order-placed, Consumer: EventBus.Messages.Consumers.OrderPlacedConsumer
-[23:57:49 INF] Bus started: rabbitmq://rabbitowlet/
+[00:33:11 INF] AppIdentityDbContext migrated on attempt 1     (API.Identity)
+[00:33:11 INF] StoreContext migrated on attempt 1             (API.Basket)
+[00:33:11 INF] StoreContext reachable on attempt 1            (API.Admin)
+[00:33:11 INF] Configured endpoint owlet-order-placed, Consumer: EventBus.Messages.Consumers.OrderPlacedConsumer
+[00:33:18 INF] Bus started: rabbitmq://rabbitowlet/          (API.Admin)
 ```
 
 **The whole loop runs from an empty volume.** `docker compose down -v`, then
@@ -215,13 +215,15 @@ at `$1.00`, produced an order with a subtotal of `$1.00`.
 placed after it:
 
 ```
-[19:20:14 INF] Consumed OrderPlaced f7a6f09a-0335-4d75-a628-fa85a31acd4e
-               for order 7 (bob@test.com, 2 items, total 9)
-[19:22:36 INF] Consumed OrderPlaced f6dd42fc-bf2f-44d8-8ba0-23fd2c8772df
-               for order 9 (bob@test.com, 1 items, total 21)
+Consumed OrderPlaced f7a6f09a-0335-4d75-a628-fa85a31acd4e
+         for order 7 (bob@test.com, 2 items, total 9)
+Consumed OrderPlaced f6dd42fc-bf2f-44d8-8ba0-23fd2c8772df
+         for order 9 (bob@test.com, 1 items, total 21)
 ```
 
-Order `#9` crossed in 5 ms.
+Order `#9` crossed in 5 ms. Both lines are in
+[docs/seq.png](docs/seq.png); Seq renders their timestamps in local time, while
+the order-events page and its API report UTC.
 
 **A durable queue means Admin can be down.** `docker compose stop api.admin`,
 then place an order. Checkout still returns 200, and the broker holds the
@@ -238,8 +240,8 @@ the second one in [docs/order-events.png](docs/order-events.png), drawn in a
 different colour from the four-millisecond hops around it.
 
 **The basket survives a restart.** `docker compose restart api.basket`, then
-re-read the basket: byte-for-byte the same three-item body, because it is in
-Redis and not in the process.
+re-read the basket: byte for byte the same body, three units of the same line,
+because it is in Redis and not in the process.
 
 **All four services log to Seq,** each event tagged with a `Service` property,
 which is the filter [docs/seq.png](docs/seq.png) is taken under.
