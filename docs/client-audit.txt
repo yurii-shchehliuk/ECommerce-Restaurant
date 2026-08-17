@@ -1,6 +1,6 @@
 Owlet client audit
 
-Run:      2026-08-17T00:10:08.531Z
+Run:      2026-08-17T00:31:31.898Z
 Target:   http://localhost:5200 (the Compose stack, gateway on 5200)
 Harness:  build/audit-client.js, puppeteer 25.7.0
 Routes:   16
@@ -19,7 +19,7 @@ PASS  light 1360px  /basket                    basket
 PASS  light 1360px  /checkout                  checkout wizard
 PASS  light 1360px  /checkout/success          order placed
 PASS  light 1360px  /orders                    your orders
-PASS  light 1360px  /orders/5                  order detail
+PASS  light 1360px  /orders/12                 order detail
 PASS  light 1360px  /account/login             sign in
 PASS  light 1360px  /account/register          create an account
 PASS  light 1360px  /admin/order-events        order events
@@ -35,7 +35,7 @@ PASS  light 360px   /basket                    basket
 PASS  light 360px   /checkout                  checkout wizard
 PASS  light 360px   /checkout/success          order placed
 PASS  light 360px   /orders                    your orders
-PASS  light 360px   /orders/5                  order detail
+PASS  light 360px   /orders/12                 order detail
 PASS  light 360px   /account/login             sign in
 PASS  light 360px   /account/register          create an account
 PASS  light 360px   /admin/order-events        order events
@@ -51,7 +51,7 @@ PASS  dark  1360px  /basket                    basket
 PASS  dark  1360px  /checkout                  checkout wizard
 PASS  dark  1360px  /checkout/success          order placed
 PASS  dark  1360px  /orders                    your orders
-PASS  dark  1360px  /orders/5                  order detail
+PASS  dark  1360px  /orders/12                 order detail
 PASS  dark  1360px  /account/login             sign in
 PASS  dark  1360px  /account/register          create an account
 PASS  dark  1360px  /admin/order-events        order events
@@ -67,7 +67,7 @@ PASS  dark  360px   /basket                    basket
 PASS  dark  360px   /checkout                  checkout wizard
 PASS  dark  360px   /checkout/success          order placed
 PASS  dark  360px   /orders                    your orders
-PASS  dark  360px   /orders/5                  order detail
+PASS  dark  360px   /orders/12                 order detail
 PASS  dark  360px   /account/login             sign in
 PASS  dark  360px   /account/register          create an account
 PASS  dark  360px   /admin/order-events        order events
