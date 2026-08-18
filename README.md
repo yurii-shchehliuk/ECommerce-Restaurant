@@ -394,6 +394,36 @@ is drawn by [`build/generate-catalogue-art.py`](build/generate-catalogue-art.py)
 which takes the dish list in `build/catalogue.py` and renders one flat
 illustration per shape with Pillow.
 
+## Demo media
+
+The recording and the screenshots referenced above are held in `docs/`, beside the written notes.
+The captures come from a `docker compose` run of all eleven services: the RabbitMQ frame shows the
+`owlet-order-placed` queue durable and holding a persistent message with no consumer attached, and
+the Seq frame shows consumed `OrderPlaced` events with their structured properties.
+
+| File | What it shows | Published as |
+|---|---|---|
+| `docs/owlet-demo.gif` | 880×526, 25s. One unbroken take: sign in, add two items, work through the checkout wizard, place the order, and open the admin Order events page where the row is already waiting | `checkout-to-order-event.mp4`, `checkout-to-order-event.webm`, the poster `checkout-to-order-event.webp`, and the still `checkout-review-no-stripe.webp` — the review step with no Stripe key configured |
+| `docs/order-events-register.png` | 2560×1902. The admin Order events register, each row with buyer, total, item count, status, published and consumed timestamps, a time-on-the-bus bar and the event id | `order-events-register.webp` |
+| `docs/rabbitmq-durable-queue.png` | 2560×1650. The RabbitMQ management UI on queue `owlet-order-placed` — durable true, one ready and persistent message, zero consumers — with the queued-messages chart flat at one | `rabbitmq-durable-queue.webp` |
+| `docs/seq-consumed-orderplaced.png` | 2880×920. Seq filtered to consumed `OrderPlaced` lines, the top event expanded over its properties — `BuyerEmail`, `EventId`, `ItemCount`, `OrderId`, `Service` and `SourceContext` | `seq-consumed-orderplaced.webp` |
+| `docs/storefront-menu.png` | 2560×1840. The storefront menu signed in, 28 items paged nine at a time, with the sort control, the category filters and the search field above the product grid | `storefront-menu.webp` |
+| `docs/checkout-delivery-step.png` | 2560×1280. The Delivery step of the checkout wizard: four shipping options priced from $0 to $10, with the order summary totalling beside them | — kept here, not published |
+| `docs/order-events.png` | 1240×1007. Nine orders with buyer, total, item count, status, published and consumed timestamps, and time on the bus — order #8 at 19,725 ms against single-digit milliseconds for the rest | — kept here, not published |
+| `docs/seq.png` | 1400×800. Seq filtered by `Service is not null`: consumed `OrderPlaced` lines for orders 9, 8, 7 and 6, with the bus started and stopped entries | — kept here, not published |
+
+The published files live in the site repository under
+`TheSite/ClientApp/src/assets/portfolio/owlet-microservices/`, with the card thumbnail
+`owlet-order-events.webp` one directory above. Provenance runs two ways and this repository holds
+the source for both. The video and its poster are produced from `docs/owlet-demo.gif` with ffmpeg
+— mp4 and webm, a webp poster beside them. The stills are either frames cut from that recording or
+Playwright captures of the running stack, converted to webp with ffmpeg. Every derivative is
+regenerated rather than edited.
+
+They feed the `owlet-microservices` entry on disit.tech/work, whose case study is at
+`/services/software-development/owlet-microservices`. **The names differ:** the repository is
+`ECommerce-Restaurant`, the site entry and its asset folder are `owlet-microservices`.
+
 ## Licence
 
 No licence has been applied. All rights reserved; ask if you want to reuse it.
